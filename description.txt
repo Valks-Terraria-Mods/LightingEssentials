@@ -1,0 +1,13 @@
+A lighting overhaul mod for terraria.
+
+Surface plants glow a dim green.
+Moss glow based on their colors.
+The jungle is lit green all over slightly.
+Life crystals, life fruit and hearts glow red.
+Cactus glows a dim orange.
+Gems glow based on their colors.
+Prehardmode ores glow a dim white while hardmode ores glow more vibrant colors.
+Meteorite and hellstone are vibrant red.
+Containers and debris glow a dim white.
+
+Tell me what you think of the mod so far, I'm going to work on it a lot more.

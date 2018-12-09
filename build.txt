@@ -1,0 +1,4 @@
+author = valkyrienyanko
+version = 0.1
+displayName = Lighting Essentials
+homepage = https://discord.gg/thMupbv
