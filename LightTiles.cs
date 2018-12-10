@@ -1,11 +1,10 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace LightingEssentials
 {
-    class Light : GlobalTile
+    class LightTiles : GlobalTile
     {
         public override void SetDefaults()
         {
@@ -22,7 +21,6 @@ namespace LightingEssentials
             for (int i = 0; i < environment.Length; i++)
             {
                 Main.tileLighted[environment[i]] = true;
-                Main.tileShine[environment[i]] = 800;
             }
         }
 
@@ -81,9 +79,9 @@ namespace LightingEssentials
                     case TileID.Gold:
                     case TileID.Platinum:
                     case TileID.Tungsten:
-                        r = 0.1f;
-                        g = 0.1f;
-                        b = 0.1f;
+                        r = 0.02f;
+                        g = 0.02f;
+                        b = 0.02f;
                         break;
                     case TileID.Meteorite:
                         r = 1.0f;
@@ -127,8 +125,8 @@ namespace LightingEssentials
                         break;
                     case TileID.Titanium:
                         r = 0.1f;
-                        g = 0.9f;
-                        b = 0.1f;
+                        g = 0.1f;
+                        b = 0.9f;
                         break;
                     case TileID.LunarOre:
                         r = 0.1f;
@@ -144,39 +142,39 @@ namespace LightingEssentials
             switch (type)
             {
                 case TileID.BlueMoss:
-                    r = 0.0f;
-                    g = 0.0f;
-                    b = 0.2f;
+                    r = 0.00f;
+                    g = 0.00f;
+                    b = 0.02f;
                     break;
                 case TileID.BrownMoss:
-                    r = 0.1f;
-                    g = 0.1f;
-                    b = 0.1f;
+                    r = 0.01f;
+                    g = 0.01f;
+                    b = 0.01f;
                     break;
                 case TileID.GreenMoss:
-                    r = 0.0f;
-                    g = 0.2f;
-                    b = 0.0f;
+                    r = 0.00f;
+                    g = 0.02f;
+                    b = 0.00f;
                     break;
                 case TileID.LavaMoss:
-                    r = 0.2f;
-                    g = 0.0f;
-                    b = 0.0f;
+                    r = 0.02f;
+                    g = 0.00f;
+                    b = 0.00f;
                     break;
                 case TileID.LongMoss:
-                    r = 0.1f;
-                    g = 0.1f;
-                    b = 0.1f;
+                    r = 0.01f;
+                    g = 0.01f;
+                    b = 0.01f;
                     break;
                 case TileID.PurpleMoss:
-                    r = 0.2f;
-                    g = 0.0f;
-                    b = 0.2f;
+                    r = 0.02f;
+                    g = 0.00f;
+                    b = 0.02f;
                     break;
                 case TileID.RedMoss:
-                    r = 0.2f;
-                    g = 0.0f;
-                    b = 0.0f;
+                    r = 0.02f;
+                    g = 0.00f;
+                    b = 0.00f;
                     break;
                 case TileID.LifeFruit:
                 case TileID.Heart:
@@ -190,17 +188,25 @@ namespace LightingEssentials
                 case TileID.JunglePlants2:
                 case TileID.JungleThorns:
                 case TileID.JungleVines:
-                    r = 0.0f;
-                    g = 0.1f;
-                    b = 0.0f;
+                    if (NPC.downedPlantBoss)
+                    {
+                        r = 0.0f;
+                        g = 0.2f;
+                        b = 0.0f;
+                    }
+                    else {
+                        r = 0.0f;
+                        g = 0.1f;
+                        b = 0.0f;
+                    }
                     break;
                 case TileID.LargePiles:
                 case TileID.LargePiles2:
                 case TileID.Containers:
                 case TileID.Containers2:
-                    r = 0.2f;
-                    g = 0.2f;
-                    b = 0.2f;
+                    r = 0.1f;
+                    g = 0.1f;
+                    b = 0.1f;
                     break;
                 case TileID.Plants:
                 case TileID.Plants2:

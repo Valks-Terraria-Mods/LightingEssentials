@@ -1,4 +1,4 @@
 author = valkyrienyanko
-version = 0.1
-displayName = Lighting Essentials
+version = 0.5
+displayName = [c/9bffb9:Lighting Essentials]
 homepage = https://discord.gg/thMupbv
