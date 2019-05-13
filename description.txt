@@ -1,5 +1,8 @@
 Tiles and NPCs glow different colors! 
 
+NEW
++ When enemies are hit they glow red based on how much life was taken from them.
+
 Featuring
 + Prehardmode ores are very dimmly lit making it very hard (but possible) to tell what type of ore you're looking for.
 + Hardmode ores glow vibrantly based on their tile colors.
@@ -11,52 +14,3 @@ Featuring
 + Containers glow a dim white.
 + Swinging tools / weapons emits a faint white light.
 + Player glows dim white light.
-
-===========================================
-
-[NPCs]
-[c/ff5454:Enemies]
-
-[Tiles]
-[c/4fff5a:Surface Plants]
-[c/4457ff:Blue Moss] 
-Brown Moss 
-[c/54ff6d:Green Moss] 
-[c/ff5454:Lava Moss]
-Long Moss
-[c/cb54ff:Purple Moss]
-[c/ff5454:Red Moss]
-[c/ff5454:Life Fruit]
-[c/ff5454:Life Crystals]
-[c/ff5454:Hearts]
-[c/54ff6d:Jungle Grass]
-[c/54ff6d:Jungle Plants]
-[c/54ff6d:Jungle Thorns]
-[c/54ff6d:Jungle Vines]
-Large Piles
-Containers
-[c/54ff6d:Plants]
-[c/ffb254:Cactus]
-[c/5476ff:Sapphire]
-[c/76ff54:Emerald]
-[c/c654ff:Amethyst]
-Diamond
-[c/ffaf54:Amber]
-[c/ffaf54:Topaz]
-[c/ff5454:Ruby]
-Iron
-Lead
-Copper
-Tin
-Silver
-Gold
-Platinum
-Tungsten
-[c/ff5454:Meteorite]
-[c/ff5454:Hellstone]
-[c/54ff6d:Chlorophyte]
-[c/ffaf54:Palladium]
-[c/bd54ff:Orichalcum]
-[c/ff54f3:Adamantite]
-[c/5476ff:Titanium]
-[c/5476ff:Luminite]

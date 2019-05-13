@@ -1,0 +1,123 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{D714B156-EA47-4837-8952-62A8B7F6A3C3}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>ConsoleApplication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>LightingEssentials</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Game\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Terraria">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Terraria\Terraria.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include="build.txt" />
+    <Content Include="description.txt" />
+    <Content Include="icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LightingEssentials.cs" />
+    <Compile Include="LightItems.cs" />
+    <Compile Include="LightNPCs.cs" />
+    <Compile Include="LightPlayer.cs" />
+    <Compile Include="LightTiles.cs" />
+    <Compile Include="LightProjectiles.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".git\config" />
+    <None Include=".git\description" />
+    <None Include=".git\HEAD" />
+    <None Include=".git\hooks\applypatch-msg.sample" />
+    <None Include=".git\hooks\commit-msg.sample" />
+    <None Include=".git\hooks\fsmonitor-watchman.sample" />
+    <None Include=".git\hooks\post-update.sample" />
+    <None Include=".git\hooks\pre-applypatch.sample" />
+    <None Include=".git\hooks\pre-commit.sample" />
+    <None Include=".git\hooks\pre-push.sample" />
+    <None Include=".git\hooks\pre-rebase.sample" />
+    <None Include=".git\hooks\pre-receive.sample" />
+    <None Include=".git\hooks\prepare-commit-msg.sample" />
+    <None Include=".git\hooks\update.sample" />
+    <None Include=".git\index" />
+    <None Include=".git\info\exclude" />
+    <None Include=".git\logs\HEAD" />
+    <None Include=".git\logs\refs\heads\master" />
+    <None Include=".git\logs\refs\remotes\origin\HEAD" />
+    <None Include=".git\objects\03\87c0b219fe4a99f7f429ef564aa29c645f851e" />
+    <None Include=".git\objects\1b\c07df8109169584ff51cb7e5f4a99539af8bf3" />
+    <None Include=".git\objects\22\ed5478f04d6c0fdc68b47c7c73f22b8aa9e8d0" />
+    <None Include=".git\objects\2f\9a304b114e11b5f6941e4a5acf1487226ba65f" />
+    <None Include=".git\objects\3a\af615bd6adffa0a7bc2a9c421cdc9b8a716142" />
+    <None Include=".git\objects\45\9c775a94c0899985d75794f1b18210adcd5ff8" />
+    <None Include=".git\objects\54\1379de688849f444dade370ac435d8c6214e5d" />
+    <None Include=".git\objects\58\3d11daddd419af4692bd8d2cc23ca3276ba844" />
+    <None Include=".git\objects\62\daaa777173fbbec1d83431ac796765833f6477" />
+    <None Include=".git\objects\7e\fecbf632ee3633dbb33411587853c752623600" />
+    <None Include=".git\objects\84\38084ba9687d9de05ee1208947e2996cedcb2e" />
+    <None Include=".git\objects\9b\c8dc8817dad894f93441f7ca3a97ebf233d8ea" />
+    <None Include=".git\objects\b3\2e31a1ba5e314a1b875d4afc18d294722a1b9f" />
+    <None Include=".git\objects\b3\cbde31a5697ff931b66377fd48840a26426e16" />
+    <None Include=".git\objects\bd\4b286a43d88be2cf2cfc1551c9a0403ece3644" />
+    <None Include=".git\objects\cb\a0faa3d235e2e4d5a1d18abc6393638b14bed5" />
+    <None Include=".git\packed-refs" />
+    <None Include=".git\refs\heads\master" />
+    <None Include=".git\refs\remotes\origin\HEAD" />
+    <None Include=".vs\LightingEssentials\v15\.suo" />
+    <None Include=".vs\LightingEssentials\v15\Server\sqlite3\db.lock" />
+    <None Include=".vs\LightingEssentials\v15\Server\sqlite3\storage.ide" />
+    <None Include=".vs\LightingEssentials\v15\Server\sqlite3\storage.ide-shm" />
+    <None Include=".vs\LightingEssentials\v15\Server\sqlite3\storage.ide-wal" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".git\objects\info\" />
+    <Folder Include=".git\objects\pack\" />
+    <Folder Include=".git\refs\tags\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>
