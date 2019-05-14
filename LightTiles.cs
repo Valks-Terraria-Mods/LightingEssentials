@@ -1,23 +1,26 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
+using System;
 
 namespace LightingEssentials
 {
     class LightTiles : GlobalTile
     {
-        public override void SetDefaults()
-        {
-            ushort[] ores = {TileID.Iron, TileID.Lead, TileID.Copper, TileID.Tin, TileID.Silver, TileID.Gold, TileID.Platinum, TileID.Tungsten,
+        static ushort[] ores = {TileID.Iron, TileID.Lead, TileID.Copper, TileID.Tin, TileID.Silver, TileID.Gold, TileID.Platinum, TileID.Tungsten,
             TileID.Meteorite, TileID.Chlorophyte, TileID.Hellstone, TileID.Cobalt, TileID.Palladium, TileID.Mythril, TileID.Orichalcum, TileID.Adamantite,
             TileID.Titanium, TileID.LunarOre};
 
+        static ushort[] environment = { TileID.Crystals, TileID.LifeFruit, TileID.Heart, TileID.BlueMoss, TileID.BrownMoss, TileID.GreenMoss, TileID.LavaMoss, TileID.LongMoss, TileID.PurpleMoss, TileID.RedMoss, TileID.Cactus, TileID.JunglePlants, TileID.JunglePlants2, TileID.JungleThorns, TileID.JungleVines, TileID.JungleGrass, TileID.LargePiles, TileID.LargePiles2, TileID.MushroomPlants, TileID.Plants, TileID.Plants2, TileID.Containers, TileID.Containers2 };
+
+        public override void SetDefaults()
+        {
             for (int i = 0; i < ores.Length; i++) {
                 Main.tileLighted[ores[i]] = true;
                 Main.tileShine[ores[i]] = 400;
             }
             
-            ushort[] environment = { TileID.Crystals, TileID.LifeFruit, TileID.Heart, TileID.BlueMoss, TileID.BrownMoss, TileID.GreenMoss, TileID.LavaMoss, TileID.LongMoss, TileID.PurpleMoss, TileID.RedMoss, TileID.Cactus, TileID.JunglePlants, TileID.JunglePlants2, TileID.JungleThorns, TileID.JungleVines, TileID.JungleGrass, TileID.LargePiles, TileID.LargePiles2, TileID.MushroomPlants, TileID.Plants, TileID.Plants2, TileID.Containers, TileID.Containers2};
             for (int i = 0; i < environment.Length; i++)
             {
                 Main.tileLighted[environment[i]] = true;
@@ -26,8 +29,43 @@ namespace LightingEssentials
 
         public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
         {
+            /*
+             * Vector2 vectorP = Main.LocalPlayer.position / new Vector2(16, 16);
+                    Vector2 vectorP2 = new Vector2((float)Math.Floor(vectorP.X), (float)Math.Floor(vectorP.X));
+
+
+
+                    Lighting.AddLight(new Vector2(i, j), new Vector3(0, 1, 0));
+                    */
+
+            Point point = Utils.ToTileCoordinates(Main.LocalPlayer.position);
+
+            
+
             LightOres(i, j, type, ref r, ref g, ref b);
             LightEnvironment(i, j, type, ref r, ref g, ref b);
+
+            int radius = 3;
+
+            if (point.X >= i - radius && point.X <= i + radius && point.Y >= j - radius && point.Y <= j + radius)
+            {
+                switch (type) {
+                    case TileID.Plants:
+                    case TileID.Plants2:
+                    case TileID.JungleGrass:
+                    case TileID.JunglePlants:
+                    case TileID.JunglePlants2:
+                    case TileID.JungleThorns:
+                    case TileID.JungleVines:
+                        g += 0.1f;
+                        break;
+                    case TileID.LifeFruit:
+                    case TileID.Heart:
+                    case TileID.Crystals:
+                        r += 0.3f;
+                        break;
+                }
+            }
         }
 
         private void LightOres(int i, int j, int type, ref float r, ref float g, ref float b)
