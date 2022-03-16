@@ -1,3 +1,5 @@
+This mod makes your world light up with vibrant unique colors during the night (and when you're underground in dark areas). Ores / grass / leaves / and many many other blocks will light up. Defeating plantera boss makes the jungle glow even brighter. I'm very proud of this mod :-)
+
 NEW
 + When enemies are hit they glow red based on how much life was taken from them.
 + Walking over green plants temporary gives more light to those areas.
