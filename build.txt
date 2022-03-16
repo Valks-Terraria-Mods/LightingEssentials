@@ -1,4 +1,4 @@
 author = valkyrienyanko
-version = 1.0.1
+version = 1.0.3
 displayName = [c/9bffb9:Lighting Essentials]
-homepage = https://discord.gg/thMupbv
+homepage = https://github.com/Valks-Terraria-Mods/LightingEssentials
