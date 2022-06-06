@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader;
+﻿namespace LightingEssentials;
 
 public class LightProjectiles : GlobalProjectile
 {

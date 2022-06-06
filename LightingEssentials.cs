@@ -1,11 +1,12 @@
-using Terraria.ModLoader;
+global using Microsoft.Xna.Framework;
+global using Terraria;
+global using Terraria.DataStructures;
+global using Terraria.ID;
+global using Terraria.ModLoader;
 
-namespace LightingEssentials
+namespace LightingEssentials;
+
+class LightingEssentials : Mod
 {
-	class LightingEssentials : Mod
-	{
-		public LightingEssentials()
-		{
-		}
-	}
+	
 }
