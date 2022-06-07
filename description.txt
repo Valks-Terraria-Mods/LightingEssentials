@@ -14,3 +14,10 @@ Featuring
 + Containers glow a dim white.
 + Swinging tools / weapons emits a faint white light.
 + Player glows dim white light.
+
+Added config
+- Toggle player melee light
+- Toggle passive player light
+- Toggle entity red hit light
+- Toggle lighting on all ores
+- Toggle experimental features
