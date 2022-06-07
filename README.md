@@ -1,3 +1,5 @@
+[![](https://img.shields.io/static/v1?style=flat-square&logo=discord&logoColor=white&color=blue&label=discord&message=valks%20games)](https://discord.gg/866cg8yfxZ)
+
 This mod makes your world light up with vibrant unique colors during the night (and when you're underground in dark areas). Ores / grass / leaves / and many many other blocks will light up. Defeating plantera boss makes the jungle glow even brighter. I'm very proud of this mod :-)
 
 NEW
