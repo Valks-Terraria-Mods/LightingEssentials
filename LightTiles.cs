@@ -2,23 +2,70 @@
 
 class LightTiles : GlobalTile
 {
-    static ushort[] ores = {TileID.Iron, TileID.Lead, TileID.Copper, TileID.Tin, TileID.Silver, TileID.Gold, TileID.Platinum, TileID.Tungsten,
-            TileID.Meteorite, TileID.Chlorophyte, TileID.Hellstone, TileID.Cobalt, TileID.Palladium, TileID.Mythril, TileID.Orichalcum, TileID.Adamantite,
-            TileID.Titanium, TileID.LunarOre};
+    public static readonly ushort[] Ores = {
+        TileID.Iron, 
+        TileID.Lead, 
+        TileID.Copper, 
+        TileID.Tin, 
+        TileID.Silver, 
+        TileID.Gold, 
+        TileID.Platinum, 
+        TileID.Tungsten,
+        TileID.Meteorite, 
+        TileID.Chlorophyte, 
+        TileID.Hellstone, 
+        TileID.Cobalt, 
+        TileID.Palladium, 
+        TileID.Mythril, 
+        TileID.Orichalcum, 
+        TileID.Adamantite,
+        TileID.Titanium, 
+        TileID.LunarOre
+    };
 
-    static ushort[] environment = { TileID.Crystals, TileID.LifeFruit, TileID.Heart, TileID.BlueMoss, TileID.BrownMoss, TileID.GreenMoss, TileID.LavaMoss, TileID.LongMoss, TileID.PurpleMoss, TileID.RedMoss, TileID.Cactus, TileID.JunglePlants, TileID.JunglePlants2, TileID.JungleThorns, TileID.JungleVines, TileID.JungleGrass, TileID.LargePiles, TileID.LargePiles2, TileID.MushroomPlants, TileID.Plants, TileID.Plants2, TileID.Containers, TileID.Containers2 };
+    private static readonly ushort[] Environment = { 
+        TileID.Crystals, 
+        TileID.LifeFruit, 
+        TileID.Heart, 
+        TileID.BlueMoss, 
+        TileID.BrownMoss, 
+        TileID.GreenMoss, 
+        TileID.LavaMoss, 
+        TileID.LongMoss, 
+        TileID.PurpleMoss, 
+        TileID.RedMoss, 
+        TileID.Cactus, 
+        TileID.JunglePlants, 
+        TileID.JunglePlants2, 
+        TileID.JungleThorns, 
+        TileID.JungleVines, 
+        TileID.JungleGrass, 
+        TileID.LargePiles, 
+        TileID.LargePiles2, 
+        TileID.MushroomPlants, 
+        TileID.Plants, 
+        TileID.Plants2, 
+        TileID.Containers, 
+        TileID.Containers2 
+    };
 
     public override void SetStaticDefaults()
     {
-        for (int i = 0; i < ores.Length; i++)
-        {
-            Main.tileLighted[ores[i]] = true;
-            Main.tileShine[ores[i]] = 400;
-        }
+        if (LightingEssentials.Config.LightOres)
+            LightOres(true);
 
-        for (int i = 0; i < environment.Length; i++)
+        for (int i = 0; i < Environment.Length; i++)
         {
-            Main.tileLighted[environment[i]] = true;
+            Main.tileLighted[Environment[i]] = true;
+        }
+    }
+
+    public static void LightOres(bool enabled) 
+    {
+        for (int i = 0; i < Ores.Length; i++)
+        {
+            Main.tileLighted[Ores[i]] = enabled;
+            Main.tileShine[Ores[i]] = 400;
         }
     }
 

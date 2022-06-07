@@ -6,7 +6,7 @@ global using Terraria.ModLoader;
 
 namespace LightingEssentials;
 
-class LightingEssentials : Mod
+public class LightingEssentials : Mod
 {
-	
+	public static Config Config { get; set; }
 }
