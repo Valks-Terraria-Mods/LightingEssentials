@@ -71,23 +71,16 @@ class LightTiles : GlobalTile
 
     public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
     {
-        /*
-         * Vector2 vectorP = Main.LocalPlayer.position / new Vector2(16, 16);
-                Vector2 vectorP2 = new Vector2((float)Math.Floor(vectorP.X), (float)Math.Floor(vectorP.X));
-
-
-
-                Lighting.AddLight(new Vector2(i, j), new Vector3(0, 1, 0));
-                */
-
-        Point point = Utils.ToTileCoordinates(Main.LocalPlayer.position);
-
-
-
         LightOres(i, j, type, ref r, ref g, ref b);
         LightEnvironment(i, j, type, ref r, ref g, ref b);
+        WalkingOnPlantsLightsThemUp(i, j, type, ref r, ref g, ref b);
+    }
 
-        int radius = 3;
+    void WalkingOnPlantsLightsThemUp(int i, int j, int type, ref float r, ref float g, ref float b)
+    {
+        int radius = 2;
+
+        Point point = Utils.ToTileCoordinates(Main.LocalPlayer.position);
 
         if (point.X >= i - radius && point.X <= i + radius && point.Y >= j - radius && point.Y <= j + radius)
         {
@@ -111,7 +104,7 @@ class LightTiles : GlobalTile
         }
     }
 
-    private void LightOres(int i, int j, int type, ref float r, ref float g, ref float b)
+    void LightOres(int i, int j, int type, ref float r, ref float g, ref float b)
     {
         if (j > 300)
         {
@@ -218,7 +211,7 @@ class LightTiles : GlobalTile
         }
     }
 
-    private void LightEnvironment(int i, int j, int type, ref float r, ref float g, ref float b)
+    void LightEnvironment(int i, int j, int type, ref float r, ref float g, ref float b)
     {
         switch (type)
         {

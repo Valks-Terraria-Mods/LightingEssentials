@@ -28,7 +28,8 @@ class LightNPCs : GlobalNPC
             }
     }
 
-    public override void HitEffect(NPC npc, int hitDirection, double damage) {
+    public override void HitEffect(NPC npc, NPC.HitInfo hit)
+    {
         if (!LightingEssentials.Config.EntityRedHitLight)
             return;
 

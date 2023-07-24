@@ -9,11 +9,11 @@ Featuring
 + Life crystals and life fruit glow a vibrant red. 
 + Enemies glow a faint red. 
 + The jungle glows a dim green. (when you defeat plantera, it glows a brigter green)
-+ Surface plants glow green. (looks really cool at night!)
++ Walking over plants causes them to light up (looks really cool at night!)
 + Meteorite and hellstone glow vibrant red.
-+ Containers glow a dim white.
-+ Swinging tools / weapons emits a faint white light.
-+ Player glows dim white light.
++ Containers glow a dim white
++ Swinging tools / weapons emits a faint white light
++ Player glows has a very dim light
 
 Added config
 - Toggle player melee light

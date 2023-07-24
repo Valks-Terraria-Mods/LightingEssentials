@@ -1,0 +1,30 @@
+Configs: {
+	Config: {
+		DisplayName: Config
+
+		PlayerMeleeLight: {
+			Label: Player Melee Light
+			Tooltip: ""
+		}
+
+		EntityRedHitLight: {
+			Label: Entity Red Hit Light
+			Tooltip: ""
+		}
+
+		PlayerLight: {
+			Label: Player Light
+			Tooltip: ""
+		}
+
+		LightOres: {
+			Label: Light Ores
+			Tooltip: ""
+		}
+
+		Experimental: {
+			Label: Experimental
+			Tooltip: ""
+		}
+	}
+}
