@@ -8,17 +8,17 @@ public class Config : ModConfig
 {
     public override ConfigScope Mode => ConfigScope.ServerSide;
 
-    [DefaultValue(true)]
+    [DefaultValue(0.2f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public bool PlayerMeleeLight;
+    public float PlayerMeleeLight;
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
     public bool EntityRedHitLight;
 
-    [DefaultValue(true)]
+    [DefaultValue(0.12f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public bool PlayerLight;
+    public float PlayerLight;
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -28,13 +28,17 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public bool LightEnvironment;
 
-    [DefaultValue(true)]
+    [DefaultValue(0f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public bool LightLifeFruitAndLifeCrystalsAndHearts;
+    public float WalkingOnPlantsLightsThemUpRed;
 
-    [DefaultValue(true)]
+    [DefaultValue(0.1f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public bool WalkingOnPlantsLightsThemUp;
+    public float WalkingOnPlantsLightsThemUpGreen;
+
+    [DefaultValue(0f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float WalkingOnPlantsLightsThemUpBlue;
 
     [DefaultValue(0.5f)]
     [BackgroundColor(75, 0, 0, 100)]
@@ -44,9 +48,17 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public float Cactus;
 
+    [DefaultValue(0.1f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float PlantsRed;
+
     [DefaultValue(0.4f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public float Plants;
+    public float PlantsGreen;
+
+    [DefaultValue(0.1f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float PlantsBlue;
 
     [DefaultValue(0.1f)]
     [BackgroundColor(0, 0, 0, 100)]

@@ -206,5 +206,20 @@ Configs: {
 			Label: Sapphire
 			Tooltip: ""
 		}
+
+		PlantsRed: {
+			Label: Plants Red
+			Tooltip: ""
+		}
+
+		PlantsGreen: {
+			Label: Plants Green
+			Tooltip: ""
+		}
+
+		PlantsBlue: {
+			Label: Plants Blue
+			Tooltip: ""
+		}
 	}
 }

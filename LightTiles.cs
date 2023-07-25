@@ -79,8 +79,7 @@ class LightTiles : GlobalTile
         if (LightingEssentials.Config.LightEnvironment)
             LightEnvironment(i, j, type, ref r, ref g, ref b);
 
-        if (LightingEssentials.Config.WalkingOnPlantsLightsThemUp)
-            WalkingOnPlantsLightsThemUp(i, j, type, ref r, ref g, ref b);
+        WalkingOnPlantsLightsThemUp(i, j, type, ref r, ref g, ref b);
     }
 
     void WalkingOnPlantsLightsThemUp(int i, int j, int type, ref float r, ref float g, ref float b)
@@ -100,12 +99,9 @@ class LightTiles : GlobalTile
                 case TileID.JunglePlants2:
                 case TileID.JungleThorns:
                 case TileID.JungleVines:
-                    g += 0.1f;
-                    break;
-                case TileID.LifeFruit:
-                case TileID.Heart:
-                case TileID.Crystals:
-                    r += 0.3f;
+                    r += LightingEssentials.Config.WalkingOnPlantsLightsThemUpRed;
+                    g += LightingEssentials.Config.WalkingOnPlantsLightsThemUpGreen;
+                    b += LightingEssentials.Config.WalkingOnPlantsLightsThemUpBlue;
                     break;
             }
         }
@@ -291,9 +287,9 @@ class LightTiles : GlobalTile
                 break;
             case TileID.Plants:
             case TileID.Plants2:
-                r = Math.Max(0, LightingEssentials.Config.Plants - 0.3f);
-                g = LightingEssentials.Config.Plants;
-                b = Math.Max(0, LightingEssentials.Config.Plants - 0.3f);
+                r = LightingEssentials.Config.PlantsRed;
+                g = LightingEssentials.Config.PlantsGreen;
+                b = LightingEssentials.Config.PlantsBlue;
                 break;
             case TileID.Cactus:
                 r = LightingEssentials.Config.Cactus;
