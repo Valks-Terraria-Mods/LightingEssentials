@@ -26,5 +26,185 @@ Configs: {
 			Label: Experimental
 			Tooltip: ""
 		}
+
+		Test: {
+			Label: Test
+			Tooltip: ""
+		}
+
+		LightEnvironment: {
+			Label: Light Environment
+			Tooltip: ""
+		}
+
+		LightJungle: {
+			Label: Light Jungle
+			Tooltip: ""
+		}
+
+		LightLifeFruitAndLifeCrystalsAndHearts: {
+			Label: Light Life Fruit And Life Crystals And Hearts
+			Tooltip: ""
+		}
+
+		WalkingOnPlantsLightsThemUp: {
+			Label: Walking On Plants Lights Them Up
+			Tooltip: ""
+		}
+
+		LifeCrystalRedness: {
+			Label: Life Crystal Redness
+			Tooltip: ""
+		}
+
+		LifeCrystal: {
+			Label: Life Crystal
+			Tooltip: ""
+		}
+
+		Cactus: {
+			Label: Cactus
+			Tooltip: ""
+		}
+
+		Plants: {
+			Label: Plants
+			Tooltip: ""
+		}
+
+		Containers: {
+			Label: Containers
+			Tooltip: ""
+		}
+
+		Jungle: {
+			Label: Jungle
+			Tooltip: ""
+		}
+
+		RedMoss: {
+			Label: Red Moss
+			Tooltip: ""
+		}
+
+		PurpleMoss: {
+			Label: Purple Moss
+			Tooltip: ""
+		}
+
+		LongMoss: {
+			Label: Long Moss
+			Tooltip: ""
+		}
+
+		LavaMoss: {
+			Label: Lava Moss
+			Tooltip: ""
+		}
+
+		GreenMoss: {
+			Label: Green Moss
+			Tooltip: ""
+		}
+
+		BrownMoss: {
+			Label: Brown Moss
+			Tooltip: ""
+		}
+
+		BlueMoss: {
+			Label: Blue Moss
+			Tooltip: ""
+		}
+
+		LunarOre: {
+			Label: Lunar Ore
+			Tooltip: ""
+		}
+
+		Titanium: {
+			Label: Titanium
+			Tooltip: ""
+		}
+
+		Adamantite: {
+			Label: Adamantite
+			Tooltip: ""
+		}
+
+		Orichalcum: {
+			Label: Orichalcum
+			Tooltip: ""
+		}
+
+		Mythril: {
+			Label: Mythril
+			Tooltip: ""
+		}
+
+		Palladium: {
+			Label: Palladium
+			Tooltip: ""
+		}
+
+		Cobalt: {
+			Label: Cobalt
+			Tooltip: ""
+		}
+
+		Hellstone: {
+			Label: Hellstone
+			Tooltip: ""
+		}
+
+		Chlorophyte: {
+			Label: Chlorophyte
+			Tooltip: ""
+		}
+
+		Meteorite: {
+			Label: Meteorite
+			Tooltip: ""
+		}
+
+		CommonOres: {
+			Label: Common Ores
+			Tooltip: ""
+		}
+
+		Amethyst: {
+			Label: Amethyst
+			Tooltip: ""
+		}
+
+		Topaz: {
+			Label: Topaz
+			Tooltip: ""
+		}
+
+		Emerald: {
+			Label: Emerald
+			Tooltip: ""
+		}
+
+		AmberGemspark: {
+			Label: Amber Gemspark
+			Tooltip: ""
+		}
+
+		Diamond: {
+			Label: Diamond
+			Tooltip: ""
+		}
+
+		Ruby: {
+			Label: Ruby
+			Tooltip: ""
+		}
+
+		Sapphire: {
+			Label: Sapphire
+			Tooltip: ""
+		}
 	}
 }

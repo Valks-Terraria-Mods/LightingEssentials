@@ -1,4 +1,6 @@
-﻿namespace LightingEssentials;
+﻿using System;
+
+namespace LightingEssentials;
 
 class LightTiles : GlobalTile
 {
@@ -71,9 +73,14 @@ class LightTiles : GlobalTile
 
     public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
     {
-        LightOres(i, j, type, ref r, ref g, ref b);
-        LightEnvironment(i, j, type, ref r, ref g, ref b);
-        WalkingOnPlantsLightsThemUp(i, j, type, ref r, ref g, ref b);
+        if (LightingEssentials.Config.LightOres)
+            LightOres(i, j, type, ref r, ref g, ref b);
+
+        if (LightingEssentials.Config.LightEnvironment)
+            LightEnvironment(i, j, type, ref r, ref g, ref b);
+
+        if (LightingEssentials.Config.WalkingOnPlantsLightsThemUp)
+            WalkingOnPlantsLightsThemUp(i, j, type, ref r, ref g, ref b);
     }
 
     void WalkingOnPlantsLightsThemUp(int i, int j, int type, ref float r, ref float g, ref float b)
@@ -111,39 +118,39 @@ class LightTiles : GlobalTile
         switch (type)
         {
             case TileID.Sapphire:
-                r = 0.1f;
-                g = 0.1f;
-                b = 1.0f;
+                r = Math.Max(0, LightingEssentials.Config.Sapphire - 0.9f);
+                g = Math.Max(0, LightingEssentials.Config.Sapphire - 0.9f);
+                b = LightingEssentials.Config.Sapphire;
                 break;
             case TileID.Ruby:
-                r = 1.0f;
-                g = 0.1f;
-                b = 0.1f;
+                r = LightingEssentials.Config.Ruby;
+                g = Math.Max(0, LightingEssentials.Config.Ruby - 0.9f);
+                b = Math.Max(0, LightingEssentials.Config.Ruby - 0.9f);
                 break;
             case TileID.Diamond:
-                r = 0.5f;
-                g = 0.5f;
-                b = 0.5f;
+                r = LightingEssentials.Config.Diamond;
+                g = LightingEssentials.Config.Diamond;
+                b = LightingEssentials.Config.Diamond;
                 break;
             case TileID.AmberGemspark:
-                r = 1.0f;
-                g = 0.5f;
+                r = LightingEssentials.Config.AmberGemspark;
+                g = Math.Max(0, LightingEssentials.Config.AmberGemspark - 0.5f);
                 b = 0.0f;
                 break;
             case TileID.Emerald:
-                r = 1.0f;
-                g = 0.1f;
-                b = 0.1f;
+                r = LightingEssentials.Config.Emerald;
+                g = Math.Max(0, LightingEssentials.Config.Emerald - 0.9f);
+                b = Math.Max(0, LightingEssentials.Config.Emerald - 0.9f);
                 break;
             case TileID.Topaz:
-                r = 1.0f;
-                g = 0.5f;
+                r = LightingEssentials.Config.Topaz;
+                g = Math.Max(0, LightingEssentials.Config.Topaz - 0.5f);
                 b = 0.0f;
                 break;
             case TileID.Amethyst:
-                r = 0.9f;
+                r = LightingEssentials.Config.Amethyst;
                 g = 0.0f;
-                b = 0.9f;
+                b = LightingEssentials.Config.Amethyst;
                 break;
             case TileID.Iron:
             case TileID.Lead:
@@ -153,59 +160,59 @@ class LightTiles : GlobalTile
             case TileID.Gold:
             case TileID.Platinum:
             case TileID.Tungsten:
-                r = 0.02f;
-                g = 0.02f;
-                b = 0.02f;
+                r = LightingEssentials.Config.CommonOres;
+                g = LightingEssentials.Config.CommonOres;
+                b = LightingEssentials.Config.CommonOres;
                 break;
             case TileID.Meteorite:
-                r = 1.0f;
-                g = 0.1f;
-                b = 0.1f;
+                r = LightingEssentials.Config.Meteorite;
+                g = Math.Max(0, LightingEssentials.Config.Meteorite - 0.9f);
+                b = Math.Max(0, LightingEssentials.Config.Meteorite - 0.9f);
                 break;
             case TileID.Chlorophyte:
-                r = 0.1f;
-                g = 1.0f;
-                b = 0.1f;
+                r = Math.Max(0, LightingEssentials.Config.Chlorophyte - 0.9f);
+                g = LightingEssentials.Config.Chlorophyte;
+                b = Math.Max(0, LightingEssentials.Config.Chlorophyte - 0.9f);
                 break;
             case TileID.Hellstone:
-                r = 1.0f;
+                r = LightingEssentials.Config.Hellstone;
                 g = 0.0f;
                 b = 0.0f;
                 break;
             case TileID.Cobalt:
-                r = 0.1f;
-                g = 0.1f;
-                b = 1.0f;
+                r = Math.Max(0, LightingEssentials.Config.Cobalt - 0.9f);
+                g = Math.Max(0, LightingEssentials.Config.Cobalt - 0.9f);
+                b = LightingEssentials.Config.Cobalt;
                 break;
             case TileID.Palladium:
-                r = 1.0f;
-                g = 0.5f;
+                r = LightingEssentials.Config.Palladium;
+                g = Math.Max(0, LightingEssentials.Config.Palladium - 0.5f);
                 b = 0.0f;
                 break;
             case TileID.Mythril:
-                r = 0.1f;
-                g = 0.1f;
-                b = 1.0f;
+                r = Math.Max(0, LightingEssentials.Config.Mythril - 0.9f);
+                g = Math.Max(0, LightingEssentials.Config.Mythril - 0.9f);
+                b = LightingEssentials.Config.Mythril;
                 break;
             case TileID.Orichalcum:
-                r = 1.0f;
+                r = LightingEssentials.Config.Orichalcum;
                 g = 0.0f;
-                b = 1.0f;
+                b = LightingEssentials.Config.Orichalcum;
                 break;
             case TileID.Adamantite:
-                r = 0.9f;
+                r = LightingEssentials.Config.Adamantite;
                 g = 0.0f;
-                b = 0.9f;
+                b = LightingEssentials.Config.Adamantite;
                 break;
             case TileID.Titanium:
-                r = 0.1f;
-                g = 0.1f;
-                b = 0.9f;
+                r = Math.Max(0, LightingEssentials.Config.Titanium - 0.8f);
+                g = Math.Max(0, LightingEssentials.Config.Titanium - 0.8f);
+                b = LightingEssentials.Config.Titanium;
                 break;
             case TileID.LunarOre:
-                r = 0.1f;
-                g = 0.1f;
-                b = 1.0f;
+                r = Math.Max(0, LightingEssentials.Config.LunarOre - 0.9f);
+                g = Math.Max(0, LightingEssentials.Config.LunarOre - 0.9f);
+                b = LightingEssentials.Config.LunarOre;
                 break;
         }
     }
@@ -217,42 +224,42 @@ class LightTiles : GlobalTile
             case TileID.BlueMoss:
                 r = 0.00f;
                 g = 0.00f;
-                b = 0.02f;
+                b = LightingEssentials.Config.BlueMoss;
                 break;
             case TileID.BrownMoss:
-                r = 0.01f;
-                g = 0.01f;
-                b = 0.01f;
+                r = LightingEssentials.Config.BrownMoss;
+                g = LightingEssentials.Config.BrownMoss;
+                b = LightingEssentials.Config.BrownMoss;
                 break;
             case TileID.GreenMoss:
                 r = 0.00f;
-                g = 0.02f;
+                g = LightingEssentials.Config.GreenMoss;
                 b = 0.00f;
                 break;
             case TileID.LavaMoss:
-                r = 0.02f;
+                r = LightingEssentials.Config.LavaMoss;
                 g = 0.00f;
                 b = 0.00f;
                 break;
             case TileID.LongMoss:
-                r = 0.01f;
-                g = 0.01f;
-                b = 0.01f;
+                r = LightingEssentials.Config.LongMoss;
+                g = LightingEssentials.Config.LongMoss;
+                b = LightingEssentials.Config.LongMoss;
                 break;
             case TileID.PurpleMoss:
-                r = 0.02f;
+                r = LightingEssentials.Config.PurpleMoss;
                 g = 0.00f;
-                b = 0.02f;
+                b = LightingEssentials.Config.PurpleMoss;
                 break;
             case TileID.RedMoss:
-                r = 0.02f;
+                r = LightingEssentials.Config.RedMoss;
                 g = 0.00f;
                 b = 0.00f;
                 break;
             case TileID.LifeFruit:
             case TileID.Heart:
             case TileID.Crystals:
-                r = 0.5f;
+                r = LightingEssentials.Config.LifeCrystal;
                 g = 0.0f;
                 b = 0.0f;
                 break;
@@ -264,13 +271,13 @@ class LightTiles : GlobalTile
                 if (NPC.downedPlantBoss)
                 {
                     r = 0.0f;
-                    g = 0.2f;
+                    g = LightingEssentials.Config.Jungle;
                     b = 0.0f;
                 }
                 else
                 {
                     r = 0.0f;
-                    g = 0.1f;
+                    g = Math.Max(0, LightingEssentials.Config.Jungle - 0.1f);
                     b = 0.0f;
                 }
                 break;
@@ -278,19 +285,19 @@ class LightTiles : GlobalTile
             case TileID.LargePiles2:
             case TileID.Containers:
             case TileID.Containers2:
-                r = 0.1f;
-                g = 0.1f;
-                b = 0.1f;
+                r = LightingEssentials.Config.Containers;
+                g = LightingEssentials.Config.Containers;
+                b = LightingEssentials.Config.Containers;
                 break;
             case TileID.Plants:
             case TileID.Plants2:
-                r = 0.1f;
-                g = 0.4f;
-                b = 0.1f;
+                r = Math.Max(0, LightingEssentials.Config.Plants - 0.3f);
+                g = LightingEssentials.Config.Plants;
+                b = Math.Max(0, LightingEssentials.Config.Plants - 0.3f);
                 break;
             case TileID.Cactus:
-                r = 0.5f;
-                g = 0.2f;
+                r = LightingEssentials.Config.Cactus;
+                g = Math.Max(0, LightingEssentials.Config.Cactus - 0.3f);
                 b = 0.0f;
                 break;
         }
