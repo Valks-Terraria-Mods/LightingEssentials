@@ -48,7 +48,21 @@ class LightTiles : GlobalTile
         TileID.Plants, 
         TileID.Plants2, 
         TileID.Containers, 
-        TileID.Containers2 
+        TileID.Containers2,
+        TileID.CorruptGrass,
+        TileID.CorruptIce,
+        TileID.CorruptJungleGrass,
+        TileID.CorruptPlants,
+        TileID.CorruptThorns,
+        TileID.CorruptVines,
+        TileID.Pots,
+        TileID.IceBlock,
+        TileID.FossilOre,
+        TileID.CrimsonGrass,
+        TileID.CrimsonJungleGrass,
+        TileID.CrimsonPlants,
+        TileID.CrimsonThorns,
+        TileID.CrimsonVines
     };
 
     public override void SetStaticDefaults()
@@ -217,6 +231,77 @@ class LightTiles : GlobalTile
     {
         switch (type)
         {
+            case TileID.CrimsonGrass:
+            case TileID.CrimsonJungleGrass:
+            case TileID.CrimsonPlants:
+            case TileID.CrimsonThorns:
+            case TileID.CrimsonVines:
+                r = LightingEssentials.Config.CrimsonBiome;
+                g = 0;
+                b = 0;
+                break;
+            case TileID.CorruptGrass:
+            case TileID.CorruptIce:
+            case TileID.CorruptJungleGrass:
+            case TileID.CorruptPlants:
+            case TileID.CorruptThorns:
+            case TileID.CorruptVines:
+                // killed brain of chulutu (lol)
+                if (NPC.downedBoss2)
+                {
+                    r = LightingEssentials.Config.CrimsonBiome;
+                    g = 0;
+                    b = LightingEssentials.Config.CrimsonBiome;
+                }
+                else
+                {
+                    r = Math.Max(0, LightingEssentials.Config.CrimsonBiome - 0.1f);
+                    g = 0;
+                    b = Math.Max(0, LightingEssentials.Config.CrimsonBiome - 0.1f);
+                }
+                break;
+            case TileID.Pots:
+                var player = Main.player[Main.myPlayer];
+
+                if (player.ZoneCorrupt)
+                {
+                    // killed eater of worlds boss
+                    if (NPC.downedBoss2)
+                    {
+                        r = LightingEssentials.Config.CorruptionBiome;
+                        g = 0;
+                        b = LightingEssentials.Config.CorruptionBiome;
+                    }
+                    else
+                    {
+                        r = Math.Max(0, LightingEssentials.Config.CorruptionBiome - 0.1f);
+                        g = 0;
+                        b = Math.Max(0, LightingEssentials.Config.CorruptionBiome - 0.1f);
+                    }
+                }
+                else if (player.ZoneSnow)
+                {
+                    r = 0;
+                    g = 0;
+                    b = LightingEssentials.Config.SnowBiome;
+                }
+                else if (player.ZoneDesert || player.ZoneUndergroundDesert)
+                {
+                    r = LightingEssentials.Config.DesertBiome;
+                    g = Math.Max(0, LightingEssentials.Config.DesertBiome - 0.3f);
+                    b = 0;
+                }
+                break;
+            case TileID.FossilOre:
+                r = LightingEssentials.Config.DesertBiome;
+                g = Math.Max(0, LightingEssentials.Config.DesertBiome - 0.3f);
+                b = 0;
+                break;
+            case TileID.IceBlock:
+                r = 0;
+                g = 0;
+                b = LightingEssentials.Config.SnowBiome;
+                break;
             case TileID.BlueMoss:
                 r = 0.00f;
                 g = 0.00f;
@@ -253,6 +338,10 @@ class LightTiles : GlobalTile
                 b = 0.00f;
                 break;
             case TileID.LifeFruit:
+                r = LightingEssentials.Config.LifeFruitRed;
+                g = LightingEssentials.Config.LifeFruitGreen;
+                b = LightingEssentials.Config.LifeFruitBlue;
+                break;
             case TileID.Heart:
             case TileID.Crystals:
                 r = LightingEssentials.Config.LifeCrystal;
@@ -267,13 +356,13 @@ class LightTiles : GlobalTile
                 if (NPC.downedPlantBoss)
                 {
                     r = 0.0f;
-                    g = LightingEssentials.Config.Jungle;
+                    g = LightingEssentials.Config.JungleBiome;
                     b = 0.0f;
                 }
                 else
                 {
                     r = 0.0f;
-                    g = Math.Max(0, LightingEssentials.Config.Jungle - 0.1f);
+                    g = Math.Max(0, LightingEssentials.Config.JungleBiome - 0.1f);
                     b = 0.0f;
                 }
                 break;

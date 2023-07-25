@@ -41,6 +41,18 @@ public class Config : ModConfig
     public float WalkingOnPlantsLightsThemUpBlue;
 
     [DefaultValue(0.5f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float LifeFruitRed;
+
+    [DefaultValue(0.5f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float LifeFruitGreen;
+
+    [DefaultValue(0f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float LifeFruitBlue;
+
+    [DefaultValue(0.5f)]
     [BackgroundColor(75, 0, 0, 100)]
     public float LifeCrystal;
 
@@ -66,7 +78,23 @@ public class Config : ModConfig
 
     [DefaultValue(0.2f)]
     [BackgroundColor(0, 75, 0, 100)]
-    public float Jungle;
+    public float JungleBiome;
+
+    [DefaultValue(0.03f)]
+    [BackgroundColor(0, 0, 75, 100)]
+    public float SnowBiome;
+
+    [DefaultValue(0.2f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float DesertBiome;
+
+    [DefaultValue(0.5f)]
+    [BackgroundColor(75, 0, 75, 100)]
+    public float CorruptionBiome;
+
+    [DefaultValue(0.5f)]
+    [BackgroundColor(75, 0, 0, 100)]
+    public float CrimsonBiome;
 
     [DefaultValue(0.02f)]
     [BackgroundColor(0, 0, 0, 100)]

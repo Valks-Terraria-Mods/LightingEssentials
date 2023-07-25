@@ -6,10 +6,7 @@ class LightNPCs : GlobalNPC
 
     public override bool InstancePerEntity
     {
-        get
-        {
-            return true;
-        }
+        get => true;
     }
 
     public override void DrawEffects(NPC npc, ref Color drawColor)

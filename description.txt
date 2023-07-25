@@ -6,7 +6,9 @@ Featuring
 + Life crystals and life fruit glow a vibrant red
 + Enemies glow a faint red
 + The jungle glows a dim green (defeating plantera makes the jungle glow even greener)
++ The crimson and corruption glow their respective colors and defeating the bosses of these biomes will make the biomes glow even brighter
 + Walking over plants temporary gives more light to those areas
++ Pots glow based on the biome you are in
 + Meteorite and hellstone glow vibrant red
 + Containers glow a dim white
 + Swinging tools / weapons emits a faint white light

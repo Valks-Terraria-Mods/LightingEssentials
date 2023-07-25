@@ -221,5 +221,60 @@ Configs: {
 			Label: Plants Blue
 			Tooltip: ""
 		}
+
+		WalkingOnPlantsLightsThemUpRed: {
+			Label: Walking On Plants Lights Them Up Red
+			Tooltip: ""
+		}
+
+		WalkingOnPlantsLightsThemUpGreen: {
+			Label: Walking On Plants Lights Them Up Green
+			Tooltip: ""
+		}
+
+		WalkingOnPlantsLightsThemUpBlue: {
+			Label: Walking On Plants Lights Them Up Blue
+			Tooltip: ""
+		}
+
+		JungleBiome: {
+			Label: Jungle Biome
+			Tooltip: ""
+		}
+
+		SnowBiome: {
+			Label: Snow Biome
+			Tooltip: ""
+		}
+
+		DesertBiome: {
+			Label: Desert Biome
+			Tooltip: ""
+		}
+
+		CorruptionBiome: {
+			Label: Corruption Biome
+			Tooltip: ""
+		}
+
+		LifeFruitRed: {
+			Label: Life Fruit Red
+			Tooltip: ""
+		}
+
+		LifeFruitGreen: {
+			Label: Life Fruit Green
+			Tooltip: ""
+		}
+
+		LifeFruitBlue: {
+			Label: Life Fruit Blue
+			Tooltip: ""
+		}
+
+		CrimsonBiome: {
+			Label: Crimson Biome
+			Tooltip: ""
+		}
 	}
 }

@@ -1,4 +1,4 @@
 author = valkyrienyanko
-version = 1.3.5
+version = 1.3.6
 displayName = [c/9bffb9:Lighting Essentials]
 homepage = https://discord.gg/866cg8yfxZ
