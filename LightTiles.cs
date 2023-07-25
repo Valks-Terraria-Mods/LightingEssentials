@@ -106,108 +106,107 @@ class LightTiles : GlobalTile
 
     void LightOres(int i, int j, int type, ref float r, ref float g, ref float b)
     {
-        if (j > 300)
+        // Note that anything greater than a 'j' value of 300 is the start of the
+        // underground (this is just a FYI)
+        switch (type)
         {
-            switch (type)
-            {
-                case TileID.Sapphire:
-                    r = 0.1f;
-                    g = 0.1f;
-                    b = 1.0f;
-                    break;
-                case TileID.Ruby:
-                    r = 1.0f;
-                    g = 0.1f;
-                    b = 0.1f;
-                    break;
-                case TileID.Diamond:
-                    r = 0.5f;
-                    g = 0.5f;
-                    b = 0.5f;
-                    break;
-                case TileID.AmberGemspark:
-                    r = 1.0f;
-                    g = 0.5f;
-                    b = 0.0f;
-                    break;
-                case TileID.Emerald:
-                    r = 1.0f;
-                    g = 0.1f;
-                    b = 0.1f;
-                    break;
-                case TileID.Topaz:
-                    r = 1.0f;
-                    g = 0.5f;
-                    b = 0.0f;
-                    break;
-                case TileID.Amethyst:
-                    r = 0.9f;
-                    g = 0.0f;
-                    b = 0.9f;
-                    break;
-                case TileID.Iron:
-                case TileID.Lead:
-                case TileID.Copper:
-                case TileID.Tin:
-                case TileID.Silver:
-                case TileID.Gold:
-                case TileID.Platinum:
-                case TileID.Tungsten:
-                    r = 0.02f;
-                    g = 0.02f;
-                    b = 0.02f;
-                    break;
-                case TileID.Meteorite:
-                    r = 1.0f;
-                    g = 0.1f;
-                    b = 0.1f;
-                    break;
-                case TileID.Chlorophyte:
-                    r = 0.1f;
-                    g = 1.0f;
-                    b = 0.1f;
-                    break;
-                case TileID.Hellstone:
-                    r = 1.0f;
-                    g = 0.0f;
-                    b = 0.0f;
-                    break;
-                case TileID.Cobalt:
-                    r = 0.1f;
-                    g = 0.1f;
-                    b = 1.0f;
-                    break;
-                case TileID.Palladium:
-                    r = 1.0f;
-                    g = 0.5f;
-                    b = 0.0f;
-                    break;
-                case TileID.Mythril:
-                    r = 0.1f;
-                    g = 0.1f;
-                    b = 1.0f;
-                    break;
-                case TileID.Orichalcum:
-                    r = 1.0f;
-                    g = 0.0f;
-                    b = 1.0f;
-                    break;
-                case TileID.Adamantite:
-                    r = 0.9f;
-                    g = 0.0f;
-                    b = 0.9f;
-                    break;
-                case TileID.Titanium:
-                    r = 0.1f;
-                    g = 0.1f;
-                    b = 0.9f;
-                    break;
-                case TileID.LunarOre:
-                    r = 0.1f;
-                    g = 0.1f;
-                    b = 1.0f;
-                    break;
-            }
+            case TileID.Sapphire:
+                r = 0.1f;
+                g = 0.1f;
+                b = 1.0f;
+                break;
+            case TileID.Ruby:
+                r = 1.0f;
+                g = 0.1f;
+                b = 0.1f;
+                break;
+            case TileID.Diamond:
+                r = 0.5f;
+                g = 0.5f;
+                b = 0.5f;
+                break;
+            case TileID.AmberGemspark:
+                r = 1.0f;
+                g = 0.5f;
+                b = 0.0f;
+                break;
+            case TileID.Emerald:
+                r = 1.0f;
+                g = 0.1f;
+                b = 0.1f;
+                break;
+            case TileID.Topaz:
+                r = 1.0f;
+                g = 0.5f;
+                b = 0.0f;
+                break;
+            case TileID.Amethyst:
+                r = 0.9f;
+                g = 0.0f;
+                b = 0.9f;
+                break;
+            case TileID.Iron:
+            case TileID.Lead:
+            case TileID.Copper:
+            case TileID.Tin:
+            case TileID.Silver:
+            case TileID.Gold:
+            case TileID.Platinum:
+            case TileID.Tungsten:
+                r = 0.02f;
+                g = 0.02f;
+                b = 0.02f;
+                break;
+            case TileID.Meteorite:
+                r = 1.0f;
+                g = 0.1f;
+                b = 0.1f;
+                break;
+            case TileID.Chlorophyte:
+                r = 0.1f;
+                g = 1.0f;
+                b = 0.1f;
+                break;
+            case TileID.Hellstone:
+                r = 1.0f;
+                g = 0.0f;
+                b = 0.0f;
+                break;
+            case TileID.Cobalt:
+                r = 0.1f;
+                g = 0.1f;
+                b = 1.0f;
+                break;
+            case TileID.Palladium:
+                r = 1.0f;
+                g = 0.5f;
+                b = 0.0f;
+                break;
+            case TileID.Mythril:
+                r = 0.1f;
+                g = 0.1f;
+                b = 1.0f;
+                break;
+            case TileID.Orichalcum:
+                r = 1.0f;
+                g = 0.0f;
+                b = 1.0f;
+                break;
+            case TileID.Adamantite:
+                r = 0.9f;
+                g = 0.0f;
+                b = 0.9f;
+                break;
+            case TileID.Titanium:
+                r = 0.1f;
+                g = 0.1f;
+                b = 0.9f;
+                break;
+            case TileID.LunarOre:
+                r = 0.1f;
+                g = 0.1f;
+                b = 1.0f;
+                break;
         }
     }
 
