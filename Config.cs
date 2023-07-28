@@ -60,6 +60,10 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public float Cactus;
 
+    [DefaultValue(0.5f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float Pots;
+
     [DefaultValue(0.1f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float PlantsRed;

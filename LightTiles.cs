@@ -268,27 +268,27 @@ class LightTiles : GlobalTile
                     // killed eater of worlds boss
                     if (NPC.downedBoss2)
                     {
-                        r = LightingEssentials.Config.CorruptionBiome;
+                        r = LightingEssentials.Config.Pots;
                         g = 0;
-                        b = LightingEssentials.Config.CorruptionBiome;
+                        b = LightingEssentials.Config.Pots;
                     }
                     else
                     {
-                        r = Math.Max(0, LightingEssentials.Config.CorruptionBiome - 0.1f);
+                        r = Math.Max(0, LightingEssentials.Config.Pots - 0.1f);
                         g = 0;
-                        b = Math.Max(0, LightingEssentials.Config.CorruptionBiome - 0.1f);
+                        b = Math.Max(0, LightingEssentials.Config.Pots - 0.1f);
                     }
                 }
                 else if (player.ZoneSnow)
                 {
                     r = 0;
                     g = 0;
-                    b = LightingEssentials.Config.SnowBiome;
+                    b = LightingEssentials.Config.Pots;
                 }
                 else if (player.ZoneDesert || player.ZoneUndergroundDesert)
                 {
-                    r = LightingEssentials.Config.DesertBiome;
-                    g = Math.Max(0, LightingEssentials.Config.DesertBiome - 0.3f);
+                    r = LightingEssentials.Config.Pots;
+                    g = Math.Max(0, LightingEssentials.Config.Pots - 0.3f);
                     b = 0;
                 }
                 break;
