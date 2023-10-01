@@ -1,20 +1,24 @@
-[![](https://img.shields.io/static/v1?style=flat-square&logo=discord&logoColor=white&color=blue&label=discord&message=valks%20games)](https://discord.gg/866cg8yfxZ)
-
-This mod makes your world light up with vibrant unique colors during the night (and when you're underground in dark areas). Ores / grass / leaves / and many many other blocks will light up. Defeating plantera boss makes the jungle glow even brighter. I'm very proud of this mod :-)
-
-NEW
-+ When enemies are hit they glow red based on how much life was taken from them.
-+ Walking over green plants temporary gives more light to those areas.
-+ EoC now has 100 red lights that follow it (experimental)
+Note that some colors have been made more vibrant in the screenshots 
+above just to show what the mod can do (the defaults are much lower)
 
 Featuring
-+ Prehardmode ores are very dimmly lit making it very hard (but possible) to tell what type of ore you're looking for.
-+ Hardmode ores glow vibrantly based on their tile colors.
-+ Life crystals and life fruit glow a vibrant red. 
-+ Enemies glow a faint red. 
-+ The jungle glows a dim green. (when you defeat plantera, it glows a brigter green)
-+ Surface plants glow green. (looks really cool at night!)
-+ Meteorite and hellstone glow vibrant red.
-+ Containers glow a dim white.
-+ Swinging tools / weapons emits a faint white light.
-+ Player glows dim white light.
++ Prehardmode ores are very dimmly lit making it very hard (but possible) to tell what type of ore you're looking for
++ Hardmode ores glow vibrantly based on their tile colors
++ Life crystals and life fruit glow a vibrant red
++ Enemies glow a faint red
++ The jungle glows a dim green (defeating plantera makes the jungle glow even greener)
++
+ The crimson and corruption glow their respective colors and defeating 
+the bosses of these biomes will make the biomes glow even brighter
++ Walking over plants temporary gives more light to those areas
++ Pots glow based on the biome you are in
++ Meteorite and hellstone glow vibrant red
++ Containers glow a dim white
++ Swinging tools / weapons emits a faint white light
++ Player has a very dim light
++ When enemies are hit they glow red based on how much life was taken from them
++ EoC now has 100 red lights that follow it (experimental and disabled by default)
+
+You can configure EVERYTHING now (If there is something that is not in the config that you want added please tell me)
+
+Please post all suggestions, bugs, and screenshots in the discussions
