@@ -276,5 +276,15 @@ Configs: {
 			Label: Crimson Biome
 			Tooltip: ""
 		}
+
+		Pots: {
+			Label: Pots
+			Tooltip: ""
+		}
+
+		Grass: {
+			Label: Grass
+			Tooltip: ""
+		}
 	}
 }

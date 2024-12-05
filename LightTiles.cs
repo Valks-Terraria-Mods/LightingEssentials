@@ -2,9 +2,9 @@
 
 namespace LightingEssentials;
 
-class LightTiles : GlobalTile
+public class LightTiles : GlobalTile
 {
-    public static readonly ushort[] Ores = {
+    public static readonly ushort[] Ores = [
         TileID.Iron, 
         TileID.Lead, 
         TileID.Copper, 
@@ -23,9 +23,9 @@ class LightTiles : GlobalTile
         TileID.Adamantite,
         TileID.Titanium, 
         TileID.LunarOre
-    };
+    ];
 
-    private static readonly ushort[] Environment = { 
+    private static readonly ushort[] Environment = [
         TileID.Crystals, 
         TileID.LifeFruit, 
         TileID.Heart, 
@@ -58,17 +58,21 @@ class LightTiles : GlobalTile
         TileID.Pots,
         TileID.IceBlock,
         TileID.FossilOre,
+        TileID.Grass,
+        TileID.CorruptGrass,
         TileID.CrimsonGrass,
         TileID.CrimsonJungleGrass,
         TileID.CrimsonPlants,
         TileID.CrimsonThorns,
         TileID.CrimsonVines
-    };
+    ];
 
     public override void SetStaticDefaults()
     {
         if (LightingEssentials.Config.LightOres)
+        {
             LightOres(true);
+        }
 
         for (int i = 0; i < Environment.Length; i++)
         {
@@ -88,15 +92,19 @@ class LightTiles : GlobalTile
     public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
     {
         if (LightingEssentials.Config.LightOres)
+        {
             LightOres(i, j, type, ref r, ref g, ref b);
+        }
 
         if (LightingEssentials.Config.LightEnvironment)
+        {
             LightEnvironment(i, j, type, ref r, ref g, ref b);
+        }
 
         WalkingOnPlantsLightsThemUp(i, j, type, ref r, ref g, ref b);
     }
 
-    void WalkingOnPlantsLightsThemUp(int i, int j, int type, ref float r, ref float g, ref float b)
+    private static void WalkingOnPlantsLightsThemUp(int i, int j, int type, ref float r, ref float g, ref float b)
     {
         int radius = 2;
 
@@ -108,6 +116,16 @@ class LightTiles : GlobalTile
             {
                 case TileID.Plants:
                 case TileID.Plants2:
+                case TileID.Grass:
+                case TileID.CorruptGrass:
+                case TileID.CrimsonGrass:
+                case TileID.AshGrass:
+                case TileID.GolfGrass:
+                case TileID.CrimsonJungleGrass:
+                case TileID.CorruptJungleGrass:
+                case TileID.GolfGrassHallowed:
+                case TileID.MushroomGrass:
+                case TileID.MushroomPlants:
                 case TileID.JungleGrass:
                 case TileID.JunglePlants:
                 case TileID.JunglePlants2:
@@ -121,7 +139,7 @@ class LightTiles : GlobalTile
         }
     }
 
-    void LightOres(int i, int j, int type, ref float r, ref float g, ref float b)
+    private static void LightOres(int i, int j, int type, ref float r, ref float g, ref float b)
     {
         // Note that anything greater than a 'j' value of 300 is the start of the
         // underground (this is just a FYI)
@@ -227,10 +245,15 @@ class LightTiles : GlobalTile
         }
     }
 
-    void LightEnvironment(int i, int j, int type, ref float r, ref float g, ref float b)
+    private static void LightEnvironment(int i, int j, int type, ref float r, ref float g, ref float b)
     {
         switch (type)
         {
+            case TileID.Grass:
+                r = 0;
+                g = LightingEssentials.Config.Grass;
+                b = 0;
+                break;
             case TileID.CrimsonGrass:
             case TileID.CrimsonJungleGrass:
             case TileID.CrimsonPlants:
@@ -261,7 +284,7 @@ class LightTiles : GlobalTile
                 }
                 break;
             case TileID.Pots:
-                var player = Main.player[Main.myPlayer];
+                Player player = Main.player[Main.myPlayer];
 
                 if (player.ZoneCorrupt)
                 {

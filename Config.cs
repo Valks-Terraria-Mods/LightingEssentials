@@ -200,8 +200,9 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public float Sapphire;
 
-
-    
+    [DefaultValue(0.1f)]
+    [BackgroundColor(0, 75, 0, 100)]
+    public float Grass;
 
     [DefaultValue(false)]
     [BackgroundColor(0, 0, 0, 100)]

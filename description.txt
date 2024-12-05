@@ -18,4 +18,5 @@ Featuring
 
 You can configure EVERYTHING now (If there is something that is not in the config that you want added please tell me)
 
-Please post all suggestions, bugs, and screenshots in the discussions
+Discord for suggestions and support: https://discord.gg/j8HQZZ76r8
+Source code: https://github.com/Valks-Terraria-Mods/LightingEssentials
