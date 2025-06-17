@@ -399,9 +399,9 @@ public class LightTiles : GlobalTile
                 break;
             case TileID.Plants:
             case TileID.Plants2:
-                r = LightingEssentials.Config.PlantsRed;
-                g = LightingEssentials.Config.PlantsGreen;
-                b = LightingEssentials.Config.PlantsBlue;
+                r = 0.1f;
+                g = LightingEssentials.Config.Plants;
+                b = 0.1f;
                 break;
             case TileID.Cactus:
                 r = LightingEssentials.Config.Cactus;

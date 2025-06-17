@@ -6,79 +6,31 @@ namespace LightingEssentials;
 [BackgroundColor(0, 0, 0, 100)]
 public class Config : ModConfig
 {
-    public override ConfigScope Mode => ConfigScope.ServerSide;
+    public override ConfigScope Mode => ConfigScope.ClientSide;
 
-    [DefaultValue(0.2f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float PlayerMeleeLight;
-
-    [DefaultValue(true)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public bool EntityRedHitLight;
-
-    [DefaultValue(0.12f)]
+    [DefaultValue(0.03f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float PlayerLight;
 
-    [DefaultValue(true)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public bool LightOres;
+    [DefaultValue(0.0f)]
+    [BackgroundColor(0, 75, 0, 100)]
+    public float Grass;
 
-    [DefaultValue(true)]
+    [DefaultValue(0.2f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public bool LightEnvironment;
-
-    [DefaultValue(0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float WalkingOnPlantsLightsThemUpRed;
+    public float Plants;
 
     [DefaultValue(0.1f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public float WalkingOnPlantsLightsThemUpGreen;
-
-    [DefaultValue(0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float WalkingOnPlantsLightsThemUpBlue;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LifeFruitRed;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LifeFruitGreen;
-
-    [DefaultValue(0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LifeFruitBlue;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(75, 0, 0, 100)]
-    public float LifeCrystal;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Cactus;
+    public float Containers;
 
     [DefaultValue(0.5f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float Pots;
 
-    [DefaultValue(0.1f)]
+    [DefaultValue(0.5f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public float PlantsRed;
-
-    [DefaultValue(0.4f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float PlantsGreen;
-
-    [DefaultValue(0.1f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float PlantsBlue;
-
-    [DefaultValue(0.1f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Containers;
+    public float Cactus;
 
     [DefaultValue(0.2f)]
     [BackgroundColor(0, 75, 0, 100)]
@@ -99,6 +51,34 @@ public class Config : ModConfig
     [DefaultValue(0.5f)]
     [BackgroundColor(75, 0, 0, 100)]
     public float CrimsonBiome;
+
+    [DefaultValue(0.5f)]
+    [BackgroundColor(75, 0, 0, 100)]
+    public float LifeCrystal;
+
+    [DefaultValue(0.5f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float LifeFruitRed;
+
+    [DefaultValue(0.5f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float LifeFruitGreen;
+
+    [DefaultValue(0f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float LifeFruitBlue;
+
+    [DefaultValue(0f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float WalkingOnPlantsLightsThemUpRed;
+
+    [DefaultValue(0.1f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float WalkingOnPlantsLightsThemUpGreen;
+
+    [DefaultValue(0f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float WalkingOnPlantsLightsThemUpBlue;
 
     [DefaultValue(0.02f)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -168,7 +148,7 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public float Meteorite;
 
-    [DefaultValue(0.02f)]
+    [DefaultValue(0.01f)]
     [BackgroundColor(0, 0, 75, 100)]
     public float CommonOres;
 
@@ -200,9 +180,17 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public float Sapphire;
 
-    [DefaultValue(0.1f)]
-    [BackgroundColor(0, 75, 0, 100)]
-    public float Grass;
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool EntityRedHitLight;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool LightOres;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool LightEnvironment;
 
     [DefaultValue(false)]
     [BackgroundColor(0, 0, 0, 100)]
