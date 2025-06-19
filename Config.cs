@@ -8,6 +8,10 @@ public class Config : ModConfig
 {
     public override ConfigScope Mode => ConfigScope.ClientSide;
 
+    [DefaultValue(true)] 
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool ModEnabled;
+
     [DefaultValue(0.03f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float PlayerLight;

@@ -11,6 +11,8 @@ public class LightNPCs : GlobalNPC
 
     public override void DrawEffects(NPC npc, ref Color drawColor)
     {
+        if (!LightingEssentials.Config.ModEnabled) return;
+        
         if (LightingEssentials.Config.Experimental)
         {
             if (npc.type == NPCID.EyeofCthulhu)
@@ -37,6 +39,8 @@ public class LightNPCs : GlobalNPC
 
     public override void HitEffect(NPC npc, NPC.HitInfo hit)
     {
+        if (!LightingEssentials.Config.ModEnabled) return;
+        
         if (!LightingEssentials.Config.EntityRedHitLight)
         {
             return;

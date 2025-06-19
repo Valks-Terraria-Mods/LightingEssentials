@@ -69,6 +69,8 @@ public class LightTiles : GlobalTile
 
     public override void SetStaticDefaults()
     {
+        if (!LightingEssentials.Config.ModEnabled) return;
+        
         if (LightingEssentials.Config.LightOres)
         {
             LightOres(true);
@@ -91,6 +93,8 @@ public class LightTiles : GlobalTile
 
     public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
     {
+        if (!LightingEssentials.Config.ModEnabled) return;
+        
         if (LightingEssentials.Config.LightOres)
         {
             LightOres(i, j, type, ref r, ref g, ref b);
