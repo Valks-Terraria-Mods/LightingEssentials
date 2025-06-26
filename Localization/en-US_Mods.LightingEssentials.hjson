@@ -286,5 +286,10 @@ Configs: {
 			Label: Grass
 			Tooltip: ""
 		}
+
+		ModEnabled: {
+			Tooltip: ""
+			Label: Mod Enabled
+		}
 	}
 }

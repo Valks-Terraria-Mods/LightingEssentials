@@ -28,7 +28,7 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public float Containers;
 
-    [DefaultValue(0.5f)]
+    [DefaultValue(0.1f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float Pots;
 
@@ -36,7 +36,7 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public float Cactus;
 
-    [DefaultValue(0.2f)]
+    [DefaultValue(0.3f)]
     [BackgroundColor(0, 75, 0, 100)]
     public float JungleBiome;
 
@@ -71,18 +71,6 @@ public class Config : ModConfig
     [DefaultValue(0f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float LifeFruitBlue;
-
-    [DefaultValue(0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float WalkingOnPlantsLightsThemUpRed;
-
-    [DefaultValue(0.1f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float WalkingOnPlantsLightsThemUpGreen;
-
-    [DefaultValue(0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float WalkingOnPlantsLightsThemUpBlue;
 
     [DefaultValue(0.02f)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -186,19 +174,11 @@ public class Config : ModConfig
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
-    public bool EntityRedHitLight;
-
-    [DefaultValue(true)]
-    [BackgroundColor(0, 0, 0, 100)]
     public bool LightOres;
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
     public bool LightEnvironment;
-
-    [DefaultValue(false)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public bool Experimental;
 
     public override void OnLoaded()
     {
@@ -207,6 +187,6 @@ public class Config : ModConfig
 
     public override void OnChanged()
     {
-        LightTiles.LightOres(LightOres);
+        LightTiles.InitLight();
     }
 }

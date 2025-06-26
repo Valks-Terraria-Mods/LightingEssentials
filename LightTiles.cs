@@ -1,417 +1,204 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace LightingEssentials;
-
-public class LightTiles : GlobalTile
+namespace LightingEssentials
 {
-    public static readonly ushort[] Ores = [
-        TileID.Iron, 
-        TileID.Lead, 
-        TileID.Copper, 
-        TileID.Tin, 
-        TileID.Silver, 
-        TileID.Gold, 
-        TileID.Platinum, 
-        TileID.Tungsten,
-        TileID.Meteorite, 
-        TileID.Chlorophyte, 
-        TileID.Hellstone, 
-        TileID.Cobalt, 
-        TileID.Palladium, 
-        TileID.Mythril, 
-        TileID.Orichalcum, 
-        TileID.Adamantite,
-        TileID.Titanium, 
-        TileID.LunarOre
-    ];
-
-    private static readonly ushort[] Environment = [
-        TileID.Crystals, 
-        TileID.LifeFruit, 
-        TileID.Heart, 
-        TileID.BlueMoss, 
-        TileID.BrownMoss, 
-        TileID.GreenMoss, 
-        TileID.LavaMoss, 
-        TileID.LongMoss, 
-        TileID.PurpleMoss, 
-        TileID.RedMoss, 
-        TileID.Cactus, 
-        TileID.JunglePlants, 
-        TileID.JunglePlants2, 
-        TileID.JungleThorns, 
-        TileID.JungleVines, 
-        TileID.JungleGrass, 
-        TileID.LargePiles, 
-        TileID.LargePiles2, 
-        TileID.MushroomPlants, 
-        TileID.Plants, 
-        TileID.Plants2, 
-        TileID.Containers, 
-        TileID.Containers2,
-        TileID.CorruptGrass,
-        TileID.CorruptIce,
-        TileID.CorruptJungleGrass,
-        TileID.CorruptPlants,
-        TileID.CorruptThorns,
-        TileID.CorruptVines,
-        TileID.Pots,
-        TileID.IceBlock,
-        TileID.FossilOre,
-        TileID.Grass,
-        TileID.CorruptGrass,
-        TileID.CrimsonGrass,
-        TileID.CrimsonJungleGrass,
-        TileID.CrimsonPlants,
-        TileID.CrimsonThorns,
-        TileID.CrimsonVines
-    ];
-
-    public override void SetStaticDefaults()
+    public class LightTiles : GlobalTile
     {
-        if (!LightingEssentials.Config.ModEnabled) return;
-        
-        if (LightingEssentials.Config.LightOres)
+        // Precomputed light color lookups
+        public static readonly Dictionary<int, Vector3> OreLight = [];
+        public static readonly Dictionary<int, Vector3> EnvLight = [];
+
+        public override void SetStaticDefaults()
         {
-            LightOres(true);
+            if (!LightingEssentials.Config.ModEnabled)
+                return;
+
+            InitLight();
         }
 
-        for (int i = 0; i < Environment.Length; i++)
+        public static void InitLight()
         {
-            Main.tileLighted[Environment[i]] = true;
-        }
-    }
-
-    public static void LightOres(bool enabled) 
-    {
-        for (int i = 0; i < Ores.Length; i++)
-        {
-            Main.tileLighted[Ores[i]] = enabled;
-            Main.tileShine[Ores[i]] = 400;
-        }
-    }
-
-    public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
-    {
-        if (!LightingEssentials.Config.ModEnabled) return;
-        
-        if (LightingEssentials.Config.LightOres)
-        {
-            LightOres(i, j, type, ref r, ref g, ref b);
-        }
-
-        if (LightingEssentials.Config.LightEnvironment)
-        {
-            LightEnvironment(i, j, type, ref r, ref g, ref b);
-        }
-
-        WalkingOnPlantsLightsThemUp(i, j, type, ref r, ref g, ref b);
-    }
-
-    private static void WalkingOnPlantsLightsThemUp(int i, int j, int type, ref float r, ref float g, ref float b)
-    {
-        int radius = 2;
-
-        Point point = Utils.ToTileCoordinates(Main.LocalPlayer.position);
-
-        if (point.X >= i - radius && point.X <= i + radius && point.Y >= j - radius && point.Y <= j + radius)
-        {
-            switch (type)
+            // Initialize ore lighting flags
+            if (LightingEssentials.Config.LightOres)
             {
-                case TileID.Plants:
-                case TileID.Plants2:
-                case TileID.Grass:
-                case TileID.CorruptGrass:
-                case TileID.CrimsonGrass:
-                case TileID.AshGrass:
-                case TileID.GolfGrass:
-                case TileID.CrimsonJungleGrass:
-                case TileID.CorruptJungleGrass:
-                case TileID.GolfGrassHallowed:
-                case TileID.MushroomGrass:
-                case TileID.MushroomPlants:
-                case TileID.JungleGrass:
-                case TileID.JunglePlants:
-                case TileID.JunglePlants2:
-                case TileID.JungleThorns:
-                case TileID.JungleVines:
-                    r += LightingEssentials.Config.WalkingOnPlantsLightsThemUpRed;
-                    g += LightingEssentials.Config.WalkingOnPlantsLightsThemUpGreen;
-                    b += LightingEssentials.Config.WalkingOnPlantsLightsThemUpBlue;
-                    break;
+                BuildOreLightTable();
+                ApplyTileLightFlags(OreLight, true);
+            }
+
+            // Initialize environment lighting flags
+            if (LightingEssentials.Config.LightEnvironment)
+            {
+                BuildEnvLightTable();
+                ApplyTileLightFlags(EnvLight, true);
             }
         }
-    }
 
-    private static void LightOres(int i, int j, int type, ref float r, ref float g, ref float b)
-    {
-        // Note that anything greater than a 'j' value of 300 is the start of the
-        // underground (this is just a FYI)
-        switch (type)
+        /// <summary>
+        /// Set Main.tileLighted and tileShine for any tile types that have non-zero light.
+        /// </summary>
+        private static void ApplyTileLightFlags(Dictionary<int, Vector3> table, bool enabled)
         {
-            case TileID.Sapphire:
-                r = Math.Max(0, LightingEssentials.Config.Sapphire - 0.9f);
-                g = Math.Max(0, LightingEssentials.Config.Sapphire - 0.9f);
-                b = LightingEssentials.Config.Sapphire;
-                break;
-            case TileID.Ruby:
-                r = LightingEssentials.Config.Ruby;
-                g = Math.Max(0, LightingEssentials.Config.Ruby - 0.9f);
-                b = Math.Max(0, LightingEssentials.Config.Ruby - 0.9f);
-                break;
-            case TileID.Diamond:
-                r = LightingEssentials.Config.Diamond;
-                g = LightingEssentials.Config.Diamond;
-                b = LightingEssentials.Config.Diamond;
-                break;
-            case TileID.AmberGemspark:
-                r = LightingEssentials.Config.AmberGemspark;
-                g = Math.Max(0, LightingEssentials.Config.AmberGemspark - 0.5f);
-                b = 0.0f;
-                break;
-            case TileID.Emerald:
-                r = LightingEssentials.Config.Emerald;
-                g = Math.Max(0, LightingEssentials.Config.Emerald - 0.9f);
-                b = Math.Max(0, LightingEssentials.Config.Emerald - 0.9f);
-                break;
-            case TileID.Topaz:
-                r = LightingEssentials.Config.Topaz;
-                g = Math.Max(0, LightingEssentials.Config.Topaz - 0.5f);
-                b = 0.0f;
-                break;
-            case TileID.Amethyst:
-                r = LightingEssentials.Config.Amethyst;
-                g = 0.0f;
-                b = LightingEssentials.Config.Amethyst;
-                break;
-            case TileID.Iron:
-            case TileID.Lead:
-            case TileID.Copper:
-            case TileID.Tin:
-            case TileID.Silver:
-            case TileID.Gold:
-            case TileID.Platinum:
-            case TileID.Tungsten:
-                r = LightingEssentials.Config.CommonOres;
-                g = LightingEssentials.Config.CommonOres;
-                b = LightingEssentials.Config.CommonOres;
-                break;
-            case TileID.Meteorite:
-                r = LightingEssentials.Config.Meteorite;
-                g = Math.Max(0, LightingEssentials.Config.Meteorite - 0.9f);
-                b = Math.Max(0, LightingEssentials.Config.Meteorite - 0.9f);
-                break;
-            case TileID.Chlorophyte:
-                r = Math.Max(0, LightingEssentials.Config.Chlorophyte - 0.9f);
-                g = LightingEssentials.Config.Chlorophyte;
-                b = Math.Max(0, LightingEssentials.Config.Chlorophyte - 0.9f);
-                break;
-            case TileID.Hellstone:
-                r = LightingEssentials.Config.Hellstone;
-                g = 0.0f;
-                b = 0.0f;
-                break;
-            case TileID.Cobalt:
-                r = Math.Max(0, LightingEssentials.Config.Cobalt - 0.9f);
-                g = Math.Max(0, LightingEssentials.Config.Cobalt - 0.9f);
-                b = LightingEssentials.Config.Cobalt;
-                break;
-            case TileID.Palladium:
-                r = LightingEssentials.Config.Palladium;
-                g = Math.Max(0, LightingEssentials.Config.Palladium - 0.5f);
-                b = 0.0f;
-                break;
-            case TileID.Mythril:
-                r = Math.Max(0, LightingEssentials.Config.Mythril - 0.9f);
-                g = Math.Max(0, LightingEssentials.Config.Mythril - 0.9f);
-                b = LightingEssentials.Config.Mythril;
-                break;
-            case TileID.Orichalcum:
-                r = LightingEssentials.Config.Orichalcum;
-                g = 0.0f;
-                b = LightingEssentials.Config.Orichalcum;
-                break;
-            case TileID.Adamantite:
-                r = LightingEssentials.Config.Adamantite;
-                g = 0.0f;
-                b = LightingEssentials.Config.Adamantite;
-                break;
-            case TileID.Titanium:
-                r = Math.Max(0, LightingEssentials.Config.Titanium - 0.8f);
-                g = Math.Max(0, LightingEssentials.Config.Titanium - 0.8f);
-                b = LightingEssentials.Config.Titanium;
-                break;
-            case TileID.LunarOre:
-                r = Math.Max(0, LightingEssentials.Config.LunarOre - 0.9f);
-                g = Math.Max(0, LightingEssentials.Config.LunarOre - 0.9f);
-                b = LightingEssentials.Config.LunarOre;
-                break;
+            for (int type = 0; type < table.Count; type++)
+            {
+                if (table.ContainsKey(type))
+                {
+                    Main.tileLighted[type] = enabled;
+                    Main.tileShine[type] = 1_000_000_000;
+                    Main.tileShine2[type] = false;
+                }
+            }
         }
-    }
 
-    private static void LightEnvironment(int i, int j, int type, ref float r, ref float g, ref float b)
-    {
-        switch (type)
+        /// <summary>
+        /// Build lookup table for ore light colors.
+        /// </summary>
+        private static void BuildOreLightTable()
         {
-            case TileID.Grass:
-                r = 0;
-                g = LightingEssentials.Config.Grass;
-                b = 0;
-                break;
-            case TileID.CrimsonGrass:
-            case TileID.CrimsonJungleGrass:
-            case TileID.CrimsonPlants:
-            case TileID.CrimsonThorns:
-            case TileID.CrimsonVines:
-                r = LightingEssentials.Config.CrimsonBiome;
-                g = 0;
-                b = 0;
-                break;
-            case TileID.CorruptGrass:
-            case TileID.CorruptIce:
-            case TileID.CorruptJungleGrass:
-            case TileID.CorruptPlants:
-            case TileID.CorruptThorns:
-            case TileID.CorruptVines:
-                // killed brain of chulutu (lol)
-                if (NPC.downedBoss2)
-                {
-                    r = LightingEssentials.Config.CrimsonBiome;
-                    g = 0;
-                    b = LightingEssentials.Config.CrimsonBiome;
-                }
-                else
-                {
-                    r = Math.Max(0, LightingEssentials.Config.CrimsonBiome - 0.1f);
-                    g = 0;
-                    b = Math.Max(0, LightingEssentials.Config.CrimsonBiome - 0.1f);
-                }
-                break;
-            case TileID.Pots:
-                Player player = Main.player[Main.myPlayer];
+            Config cfg = LightingEssentials.Config;
 
-                if (player.ZoneCorrupt)
+            // Gems
+            Set(TileID.Sapphire, Math.Max(0, cfg.Sapphire - 0.9f), Math.Max(0, cfg.Sapphire - 0.9f), cfg.Sapphire);
+            Set(TileID.Ruby, cfg.Ruby, Math.Max(0, cfg.Ruby - 0.9f), Math.Max(0, cfg.Ruby - 0.9f));
+            Set(TileID.Diamond, cfg.Diamond, cfg.Diamond, cfg.Diamond);
+            Set(TileID.AmberGemspark, cfg.AmberGemspark, Math.Max(0, cfg.AmberGemspark - 0.5f), 0f);
+            Set(TileID.Emerald, cfg.Emerald, Math.Max(0, cfg.Emerald - 0.9f), Math.Max(0, cfg.Emerald - 0.9f));
+            Set(TileID.Topaz, cfg.Topaz, Math.Max(0, cfg.Topaz - 0.5f), 0f);
+            Set(TileID.Amethyst, cfg.Amethyst, 0f, cfg.Amethyst);
+
+            // Common ores share same intensity
+            float common = cfg.CommonOres;
+            ushort[] commons =
+            [
+                TileID.Iron, TileID.Lead, TileID.Copper, TileID.Tin, TileID.Silver, TileID.Gold, TileID.Platinum, TileID.Tungsten
+            ];
+            
+            foreach (ushort t in commons) Set(t, common, common, common);
+
+            // Other ores
+            Set(TileID.Meteorite, cfg.Meteorite, Math.Max(0, cfg.Meteorite - 0.9f), Math.Max(0, cfg.Meteorite - 0.9f));
+            Set(TileID.Chlorophyte, Math.Max(0, cfg.Chlorophyte - 0.9f), cfg.Chlorophyte, Math.Max(0, cfg.Chlorophyte - 0.9f));
+            Set(TileID.Hellstone, cfg.Hellstone, 0f, 0f);
+            Set(TileID.Cobalt, Math.Max(0, cfg.Cobalt - 0.9f), Math.Max(0, cfg.Cobalt - 0.9f), cfg.Cobalt);
+            Set(TileID.Palladium, cfg.Palladium, Math.Max(0, cfg.Palladium - 0.5f), 0f);
+            Set(TileID.Mythril, Math.Max(0, cfg.Mythril - 0.9f), Math.Max(0, cfg.Mythril - 0.9f), cfg.Mythril);
+            Set(TileID.Orichalcum, cfg.Orichalcum, 0f, cfg.Orichalcum);
+            Set(TileID.Adamantite, cfg.Adamantite, 0f, cfg.Adamantite);
+            Set(TileID.Titanium, Math.Max(0, cfg.Titanium - 0.8f), Math.Max(0, cfg.Titanium - 0.8f), cfg.Titanium);
+            Set(TileID.LunarOre, Math.Max(0, cfg.LunarOre - 0.9f), Math.Max(0, cfg.LunarOre - 0.9f), cfg.LunarOre);
+            return;
+
+            void Set(int type, float r, float g, float b)
+            {
+                if (OreLight.ContainsKey(type))
                 {
-                    // killed eater of worlds boss
-                    if (NPC.downedBoss2)
-                    {
-                        r = LightingEssentials.Config.Pots;
-                        g = 0;
-                        b = LightingEssentials.Config.Pots;
-                    }
-                    else
-                    {
-                        r = Math.Max(0, LightingEssentials.Config.Pots - 0.1f);
-                        g = 0;
-                        b = Math.Max(0, LightingEssentials.Config.Pots - 0.1f);
-                    }
-                }
-                else if (player.ZoneSnow)
-                {
-                    r = 0;
-                    g = 0;
-                    b = LightingEssentials.Config.Pots;
-                }
-                else if (player.ZoneDesert || player.ZoneUndergroundDesert)
-                {
-                    r = LightingEssentials.Config.Pots;
-                    g = Math.Max(0, LightingEssentials.Config.Pots - 0.3f);
-                    b = 0;
-                }
-                break;
-            case TileID.FossilOre:
-                r = LightingEssentials.Config.DesertBiome;
-                g = Math.Max(0, LightingEssentials.Config.DesertBiome - 0.3f);
-                b = 0;
-                break;
-            case TileID.IceBlock:
-                r = 0;
-                g = 0;
-                b = LightingEssentials.Config.SnowBiome;
-                break;
-            case TileID.BlueMoss:
-                r = 0.00f;
-                g = 0.00f;
-                b = LightingEssentials.Config.BlueMoss;
-                break;
-            case TileID.BrownMoss:
-                r = LightingEssentials.Config.BrownMoss;
-                g = LightingEssentials.Config.BrownMoss;
-                b = LightingEssentials.Config.BrownMoss;
-                break;
-            case TileID.GreenMoss:
-                r = 0.00f;
-                g = LightingEssentials.Config.GreenMoss;
-                b = 0.00f;
-                break;
-            case TileID.LavaMoss:
-                r = LightingEssentials.Config.LavaMoss;
-                g = 0.00f;
-                b = 0.00f;
-                break;
-            case TileID.LongMoss:
-                r = LightingEssentials.Config.LongMoss;
-                g = LightingEssentials.Config.LongMoss;
-                b = LightingEssentials.Config.LongMoss;
-                break;
-            case TileID.PurpleMoss:
-                r = LightingEssentials.Config.PurpleMoss;
-                g = 0.00f;
-                b = LightingEssentials.Config.PurpleMoss;
-                break;
-            case TileID.RedMoss:
-                r = LightingEssentials.Config.RedMoss;
-                g = 0.00f;
-                b = 0.00f;
-                break;
-            case TileID.LifeFruit:
-                r = LightingEssentials.Config.LifeFruitRed;
-                g = LightingEssentials.Config.LifeFruitGreen;
-                b = LightingEssentials.Config.LifeFruitBlue;
-                break;
-            case TileID.Heart:
-            case TileID.Crystals:
-                r = LightingEssentials.Config.LifeCrystal;
-                g = 0.0f;
-                b = 0.0f;
-                break;
-            case TileID.JungleGrass:
-            case TileID.JunglePlants:
-            case TileID.JunglePlants2:
-            case TileID.JungleThorns:
-            case TileID.JungleVines:
-                if (NPC.downedPlantBoss)
-                {
-                    r = 0.0f;
-                    g = LightingEssentials.Config.JungleBiome;
-                    b = 0.0f;
+                    OreLight[type] = new Vector3(r, g, b);
                 }
                 else
                 {
-                    r = 0.0f;
-                    g = Math.Max(0, LightingEssentials.Config.JungleBiome - 0.1f);
-                    b = 0.0f;
+                    OreLight.Add(type, new Vector3(r, g, b));
                 }
-                break;
-            case TileID.LargePiles:
-            case TileID.LargePiles2:
-            case TileID.Containers:
-            case TileID.Containers2:
-                r = LightingEssentials.Config.Containers;
-                g = LightingEssentials.Config.Containers;
-                b = LightingEssentials.Config.Containers;
-                break;
-            case TileID.Plants:
-            case TileID.Plants2:
-                r = 0.1f;
-                g = LightingEssentials.Config.Plants;
-                b = 0.1f;
-                break;
-            case TileID.Cactus:
-                r = LightingEssentials.Config.Cactus;
-                g = Math.Max(0, LightingEssentials.Config.Cactus - 0.3f);
-                b = 0.0f;
-                break;
+            }
+        }
+
+        /// <summary>
+        /// Build lookup table for environment light colors.
+        /// </summary>
+        private static void BuildEnvLightTable()
+        {
+            Config cfg = LightingEssentials.Config;
+
+            // Grass and biome-specific
+            Set(TileID.Grass, 0f, cfg.Grass, 0f);
+            Set(TileID.CrimsonGrass, cfg.CrimsonBiome, 0f, 0f);
+            Set(TileID.CrimsonJungleGrass, cfg.CrimsonBiome, 0f, 0f);
+            Set(TileID.CrimsonPlants, cfg.CrimsonBiome, 0f, 0f);
+            Set(TileID.CrimsonThorns, cfg.CrimsonBiome, 0f, 0f);
+            Set(TileID.CrimsonVines, cfg.CrimsonBiome, 0f, 0f);
+            Set(TileID.CorruptGrass, Math.Max(0, cfg.CorruptionBiome - 0.1f), 0f, Math.Max(0, cfg.CorruptionBiome - 0.1f));
+            
+            // Biome containers, pots, etc.
+            Set(TileID.Pots, cfg.Pots, 0f, cfg.Pots);
+            Set(TileID.FossilOre, cfg.DesertBiome, Math.Max(0, cfg.DesertBiome - 0.3f), 0f);
+            Set(TileID.IceBlock, 0f, 0f, cfg.SnowBiome);
+
+            // Moss types
+            Set(TileID.BlueMoss, 0f, 0f, cfg.BlueMoss);
+            Set(TileID.BrownMoss, cfg.BrownMoss, cfg.BrownMoss, cfg.BrownMoss);
+            Set(TileID.GreenMoss, 0f, cfg.GreenMoss, 0f);
+            Set(TileID.LavaMoss, cfg.LavaMoss, 0f, 0f);
+            Set(TileID.LongMoss, cfg.LongMoss, cfg.LongMoss, cfg.LongMoss);
+            Set(TileID.PurpleMoss, cfg.PurpleMoss, 0f, cfg.PurpleMoss);
+            Set(TileID.RedMoss, cfg.RedMoss, 0f, 0f);
+
+            // Life fruit/crystals
+            Set(TileID.LifeFruit, cfg.LifeFruitRed, cfg.LifeFruitGreen, cfg.LifeFruitBlue);
+            Set(TileID.Heart, cfg.LifeCrystal, 0f, 0f);
+            Set(TileID.Crystals, cfg.LifeCrystal, 0f, 0f);
+
+            // Jungle
+            Set(TileID.JungleGrass, 0f, cfg.JungleBiome, 0f);
+            Set(TileID.JunglePlants, 0f, cfg.JungleBiome, 0f);
+            Set(TileID.JunglePlants2, 0f, cfg.JungleBiome, 0f);
+            Set(TileID.JungleThorns, 0f, cfg.JungleBiome, 0f);
+            Set(TileID.JungleVines, 0f, cfg.JungleBiome, 0f);
+
+            // Generic piles/containers
+            Set(TileID.LargePiles, cfg.Containers, cfg.Containers, cfg.Containers);
+            Set(TileID.LargePiles2, cfg.Containers, cfg.Containers, cfg.Containers);
+            Set(TileID.Containers, cfg.Containers, cfg.Containers, cfg.Containers);
+            Set(TileID.Containers2, cfg.Containers, cfg.Containers, cfg.Containers);
+
+            // Plants and cactus
+            Set(TileID.Plants, 0.1f, cfg.Plants, 0.1f);
+            Set(TileID.Plants2, 0.1f, cfg.Plants, 0.1f);
+            Set(TileID.Cactus, cfg.Cactus, Math.Max(0, cfg.Cactus - 0.3f), 0f);
+            return;
+
+            void Set(int type, float r, float g, float b)
+            {
+                if (EnvLight.ContainsKey(type))
+                {
+                    EnvLight[type] = new Vector3(r, g, b);
+                }
+                else
+                {
+                    EnvLight.Add(type, new Vector3(r, g, b));
+                }
+            }
+        }
+
+        public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
+        {
+            if (!LightingEssentials.Config.ModEnabled)
+                return;
+
+            if (LightingEssentials.Config.LightOres)
+            {
+                if (OreLight.TryGetValue(type, out Vector3 oreColor))
+                {
+                    if (oreColor != Vector3.Zero)
+                    {
+                        r = oreColor.X;
+                        g = oreColor.Y;
+                        b = oreColor.Z;
+                        return;
+                    }
+                }
+            }
+
+            if (LightingEssentials.Config.LightEnvironment)
+            {
+                if (EnvLight.TryGetValue(type, out Vector3 envColor))
+                {
+                    if (envColor != Vector3.Zero)
+                    {
+                        r = envColor.X;
+                        g = envColor.Y;
+                        b = envColor.Z;
+                    }
+                }
+            }
         }
     }
 }
