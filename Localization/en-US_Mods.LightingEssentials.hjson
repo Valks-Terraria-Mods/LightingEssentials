@@ -272,6 +272,11 @@ Configs: {
 			Tooltip: ""
 		}
 
+		LifeFruit: {
+			Label: Life Fruit
+			Tooltip: ""
+		}
+
 		CrimsonBiome: {
 			Label: Crimson Biome
 			Tooltip: ""

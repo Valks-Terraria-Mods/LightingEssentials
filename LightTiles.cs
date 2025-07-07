@@ -1,13 +1,16 @@
-﻿using System;
+﻿using log4net.Repository.Hierarchy;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using Terraria.GameContent;
 
 namespace LightingEssentials
 {
     public class LightTiles : GlobalTile
     {
         // Precomputed light color lookups
-        public static readonly Dictionary<int, Vector3> OreLight = [];
-        public static readonly Dictionary<int, Vector3> EnvLight = [];
+        public static readonly Dictionary<int, Color> OreLight = [];
+        public static readonly Dictionary<int, Color> EnvLight = [];
 
         public override void SetStaticDefaults()
         {
@@ -37,7 +40,7 @@ namespace LightingEssentials
         /// <summary>
         /// Set Main.tileLighted and tileShine for any tile types that have non-zero light.
         /// </summary>
-        private static void ApplyTileLightFlags(Dictionary<int, Vector3> table, bool enabled)
+        private static void ApplyTileLightFlags(Dictionary<int, Color> table, bool enabled)
         {
             for (int type = 0; type < table.Count; type++)
             {
@@ -58,47 +61,80 @@ namespace LightingEssentials
             Config cfg = LightingEssentials.Config;
 
             // Gems
-            Set(TileID.Sapphire, Math.Max(0, cfg.Sapphire - 0.9f), Math.Max(0, cfg.Sapphire - 0.9f), cfg.Sapphire);
-            Set(TileID.Ruby, cfg.Ruby, Math.Max(0, cfg.Ruby - 0.9f), Math.Max(0, cfg.Ruby - 0.9f));
-            Set(TileID.Diamond, cfg.Diamond, cfg.Diamond, cfg.Diamond);
-            Set(TileID.AmberGemspark, cfg.AmberGemspark, Math.Max(0, cfg.AmberGemspark - 0.5f), 0f);
-            Set(TileID.Emerald, cfg.Emerald, Math.Max(0, cfg.Emerald - 0.9f), Math.Max(0, cfg.Emerald - 0.9f));
-            Set(TileID.Topaz, cfg.Topaz, Math.Max(0, cfg.Topaz - 0.5f), 0f);
-            Set(TileID.Amethyst, cfg.Amethyst, 0f, cfg.Amethyst);
+            Set(TileID.Sapphire, cfg.Sapphire);
+            Set(TileID.Ruby, cfg.Ruby);
+            Set(TileID.Diamond, cfg.Diamond);
+            Set(TileID.AmberGemspark, cfg.AmberGemspark);
+            Set(TileID.Emerald, cfg.Emerald);
+            Set(TileID.Topaz, cfg.Topaz);
+            Set(TileID.Amethyst, cfg.Amethyst);
 
             // Common ores share same intensity
-            float common = cfg.CommonOres;
             ushort[] commons =
             [
                 TileID.Iron, TileID.Lead, TileID.Copper, TileID.Tin, TileID.Silver, TileID.Gold, TileID.Platinum, TileID.Tungsten
             ];
             
-            foreach (ushort t in commons) Set(t, common, common, common);
+            foreach (ushort t in commons) 
+                Set(t, cfg.CommonOres);
 
             // Other ores
-            Set(TileID.Meteorite, cfg.Meteorite, Math.Max(0, cfg.Meteorite - 0.9f), Math.Max(0, cfg.Meteorite - 0.9f));
-            Set(TileID.Chlorophyte, Math.Max(0, cfg.Chlorophyte - 0.9f), cfg.Chlorophyte, Math.Max(0, cfg.Chlorophyte - 0.9f));
-            Set(TileID.Hellstone, cfg.Hellstone, 0f, 0f);
-            Set(TileID.Cobalt, Math.Max(0, cfg.Cobalt - 0.9f), Math.Max(0, cfg.Cobalt - 0.9f), cfg.Cobalt);
-            Set(TileID.Palladium, cfg.Palladium, Math.Max(0, cfg.Palladium - 0.5f), 0f);
-            Set(TileID.Mythril, Math.Max(0, cfg.Mythril - 0.9f), Math.Max(0, cfg.Mythril - 0.9f), cfg.Mythril);
-            Set(TileID.Orichalcum, cfg.Orichalcum, 0f, cfg.Orichalcum);
-            Set(TileID.Adamantite, cfg.Adamantite, 0f, cfg.Adamantite);
-            Set(TileID.Titanium, Math.Max(0, cfg.Titanium - 0.8f), Math.Max(0, cfg.Titanium - 0.8f), cfg.Titanium);
-            Set(TileID.LunarOre, Math.Max(0, cfg.LunarOre - 0.9f), Math.Max(0, cfg.LunarOre - 0.9f), cfg.LunarOre);
+            Set(TileID.Meteorite, cfg.Meteorite);
+            Set(TileID.Chlorophyte, cfg.Chlorophyte);
+            Set(TileID.Hellstone, cfg.Hellstone);
+            Set(TileID.Cobalt, cfg.Cobalt);
+            Set(TileID.Palladium, cfg.Palladium);
+            Set(TileID.Mythril, cfg.Mythril);
+            Set(TileID.Orichalcum, cfg.Orichalcum);
+            Set(TileID.Adamantite, cfg.Adamantite);
+            Set(TileID.Titanium, cfg.Titanium);
+            Set(TileID.LunarOre, cfg.LunarOre);
             return;
 
-            void Set(int type, float r, float g, float b)
+            static void Set(int type, Color color)
             {
-                if (OreLight.ContainsKey(type))
+                if (color != Color.Transparent)
                 {
-                    OreLight[type] = new Vector3(r, g, b);
+                    if (!OreLight.TryAdd(type, color))
+                    {
+                        OreLight[type] = color;
+                    }
                 }
                 else
                 {
-                    OreLight.Add(type, new Vector3(r, g, b));
+                    // TODO: Put default tile color calculated from PostDraw ONLY if the tile was added to the dictionary
                 }
             }
+        }
+
+        bool once;
+
+        public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
+        {
+            base.PostDraw(i, j, type, spriteBatch);
+
+            if (once)
+            {
+                return;
+            }
+
+            once = true;
+
+            ReLogic.Content.Asset<Texture2D> tex = TextureAssets.Tile[type];
+            Color[] pixels = new Color[tex.Width() * tex.Height()];
+            ((Texture2D)tex).GetData(pixels);
+            long r = 0, g = 0, b = 0;
+
+            foreach (var c in pixels)
+            {
+                r += c.R; g += c.G; b += c.B;
+            }
+
+            int total = pixels.Length;
+
+            Color DefaultTileColor = new((int)(r / total), (int)(g / total), (int)(b / total));
+
+            LightingEssentials.Log.Info($"Default Color: r: {DefaultTileColor.R}, g: {DefaultTileColor.G}, b: {DefaultTileColor.B} for tile type {type}");
         }
 
         /// <summary>
@@ -109,61 +145,64 @@ namespace LightingEssentials
             Config cfg = LightingEssentials.Config;
 
             // Grass and biome-specific
-            Set(TileID.Grass, 0f, cfg.Grass, 0f);
-            Set(TileID.CrimsonGrass, cfg.CrimsonBiome, 0f, 0f);
-            Set(TileID.CrimsonJungleGrass, cfg.CrimsonBiome, 0f, 0f);
-            Set(TileID.CrimsonPlants, cfg.CrimsonBiome, 0f, 0f);
-            Set(TileID.CrimsonThorns, cfg.CrimsonBiome, 0f, 0f);
-            Set(TileID.CrimsonVines, cfg.CrimsonBiome, 0f, 0f);
-            Set(TileID.CorruptGrass, Math.Max(0, cfg.CorruptionBiome - 0.1f), 0f, Math.Max(0, cfg.CorruptionBiome - 0.1f));
+            Set(TileID.Grass, cfg.Grass);
+            Set(TileID.CrimsonGrass, cfg.CrimsonBiome);
+            Set(TileID.CrimsonJungleGrass, cfg.CrimsonBiome);
+            Set(TileID.CrimsonPlants, cfg.CrimsonBiome);
+            Set(TileID.CrimsonThorns, cfg.CrimsonBiome);
+            Set(TileID.CrimsonVines, cfg.CrimsonBiome);
+            Set(TileID.CorruptGrass, cfg.CorruptionBiome);
             
             // Biome containers, pots, etc.
-            Set(TileID.Pots, cfg.Pots, 0f, cfg.Pots);
-            Set(TileID.FossilOre, cfg.DesertBiome, Math.Max(0, cfg.DesertBiome - 0.3f), 0f);
-            Set(TileID.IceBlock, 0f, 0f, cfg.SnowBiome);
+            Set(TileID.Pots, cfg.Pots);
+            Set(TileID.FossilOre, cfg.DesertBiome);
+            Set(TileID.IceBlock, cfg.SnowBiome);
 
             // Moss types
-            Set(TileID.BlueMoss, 0f, 0f, cfg.BlueMoss);
-            Set(TileID.BrownMoss, cfg.BrownMoss, cfg.BrownMoss, cfg.BrownMoss);
-            Set(TileID.GreenMoss, 0f, cfg.GreenMoss, 0f);
-            Set(TileID.LavaMoss, cfg.LavaMoss, 0f, 0f);
-            Set(TileID.LongMoss, cfg.LongMoss, cfg.LongMoss, cfg.LongMoss);
-            Set(TileID.PurpleMoss, cfg.PurpleMoss, 0f, cfg.PurpleMoss);
-            Set(TileID.RedMoss, cfg.RedMoss, 0f, 0f);
+            Set(TileID.BlueMoss, cfg.BlueMoss);
+            Set(TileID.BrownMoss, cfg.BrownMoss);
+            Set(TileID.GreenMoss, cfg.GreenMoss);
+            Set(TileID.LavaMoss, cfg.LavaMoss);
+            Set(TileID.LongMoss, cfg.LongMoss);
+            Set(TileID.PurpleMoss, cfg.PurpleMoss);
+            Set(TileID.RedMoss, cfg.RedMoss);
 
             // Life fruit/crystals
-            Set(TileID.LifeFruit, cfg.LifeFruitRed, cfg.LifeFruitGreen, cfg.LifeFruitBlue);
-            Set(TileID.Heart, cfg.LifeCrystal, 0f, 0f);
-            Set(TileID.Crystals, cfg.LifeCrystal, 0f, 0f);
+            Set(TileID.LifeFruit, cfg.LifeFruit);
+            Set(TileID.Heart, cfg.LifeCrystal);
+            Set(TileID.Crystals, cfg.LifeCrystal);
 
             // Jungle
-            Set(TileID.JungleGrass, 0f, cfg.JungleBiome, 0f);
-            Set(TileID.JunglePlants, 0f, cfg.JungleBiome, 0f);
-            Set(TileID.JunglePlants2, 0f, cfg.JungleBiome, 0f);
-            Set(TileID.JungleThorns, 0f, cfg.JungleBiome, 0f);
-            Set(TileID.JungleVines, 0f, cfg.JungleBiome, 0f);
+            Set(TileID.JungleGrass, cfg.JungleBiome);
+            Set(TileID.JunglePlants, cfg.JungleBiome);
+            Set(TileID.JunglePlants2, cfg.JungleBiome);
+            Set(TileID.JungleThorns, cfg.JungleBiome);
+            Set(TileID.JungleVines, cfg.JungleBiome);
 
             // Generic piles/containers
-            Set(TileID.LargePiles, cfg.Containers, cfg.Containers, cfg.Containers);
-            Set(TileID.LargePiles2, cfg.Containers, cfg.Containers, cfg.Containers);
-            Set(TileID.Containers, cfg.Containers, cfg.Containers, cfg.Containers);
-            Set(TileID.Containers2, cfg.Containers, cfg.Containers, cfg.Containers);
+            Set(TileID.LargePiles, cfg.Containers);
+            Set(TileID.LargePiles2, cfg.Containers);
+            Set(TileID.Containers, cfg.Containers);
+            Set(TileID.Containers2, cfg.Containers);
 
             // Plants and cactus
-            Set(TileID.Plants, 0.1f, cfg.Plants, 0.1f);
-            Set(TileID.Plants2, 0.1f, cfg.Plants, 0.1f);
-            Set(TileID.Cactus, cfg.Cactus, Math.Max(0, cfg.Cactus - 0.3f), 0f);
+            Set(TileID.Plants, cfg.Plants);
+            Set(TileID.Plants2, cfg.Plants);
+            Set(TileID.Cactus, cfg.Cactus);
             return;
 
-            void Set(int type, float r, float g, float b)
+            static void Set(int type, Color color)
             {
-                if (EnvLight.ContainsKey(type))
+                if (color != Color.Transparent)
                 {
-                    EnvLight[type] = new Vector3(r, g, b);
+                    if (!EnvLight.TryAdd(type, color))
+                    {
+                        EnvLight[type] = color;
+                    }
                 }
                 else
                 {
-                    EnvLight.Add(type, new Vector3(r, g, b));
+                    // TODO: Put default tile color calculated from PostDraw ONLY if the tile was added to the dictionary
                 }
             }
         }
@@ -175,13 +214,13 @@ namespace LightingEssentials
 
             if (LightingEssentials.Config.LightOres)
             {
-                if (OreLight.TryGetValue(type, out Vector3 oreColor))
+                if (OreLight.TryGetValue(type, out Color oreColor))
                 {
-                    if (oreColor != Vector3.Zero)
+                    if (oreColor != Color.Transparent)
                     {
-                        r = oreColor.X;
-                        g = oreColor.Y;
-                        b = oreColor.Z;
+                        r = oreColor.R / 255f;
+                        g = oreColor.G / 255f;
+                        b = oreColor.B / 255f;
                         return;
                     }
                 }
@@ -189,13 +228,13 @@ namespace LightingEssentials
 
             if (LightingEssentials.Config.LightEnvironment)
             {
-                if (EnvLight.TryGetValue(type, out Vector3 envColor))
+                if (EnvLight.TryGetValue(type, out Color envColor))
                 {
-                    if (envColor != Vector3.Zero)
+                    if (envColor != Color.Transparent)
                     {
-                        r = envColor.X;
-                        g = envColor.Y;
-                        b = envColor.Z;
+                        r = envColor.R / 255f;
+                        g = envColor.G / 255f;
+                        b = envColor.B / 255f;
                     }
                 }
             }

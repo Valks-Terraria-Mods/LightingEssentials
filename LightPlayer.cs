@@ -6,9 +6,11 @@ public class LightPlayer : ModPlayer
     {
         if (!LightingEssentials.Config.ModEnabled) return;
         
-        if (LightingEssentials.Config.PlayerLight > 0)
+        if (LightingEssentials.Config.PlayerLight != Color.Transparent)
         {
-            Lighting.AddLight(drawInfo.Position, Vector3.One * LightingEssentials.Config.PlayerLight);
+            Vector3 color = LightingEssentials.Config.PlayerLight.ToVector3();
+
+            Lighting.AddLight(drawInfo.Position, color);
         }
     }
 }

@@ -12,166 +12,6 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public bool ModEnabled;
 
-    [DefaultValue(0.03f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float PlayerLight;
-
-    [DefaultValue(0.0f)]
-    [BackgroundColor(0, 75, 0, 100)]
-    public float Grass;
-
-    [DefaultValue(0.2f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Plants;
-
-    [DefaultValue(0.1f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Containers;
-
-    [DefaultValue(0.1f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Pots;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Cactus;
-
-    [DefaultValue(0.3f)]
-    [BackgroundColor(0, 75, 0, 100)]
-    public float JungleBiome;
-
-    [DefaultValue(0.03f)]
-    [BackgroundColor(0, 0, 75, 100)]
-    public float SnowBiome;
-
-    [DefaultValue(0.2f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float DesertBiome;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(75, 0, 75, 100)]
-    public float CorruptionBiome;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(75, 0, 0, 100)]
-    public float CrimsonBiome;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(75, 0, 0, 100)]
-    public float LifeCrystal;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LifeFruitRed;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LifeFruitGreen;
-
-    [DefaultValue(0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LifeFruitBlue;
-
-    [DefaultValue(0.02f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float RedMoss;
-
-    [DefaultValue(0.02f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float PurpleMoss;
-
-    [DefaultValue(0.01f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LongMoss;
-
-    [DefaultValue(0.02f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LavaMoss;
-
-    [DefaultValue(0.02f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float GreenMoss;
-
-    [DefaultValue(0.01f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float BrownMoss;
-
-    [DefaultValue(0.02f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float BlueMoss;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float LunarOre;
-    
-    [DefaultValue(0.9f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Titanium;
-
-    [DefaultValue(0.9f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Adamantite;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Orichalcum;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Mythril;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Palladium;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Cobalt;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Hellstone;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Chlorophyte;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Meteorite;
-
-    [DefaultValue(0.01f)]
-    [BackgroundColor(0, 0, 75, 100)]
-    public float CommonOres;
-
-    [DefaultValue(0.9f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Amethyst;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Topaz;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Emerald;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float AmberGemspark;
-
-    [DefaultValue(0.5f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Diamond;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Ruby;
-
-    [DefaultValue(1.0f)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public float Sapphire;
-
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
     public bool LightOres;
@@ -179,6 +19,196 @@ public class Config : ModConfig
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
     public bool LightEnvironment;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "7, 7, 7, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color PlayerLight;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Grass;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "50, 50, 50, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Plants;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "25, 25, 25, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Containers;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "25, 25, 25, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Pots;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "150, 150, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Cactus;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 75, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color JungleBiome;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 25, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color SnowBiome;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "30, 30, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color DesertBiome;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "150, 0, 150, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color CorruptionBiome;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "150, 0, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color CrimsonBiome;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "100, 0, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color LifeCrystal;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 150, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color LifeFruit;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "20, 0, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color RedMoss;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "20, 0, 20, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color PurpleMoss;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "20, 20, 20, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color LongMoss;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "20, 0, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color LavaMoss;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 20, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color GreenMoss;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "20, 20, 20, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color BrownMoss;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "20, 0, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color BlueMoss;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color LunarOre;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Titanium;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Adamantite;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Orichalcum;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Mythril;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Palladium;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Cobalt;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Hellstone;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Chlorophyte;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Meteorite;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "2, 2, 2, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color CommonOres;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Amethyst;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Topaz;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Emerald;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color AmberGemspark;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Diamond;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Ruby;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Sapphire;
 
     public override void OnLoaded()
     {
