@@ -296,5 +296,45 @@ Configs: {
 			Tooltip: ""
 			Label: Mod Enabled
 		}
+
+		Iron: {
+			Label: Iron
+			Tooltip: ""
+		}
+
+		Lead: {
+			Label: Lead
+			Tooltip: ""
+		}
+
+		Copper: {
+			Label: Copper
+			Tooltip: ""
+		}
+
+		Tin: {
+			Label: Tin
+			Tooltip: ""
+		}
+
+		Silver: {
+			Label: Silver
+			Tooltip: ""
+		}
+
+		Gold: {
+			Label: Gold
+			Tooltip: ""
+		}
+
+		Platinum: {
+			Label: Platinum
+			Tooltip: ""
+		}
+
+		Tungsten: {
+			Label: Tungsten
+			Tooltip: ""
+		}
 	}
 }

@@ -12,201 +12,228 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public bool ModEnabled;
 
-    [DefaultValue(true)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public bool LightOres;
-
-    [DefaultValue(true)]
-    [BackgroundColor(0, 0, 0, 100)]
-    public bool LightEnvironment;
-
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "7, 7, 7, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color PlayerLight;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [DefaultValue(typeof(Color), "0, 30, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Grass;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "50, 50, 50, 255")]
+    [DefaultValue(typeof(Color), "0, 30, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Plants;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "25, 25, 25, 255")]
+    [DefaultValue(typeof(Color), "7, 7, 7, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Containers;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "25, 25, 25, 255")]
+    [DefaultValue(typeof(Color), "7, 7, 7, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Pots;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "150, 150, 0, 255")]
+    [DefaultValue(typeof(Color), "20, 40, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Cactus;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 75, 0, 255")]
+    [DefaultValue(typeof(Color), "0, 20, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color JungleBiome;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 25, 255")]
+    [DefaultValue(typeof(Color), "0, 0, 20, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color SnowBiome;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "30, 30, 0, 255")]
+    [DefaultValue(typeof(Color), "20, 20, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color DesertBiome;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "150, 0, 150, 255")]
+    [DefaultValue(typeof(Color), "40, 0, 40, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color CorruptionBiome;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "150, 0, 0, 255")]
+    [DefaultValue(typeof(Color), "40, 0, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color CrimsonBiome;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "100, 0, 0, 255")]
+    [DefaultValue(typeof(Color), "255, 0, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color LifeCrystal;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 150, 0, 255")]
+    [DefaultValue(typeof(Color), "0, 255, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color LifeFruit;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "20, 0, 0, 255")]
+    [DefaultValue(typeof(Color), "10, 0, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color RedMoss;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "20, 0, 20, 255")]
+    [DefaultValue(typeof(Color), "10, 0, 10, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color PurpleMoss;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "20, 20, 20, 255")]
+    [DefaultValue(typeof(Color), "10, 10, 10, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color LongMoss;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "20, 0, 0, 255")]
+    [DefaultValue(typeof(Color), "10, 0, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color LavaMoss;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 20, 0, 255")]
+    [DefaultValue(typeof(Color), "0, 10, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color GreenMoss;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "20, 20, 20, 255")]
+    [DefaultValue(typeof(Color), "10, 10, 10, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color BrownMoss;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "20, 0, 0, 255")]
+    [DefaultValue(typeof(Color), "0, 0, 10, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color BlueMoss;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color LunarOre;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Titanium;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Adamantite;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Orichalcum;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Mythril;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Palladium;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Cobalt;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "50, 0, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Hellstone;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "0, 3, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Chlorophyte;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "255, 0, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Meteorite;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "2, 2, 2, 255")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
-    public Color CommonOres;
+    public Color Iron;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Lead;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Copper;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Tin;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Silver;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Gold;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Platinum;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color Tungsten;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Amethyst;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Topaz;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Emerald;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color AmberGemspark;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Diamond;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Ruby;
 
     [ColorNoAlpha]
-    [DefaultValue(typeof(Color), "0, 0, 0, 0")]
+    [DefaultValue(typeof(Color), "3, 3, 3, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Sapphire;
 
@@ -218,5 +245,31 @@ public class Config : ModConfig
     public override void OnChanged()
     {
         LightTiles.InitLight();
+
+        if (ModEnabled)
+        {
+            LightTiles.ModifyLightCode = (int type, ref float r, ref float g, ref float b) =>
+            {
+                if (LightTiles.OreLight.TryGetValue(type, out Vector3 oreColor))
+                {
+                    r = oreColor.X;
+                    g = oreColor.Y;
+                    b = oreColor.Z;
+                    return;
+                }
+
+                if (LightTiles.EnvLight.TryGetValue(type, out Vector3 envColor))
+                {
+                    r = envColor.X;
+                    g = envColor.Y;
+                    b = envColor.Z;
+                }
+            };
+        }
+        else
+        {
+            LightTiles.ModifyLightCode = (int type, ref float r, ref float g, ref float b) => { };
+        }
+        
     }
 }

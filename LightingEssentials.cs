@@ -4,8 +4,6 @@ global using Terraria.DataStructures;
 global using Terraria.ID;
 global using Terraria.ModLoader;
 using log4net;
-using log4net.Repository.Hierarchy;
-using Terraria.GameContent;
 
 namespace LightingEssentials;
 

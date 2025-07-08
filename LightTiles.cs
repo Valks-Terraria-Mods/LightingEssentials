@@ -1,243 +1,163 @@
-﻿using log4net.Repository.Hierarchy;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using Terraria.GameContent;
+﻿using System.Collections.Generic;
 
-namespace LightingEssentials
+namespace LightingEssentials;
+
+public class LightTiles : GlobalTile
 {
-    public class LightTiles : GlobalTile
+    public static readonly Dictionary<int, Vector3> OreLight = [];
+    public static readonly Dictionary<int, Vector3> EnvLight = [];
+
+    public override void SetStaticDefaults()
     {
-        // Precomputed light color lookups
-        public static readonly Dictionary<int, Color> OreLight = [];
-        public static readonly Dictionary<int, Color> EnvLight = [];
-
-        public override void SetStaticDefaults()
-        {
-            if (!LightingEssentials.Config.ModEnabled)
-                return;
-
-            InitLight();
-        }
-
-        public static void InitLight()
-        {
-            // Initialize ore lighting flags
-            if (LightingEssentials.Config.LightOres)
-            {
-                BuildOreLightTable();
-                ApplyTileLightFlags(OreLight, true);
-            }
-
-            // Initialize environment lighting flags
-            if (LightingEssentials.Config.LightEnvironment)
-            {
-                BuildEnvLightTable();
-                ApplyTileLightFlags(EnvLight, true);
-            }
-        }
-
-        /// <summary>
-        /// Set Main.tileLighted and tileShine for any tile types that have non-zero light.
-        /// </summary>
-        private static void ApplyTileLightFlags(Dictionary<int, Color> table, bool enabled)
-        {
-            for (int type = 0; type < table.Count; type++)
-            {
-                if (table.ContainsKey(type))
-                {
-                    Main.tileLighted[type] = enabled;
-                    Main.tileShine[type] = 1_000_000_000;
-                    Main.tileShine2[type] = false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Build lookup table for ore light colors.
-        /// </summary>
-        private static void BuildOreLightTable()
-        {
-            Config cfg = LightingEssentials.Config;
-
-            // Gems
-            Set(TileID.Sapphire, cfg.Sapphire);
-            Set(TileID.Ruby, cfg.Ruby);
-            Set(TileID.Diamond, cfg.Diamond);
-            Set(TileID.AmberGemspark, cfg.AmberGemspark);
-            Set(TileID.Emerald, cfg.Emerald);
-            Set(TileID.Topaz, cfg.Topaz);
-            Set(TileID.Amethyst, cfg.Amethyst);
-
-            // Common ores share same intensity
-            ushort[] commons =
-            [
-                TileID.Iron, TileID.Lead, TileID.Copper, TileID.Tin, TileID.Silver, TileID.Gold, TileID.Platinum, TileID.Tungsten
-            ];
-            
-            foreach (ushort t in commons) 
-                Set(t, cfg.CommonOres);
-
-            // Other ores
-            Set(TileID.Meteorite, cfg.Meteorite);
-            Set(TileID.Chlorophyte, cfg.Chlorophyte);
-            Set(TileID.Hellstone, cfg.Hellstone);
-            Set(TileID.Cobalt, cfg.Cobalt);
-            Set(TileID.Palladium, cfg.Palladium);
-            Set(TileID.Mythril, cfg.Mythril);
-            Set(TileID.Orichalcum, cfg.Orichalcum);
-            Set(TileID.Adamantite, cfg.Adamantite);
-            Set(TileID.Titanium, cfg.Titanium);
-            Set(TileID.LunarOre, cfg.LunarOre);
+        if (!LightingEssentials.Config.ModEnabled)
             return;
 
-            static void Set(int type, Color color)
-            {
-                if (color != Color.Transparent)
-                {
-                    if (!OreLight.TryAdd(type, color))
-                    {
-                        OreLight[type] = color;
-                    }
-                }
-                else
-                {
-                    // TODO: Put default tile color calculated from PostDraw ONLY if the tile was added to the dictionary
-                }
-            }
+        InitLight();
+    }
+
+    public static void InitLight()
+    {
+        Config c = LightingEssentials.Config;
+
+        // Ores
+        SetOre(TileID.Sapphire, c.Sapphire);
+        SetOre(TileID.Ruby, c.Ruby);
+        SetOre(TileID.Diamond, c.Diamond);
+        SetOre(TileID.AmberGemspark, c.AmberGemspark);
+        SetOre(TileID.Emerald, c.Emerald);
+        SetOre(TileID.Topaz, c.Topaz);
+        SetOre(TileID.Amethyst, c.Amethyst);
+        SetOre(TileID.Iron, c.Iron);
+        SetOre(TileID.Lead, c.Lead);
+        SetOre(TileID.Copper, c.Copper);
+        SetOre(TileID.Tin, c.Tin);
+        SetOre(TileID.Silver, c.Silver);
+        SetOre(TileID.Gold, c.Gold);
+        SetOre(TileID.Platinum, c.Platinum);
+        SetOre(TileID.Tungsten, c.Tungsten);
+        SetOre(TileID.Meteorite, c.Meteorite);
+        SetOre(TileID.Chlorophyte, c.Chlorophyte);
+        SetOre(TileID.Hellstone, c.Hellstone);
+        SetOre(TileID.Cobalt, c.Cobalt);
+        SetOre(TileID.Palladium, c.Palladium);
+        SetOre(TileID.Mythril, c.Mythril);
+        SetOre(TileID.Orichalcum, c.Orichalcum);
+        SetOre(TileID.Adamantite, c.Adamantite);
+        SetOre(TileID.Titanium, c.Titanium);
+        SetOre(TileID.LunarOre, c.LunarOre);
+        ApplyTileLightFlags(OreLight, true);
+
+        // Environment
+        SetEnv(TileID.Grass, c.Grass);
+        SetEnv(TileID.CrimsonGrass, c.CrimsonBiome);
+        SetEnv(TileID.CrimsonJungleGrass, c.CrimsonBiome);
+        SetEnv(TileID.CrimsonPlants, c.CrimsonBiome);
+        SetEnv(TileID.CrimsonThorns, c.CrimsonBiome);
+        SetEnv(TileID.CrimsonVines, c.CrimsonBiome);
+        SetEnv(TileID.CorruptGrass, c.CorruptionBiome);
+        SetEnv(TileID.Pots, c.Pots);
+        SetEnv(TileID.FossilOre, c.DesertBiome);
+        SetEnv(TileID.IceBlock, c.SnowBiome);
+        SetEnv(TileID.BlueMoss, c.BlueMoss);
+        SetEnv(TileID.BrownMoss, c.BrownMoss);
+        SetEnv(TileID.GreenMoss, c.GreenMoss);
+        SetEnv(TileID.LavaMoss, c.LavaMoss);
+        SetEnv(TileID.LongMoss, c.LongMoss);
+        SetEnv(TileID.PurpleMoss, c.PurpleMoss);
+        SetEnv(TileID.RedMoss, c.RedMoss);
+        SetEnv(TileID.LifeFruit, c.LifeFruit);
+        SetEnv(TileID.Heart, c.LifeCrystal);
+        SetEnv(TileID.Crystals, c.LifeCrystal);
+        SetEnv(TileID.JungleGrass, c.JungleBiome);
+        SetEnv(TileID.JunglePlants, c.JungleBiome);
+        SetEnv(TileID.JunglePlants2, c.JungleBiome);
+        SetEnv(TileID.JungleThorns, c.JungleBiome);
+        SetEnv(TileID.JungleVines, c.JungleBiome);
+        SetEnv(TileID.LargePiles, c.Containers);
+        SetEnv(TileID.LargePiles2, c.Containers);
+        SetEnv(TileID.Containers, c.Containers);
+        SetEnv(TileID.Containers2, c.Containers);
+        SetEnv(TileID.Plants, c.Plants);
+        SetEnv(TileID.Plants2, c.Plants);
+        SetEnv(TileID.Cactus, c.Cactus);
+        ApplyTileLightFlags(EnvLight, true);
+
+        return;
+
+        static void SetOre(int tileId, Color color)
+        {
+            OreLight[tileId] = color.ToVector3();
         }
 
-        bool once;
-
-        public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
+        static void SetEnv(int tileId, Color color)
         {
-            base.PostDraw(i, j, type, spriteBatch);
-
-            if (once)
-            {
-                return;
-            }
-
-            once = true;
-
-            ReLogic.Content.Asset<Texture2D> tex = TextureAssets.Tile[type];
-            Color[] pixels = new Color[tex.Width() * tex.Height()];
-            ((Texture2D)tex).GetData(pixels);
-            long r = 0, g = 0, b = 0;
-
-            foreach (var c in pixels)
-            {
-                r += c.R; g += c.G; b += c.B;
-            }
-
-            int total = pixels.Length;
-
-            Color DefaultTileColor = new((int)(r / total), (int)(g / total), (int)(b / total));
-
-            LightingEssentials.Log.Info($"Default Color: r: {DefaultTileColor.R}, g: {DefaultTileColor.G}, b: {DefaultTileColor.B} for tile type {type}");
-        }
-
-        /// <summary>
-        /// Build lookup table for environment light colors.
-        /// </summary>
-        private static void BuildEnvLightTable()
-        {
-            Config cfg = LightingEssentials.Config;
-
-            // Grass and biome-specific
-            Set(TileID.Grass, cfg.Grass);
-            Set(TileID.CrimsonGrass, cfg.CrimsonBiome);
-            Set(TileID.CrimsonJungleGrass, cfg.CrimsonBiome);
-            Set(TileID.CrimsonPlants, cfg.CrimsonBiome);
-            Set(TileID.CrimsonThorns, cfg.CrimsonBiome);
-            Set(TileID.CrimsonVines, cfg.CrimsonBiome);
-            Set(TileID.CorruptGrass, cfg.CorruptionBiome);
-            
-            // Biome containers, pots, etc.
-            Set(TileID.Pots, cfg.Pots);
-            Set(TileID.FossilOre, cfg.DesertBiome);
-            Set(TileID.IceBlock, cfg.SnowBiome);
-
-            // Moss types
-            Set(TileID.BlueMoss, cfg.BlueMoss);
-            Set(TileID.BrownMoss, cfg.BrownMoss);
-            Set(TileID.GreenMoss, cfg.GreenMoss);
-            Set(TileID.LavaMoss, cfg.LavaMoss);
-            Set(TileID.LongMoss, cfg.LongMoss);
-            Set(TileID.PurpleMoss, cfg.PurpleMoss);
-            Set(TileID.RedMoss, cfg.RedMoss);
-
-            // Life fruit/crystals
-            Set(TileID.LifeFruit, cfg.LifeFruit);
-            Set(TileID.Heart, cfg.LifeCrystal);
-            Set(TileID.Crystals, cfg.LifeCrystal);
-
-            // Jungle
-            Set(TileID.JungleGrass, cfg.JungleBiome);
-            Set(TileID.JunglePlants, cfg.JungleBiome);
-            Set(TileID.JunglePlants2, cfg.JungleBiome);
-            Set(TileID.JungleThorns, cfg.JungleBiome);
-            Set(TileID.JungleVines, cfg.JungleBiome);
-
-            // Generic piles/containers
-            Set(TileID.LargePiles, cfg.Containers);
-            Set(TileID.LargePiles2, cfg.Containers);
-            Set(TileID.Containers, cfg.Containers);
-            Set(TileID.Containers2, cfg.Containers);
-
-            // Plants and cactus
-            Set(TileID.Plants, cfg.Plants);
-            Set(TileID.Plants2, cfg.Plants);
-            Set(TileID.Cactus, cfg.Cactus);
-            return;
-
-            static void Set(int type, Color color)
-            {
-                if (color != Color.Transparent)
-                {
-                    if (!EnvLight.TryAdd(type, color))
-                    {
-                        EnvLight[type] = color;
-                    }
-                }
-                else
-                {
-                    // TODO: Put default tile color calculated from PostDraw ONLY if the tile was added to the dictionary
-                }
-            }
-        }
-
-        public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
-        {
-            if (!LightingEssentials.Config.ModEnabled)
-                return;
-
-            if (LightingEssentials.Config.LightOres)
-            {
-                if (OreLight.TryGetValue(type, out Color oreColor))
-                {
-                    if (oreColor != Color.Transparent)
-                    {
-                        r = oreColor.R / 255f;
-                        g = oreColor.G / 255f;
-                        b = oreColor.B / 255f;
-                        return;
-                    }
-                }
-            }
-
-            if (LightingEssentials.Config.LightEnvironment)
-            {
-                if (EnvLight.TryGetValue(type, out Color envColor))
-                {
-                    if (envColor != Color.Transparent)
-                    {
-                        r = envColor.R / 255f;
-                        g = envColor.G / 255f;
-                        b = envColor.B / 255f;
-                    }
-                }
-            }
+            EnvLight[tileId] = color.ToVector3();
         }
     }
+
+    private static void ApplyTileLightFlags(Dictionary<int, Vector3> table, bool enabled)
+    {
+        foreach (int tileId in table.Keys)
+        {
+            Main.tileLighted[tileId] = enabled;
+            Main.tileShine[tileId] = 1_000_000_000;
+            Main.tileShine2[tileId] = false;
+        }
+    }
+
+    /*private static Color GetAverageTileColor(int tileId)
+    {
+        // Attempt to get the tile texture asset
+        Asset<Texture2D> tex = TextureAssets.Tile[tileId];
+
+        LightingEssentials.Log.Debug("Valk: " + tileId);
+
+        Color[] pixels = new Color[tex.Width() * tex.Height()];
+        ((Texture2D)tex).GetData(pixels);
+        long r = 0, g = 0, b = 0;
+
+        foreach (Color c in pixels)
+        {
+            r += c.R; g += c.G; b += c.B;
+        }
+
+        int total = pixels.Length;
+
+        Color defaultTileColor = new((int)(r / total), (int)(g / total), (int)(b / total));
+
+        return defaultTileColor;
+    }
+
+    public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
+    {
+        base.PostDraw(i, j, type, spriteBatch);
+
+        // We can safely get the texture tile in here with texture = TextureAssets.Tile[type] and texture.GetData(pixels)
+    }*/
+
+    public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
+    {
+        // This code needs to be performance critical
+        ModifyLightCode(type, ref r, ref g, ref b);
+    }
+
+    public delegate void ModifyLightDelegate(int type, ref float r, ref float g, ref float b);
+
+    public static ModifyLightDelegate ModifyLightCode = (int type, ref float r, ref float g, ref float b) =>
+    {
+        if (OreLight.TryGetValue(type, out Vector3 oreColor))
+        {
+            r = oreColor.X;
+            g = oreColor.Y;
+            b = oreColor.Z;
+            return;
+        }
+
+        if (EnvLight.TryGetValue(type, out Vector3 envColor))
+        {
+            r = envColor.X;
+            g = envColor.Y;
+            b = envColor.Z;
+        }
+    };
 }
