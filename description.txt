@@ -8,12 +8,10 @@ Featuring
 - Meteorite and hellstone glow vibrant red
 - Containers glow a dim white
 - Player has a very dim light
+- Killing bosses have different effects on lighting in world (see config)
+- Projectiles can have colored lighting (disabled by default)
 
-Roadmap
-- Defeating X boss makes Y biome glow even brighter
-- Reconfigure X tile to be just the right brightness
-
-You can configure EVERYTHING now (If there is something that is not in the config that you want added please tell me)
+You can configure EVERYTHING now
 
 Discord for suggestions and support: https://discord.gg/j8HQZZ76r8
 Source code: https://github.com/Valks-Terraria-Mods/LightingEssentials

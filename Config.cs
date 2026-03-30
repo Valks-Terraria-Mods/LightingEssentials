@@ -17,6 +17,75 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public Color PlayerLight;
 
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossEyeofCthulhuEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.2f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossEyeofCthulhuEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossEvilBiomeEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.2f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossEvilBiomeEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossSkeletronEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.2f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossSkeletronEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossPlanteraEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.5f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossPlanteraEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossMechEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.2f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossMechEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossMoonLordEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(2f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossMoonLordEffectsMultiplier;
+
+    [DefaultValue(false)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool ProjectileLightEnabled;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "10, 10, 10, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color ProjectileLightColor;
+
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "0, 30, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
@@ -71,6 +140,11 @@ public class Config : ModConfig
     [DefaultValue(typeof(Color), "255, 0, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color LifeCrystal;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 0, 255, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color ManaCrystal;
 
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "0, 255, 0, 255")]
@@ -240,36 +314,12 @@ public class Config : ModConfig
     public override void OnLoaded()
     {
         LightingEssentials.Config = this;
+        LightRuntime.ApplyConfig(this);
     }
 
     public override void OnChanged()
     {
+        LightRuntime.ApplyConfig(this);
         LightTiles.InitLight();
-
-        if (ModEnabled)
-        {
-            LightTiles.ModifyLightCode = (int type, ref float r, ref float g, ref float b) =>
-            {
-                if (LightTiles.OreLight.TryGetValue(type, out Vector3 oreColor))
-                {
-                    r = oreColor.X;
-                    g = oreColor.Y;
-                    b = oreColor.Z;
-                    return;
-                }
-
-                if (LightTiles.EnvLight.TryGetValue(type, out Vector3 envColor))
-                {
-                    r = envColor.X;
-                    g = envColor.Y;
-                    b = envColor.Z;
-                }
-            };
-        }
-        else
-        {
-            LightTiles.ModifyLightCode = (int type, ref float r, ref float g, ref float b) => { };
-        }
-        
     }
 }

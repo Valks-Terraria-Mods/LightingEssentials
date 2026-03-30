@@ -2,339 +2,309 @@ Configs: {
 	Config: {
 		DisplayName: Config
 
-		PlayerMeleeLight: {
-			Label: Player Melee Light
-			Tooltip: ""
-		}
-
-		EntityRedHitLight: {
-			Label: Entity Red Hit Light
-			Tooltip: ""
+		ModEnabled: {
+			Label: Mod Enabled
+			Tooltip: Enables all Lighting Essentials effects.
 		}
 
 		PlayerLight: {
 			Label: Player Light
-			Tooltip: ""
+			Tooltip: Light color emitted by the player.
 		}
 
-		LightOres: {
-			Label: Light Ores
-			Tooltip: ""
+		BossEyeofCthulhuEffects: {
+			Label: Eye Of Cthulhu Effects
+			Tooltip: After Eye Of Cthulhu is defeated, brightens grass and plants.
 		}
 
-		Experimental: {
-			Label: Experimental
-			Tooltip: ""
+		BossEyeofCthulhuEffectsMultiplier: {
+			Label: Eye Of Cthulhu Multiplier
+			Tooltip: Brightness multiplier after killing Eye Of Cthulhu.
 		}
 
-		Test: {
-			Label: Test
-			Tooltip: ""
+		BossEvilBiomeEffects: {
+			Label: Evil Biome Effects
+			Tooltip: After evil biome boss is defeated, brightens corruption and crimson tiles.
 		}
 
-		LightEnvironment: {
-			Label: Light Environment
-			Tooltip: ""
+		BossEvilBiomeEffectsMultiplier: {
+			Label: Evil Biome Multiplier
+			Tooltip: Brightness multiplier for the boss evil biome.
 		}
 
-		LightJungle: {
-			Label: Light Jungle
-			Tooltip: ""
+		BossSkeletronEffects: {
+			Label: Skeletron Effects
+			Tooltip: After Skeletron is defeated, brightens meteorite tiles.
 		}
 
-		LightLifeFruitAndLifeCrystalsAndHearts: {
-			Label: Light Life Fruit And Life Crystals And Hearts
-			Tooltip: ""
+		BossSkeletronEffectsMultiplier: {
+			Label: Skeletron Multiplier
+			Tooltip: Brightness multiplier for Skeletron.
 		}
 
-		WalkingOnPlantsLightsThemUp: {
-			Label: Walking On Plants Lights Them Up
-			Tooltip: ""
+		BossPlanteraEffects: {
+			Label: Plantera Effects
+			Tooltip: After Plantera is defeated, brightens jungle tiles.
 		}
 
-		LifeCrystalRedness: {
-			Label: Life Crystal Redness
-			Tooltip: ""
+		BossPlanteraEffectsMultiplier: {
+			Label: Plantera Multiplier
+			Tooltip: Brightness multiplier for Plantera jungle.
 		}
 
-		LifeCrystal: {
-			Label: Life Crystal
-			Tooltip: ""
+		BossMechEffects: {
+			Label: Mech Boss Effects
+			Tooltip: After mech bosses are defeated, brightens hardmode ore tiles.
 		}
 
-		Cactus: {
-			Label: Cactus
-			Tooltip: ""
+		BossMechEffectsMultiplier: {
+			Label: Mech Boss Multiplier
+			Tooltip: Final multiplier at 3 mech bosses defeated.
 		}
 
-		Plants: {
-			Label: Plants
-			Tooltip: ""
+		BossMoonLordEffects: {
+			Label: Moon Lord Effects
+			Tooltip: After MoonLord is defeated, brightens lunar ore.
 		}
 
-		Containers: {
-			Label: Containers
-			Tooltip: ""
+		BossMoonLordEffectsMultiplier: {
+			Label: Moon Lord Multiplier
+			Tooltip: Brightness multiplier for the Moon Lord lunar ore.
 		}
 
-		Jungle: {
-			Label: Jungle
-			Tooltip: ""
+		ProjectileLightEnabled: {
+			Label: Projectile Light Enabled
+			Tooltip: Makes active projectiles emit light.
 		}
 
-		RedMoss: {
-			Label: Red Moss
-			Tooltip: ""
-		}
-
-		PurpleMoss: {
-			Label: Purple Moss
-			Tooltip: ""
-		}
-
-		LongMoss: {
-			Label: Long Moss
-			Tooltip: ""
-		}
-
-		LavaMoss: {
-			Label: Lava Moss
-			Tooltip: ""
-		}
-
-		GreenMoss: {
-			Label: Green Moss
-			Tooltip: ""
-		}
-
-		BrownMoss: {
-			Label: Brown Moss
-			Tooltip: ""
-		}
-
-		BlueMoss: {
-			Label: Blue Moss
-			Tooltip: ""
-		}
-
-		LunarOre: {
-			Label: Lunar Ore
-			Tooltip: ""
-		}
-
-		Titanium: {
-			Label: Titanium
-			Tooltip: ""
-		}
-
-		Adamantite: {
-			Label: Adamantite
-			Tooltip: ""
-		}
-
-		Orichalcum: {
-			Label: Orichalcum
-			Tooltip: ""
-		}
-
-		Mythril: {
-			Label: Mythril
-			Tooltip: ""
-		}
-
-		Palladium: {
-			Label: Palladium
-			Tooltip: ""
-		}
-
-		Cobalt: {
-			Label: Cobalt
-			Tooltip: ""
-		}
-
-		Hellstone: {
-			Label: Hellstone
-			Tooltip: ""
-		}
-
-		Chlorophyte: {
-			Label: Chlorophyte
-			Tooltip: ""
-		}
-
-		Meteorite: {
-			Label: Meteorite
-			Tooltip: ""
-		}
-
-		CommonOres: {
-			Label: Common Ores
-			Tooltip: ""
-		}
-
-		Amethyst: {
-			Label: Amethyst
-			Tooltip: ""
-		}
-
-		Topaz: {
-			Label: Topaz
-			Tooltip: ""
-		}
-
-		Emerald: {
-			Label: Emerald
-			Tooltip: ""
-		}
-
-		AmberGemspark: {
-			Label: Amber Gemspark
-			Tooltip: ""
-		}
-
-		Diamond: {
-			Label: Diamond
-			Tooltip: ""
-		}
-
-		Ruby: {
-			Label: Ruby
-			Tooltip: ""
-		}
-
-		Sapphire: {
-			Label: Sapphire
-			Tooltip: ""
-		}
-
-		PlantsRed: {
-			Label: Plants Red
-			Tooltip: ""
-		}
-
-		PlantsGreen: {
-			Label: Plants Green
-			Tooltip: ""
-		}
-
-		PlantsBlue: {
-			Label: Plants Blue
-			Tooltip: ""
-		}
-
-		WalkingOnPlantsLightsThemUpRed: {
-			Label: Walking On Plants Lights Them Up Red
-			Tooltip: ""
-		}
-
-		WalkingOnPlantsLightsThemUpGreen: {
-			Label: Walking On Plants Lights Them Up Green
-			Tooltip: ""
-		}
-
-		WalkingOnPlantsLightsThemUpBlue: {
-			Label: Walking On Plants Lights Them Up Blue
-			Tooltip: ""
-		}
-
-		JungleBiome: {
-			Label: Jungle Biome
-			Tooltip: ""
-		}
-
-		SnowBiome: {
-			Label: Snow Biome
-			Tooltip: ""
-		}
-
-		DesertBiome: {
-			Label: Desert Biome
-			Tooltip: ""
-		}
-
-		CorruptionBiome: {
-			Label: Corruption Biome
-			Tooltip: ""
-		}
-
-		LifeFruitRed: {
-			Label: Life Fruit Red
-			Tooltip: ""
-		}
-
-		LifeFruitGreen: {
-			Label: Life Fruit Green
-			Tooltip: ""
-		}
-
-		LifeFruitBlue: {
-			Label: Life Fruit Blue
-			Tooltip: ""
-		}
-
-		LifeFruit: {
-			Label: Life Fruit
-			Tooltip: ""
-		}
-
-		CrimsonBiome: {
-			Label: Crimson Biome
-			Tooltip: ""
-		}
-
-		Pots: {
-			Label: Pots
-			Tooltip: ""
+		ProjectileLightColor: {
+			Label: Projectile Light Color
+			Tooltip: Color used for projectile light.
 		}
 
 		Grass: {
 			Label: Grass
-			Tooltip: ""
+			Tooltip: Light color for grass tiles.
 		}
 
-		ModEnabled: {
-			Tooltip: ""
-			Label: Mod Enabled
+		Plants: {
+			Label: Plants
+			Tooltip: Light color for plant tiles.
+		}
+
+		Containers: {
+			Label: Containers
+			Tooltip: Light color for containers and large piles.
+		}
+
+		Pots: {
+			Label: Pots
+			Tooltip: Light color for pots.
+		}
+
+		Cactus: {
+			Label: Cactus
+			Tooltip: Light color for cactus tiles.
+		}
+
+		JungleBiome: {
+			Label: Jungle Biome
+			Tooltip: Base light color for jungle vegetation.
+		}
+
+		SnowBiome: {
+			Label: Snow Biome
+			Tooltip: Light color for ice tiles.
+		}
+
+		DesertBiome: {
+			Label: Desert Biome
+			Tooltip: Light color for desert fossil tiles.
+		}
+
+		CorruptionBiome: {
+			Label: Corruption Biome
+			Tooltip: Base light color for corruption grass.
+		}
+
+		CrimsonBiome: {
+			Label: Crimson Biome
+			Tooltip: Base light color for crimson tiles.
+		}
+
+		LifeCrystal: {
+			Label: Life Crystal
+			Tooltip: Light color for heart crystals and heart lantern crystals.
+		}
+
+		ManaCrystal: {
+			Label: Mana Crystal
+			Tooltip: Light color for mana crystal tiles.
+		}
+
+		LifeFruit: {
+			Label: Life Fruit
+			Tooltip: Light color for life fruit.
+		}
+
+		RedMoss: {
+			Label: Red Moss
+			Tooltip: Light color for red moss.
+		}
+
+		PurpleMoss: {
+			Label: Purple Moss
+			Tooltip: Light color for purple moss.
+		}
+
+		LongMoss: {
+			Label: Long Moss
+			Tooltip: Light color for long moss.
+		}
+
+		LavaMoss: {
+			Label: Lava Moss
+			Tooltip: Light color for lava moss.
+		}
+
+		GreenMoss: {
+			Label: Green Moss
+			Tooltip: Light color for green moss.
+		}
+
+		BrownMoss: {
+			Label: Brown Moss
+			Tooltip: Light color for brown moss.
+		}
+
+		BlueMoss: {
+			Label: Blue Moss
+			Tooltip: Light color for blue moss.
+		}
+
+		LunarOre: {
+			Label: Lunar Ore
+			Tooltip: Light color for lunar ore.
+		}
+
+		Titanium: {
+			Label: Titanium
+			Tooltip: Light color for titanium ore.
+		}
+
+		Adamantite: {
+			Label: Adamantite
+			Tooltip: Light color for adamantite ore.
+		}
+
+		Orichalcum: {
+			Label: Orichalcum
+			Tooltip: Light color for orichalcum ore.
+		}
+
+		Mythril: {
+			Label: Mythril
+			Tooltip: Light color for mythril ore.
+		}
+
+		Palladium: {
+			Label: Palladium
+			Tooltip: Light color for palladium ore.
+		}
+
+		Cobalt: {
+			Label: Cobalt
+			Tooltip: Light color for cobalt ore.
+		}
+
+		Hellstone: {
+			Label: Hellstone
+			Tooltip: Light color for hellstone ore.
+		}
+
+		Chlorophyte: {
+			Label: Chlorophyte
+			Tooltip: Light color for chlorophyte ore.
+		}
+
+		Meteorite: {
+			Label: Meteorite
+			Tooltip: Light color for meteorite ore.
 		}
 
 		Iron: {
 			Label: Iron
-			Tooltip: ""
+			Tooltip: Light color for iron ore.
 		}
 
 		Lead: {
 			Label: Lead
-			Tooltip: ""
+			Tooltip: Light color for lead ore.
 		}
 
 		Copper: {
 			Label: Copper
-			Tooltip: ""
+			Tooltip: Light color for copper ore.
 		}
 
 		Tin: {
 			Label: Tin
-			Tooltip: ""
+			Tooltip: Light color for tin ore.
 		}
 
 		Silver: {
 			Label: Silver
-			Tooltip: ""
+			Tooltip: Light color for silver ore.
 		}
 
 		Gold: {
 			Label: Gold
-			Tooltip: ""
+			Tooltip: Light color for gold ore.
 		}
 
 		Platinum: {
 			Label: Platinum
-			Tooltip: ""
+			Tooltip: Light color for platinum ore.
 		}
 
 		Tungsten: {
 			Label: Tungsten
-			Tooltip: ""
+			Tooltip: Light color for tungsten ore.
+		}
+
+		Amethyst: {
+			Label: Amethyst
+			Tooltip: Light color for amethyst gem.
+		}
+
+		Topaz: {
+			Label: Topaz
+			Tooltip: Light color for topaz gem.
+		}
+
+		Emerald: {
+			Label: Emerald
+			Tooltip: Light color for emerald gem.
+		}
+
+		AmberGemspark: {
+			Label: Amber Gemspark
+			Tooltip: Light color for amber gemspark.
+		}
+
+		Diamond: {
+			Label: Diamond
+			Tooltip: Light color for diamond gem.
+		}
+
+		Ruby: {
+			Label: Ruby
+			Tooltip: Light color for ruby gem.
+		}
+
+		Sapphire: {
+			Label: Sapphire
+			Tooltip: Light color for sapphire gem.
 		}
 	}
 }
