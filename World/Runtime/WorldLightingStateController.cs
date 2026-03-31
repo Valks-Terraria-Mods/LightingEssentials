@@ -35,7 +35,7 @@ internal static class WorldLightingStateController
             return;
         }
 
-        Config config = LightingEssentials.Config;
+        LightingSettings config = LightingEssentials.Config;
         bool trackEventFlags = LightRuntime.ModEnabled
             && config is not null
             && (config.BloodMoonEventEffects || config.SolarEclipseEventEffects || config.FrostLegionEventEffects);

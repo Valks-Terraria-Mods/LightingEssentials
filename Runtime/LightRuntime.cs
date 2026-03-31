@@ -15,7 +15,7 @@ public static class LightRuntime
     public static bool EnemyLightEnabled => _state.EnemyLightEnabled;
     public static Vector3 EnemyLightColor => _state.EnemyLightColor;
 
-    public static void ApplyConfig(Config config)
+    public static void ApplyConfig(LightingSettings config)
     {
         _state = LightRuntimeStateFactory.Create(config);
     }

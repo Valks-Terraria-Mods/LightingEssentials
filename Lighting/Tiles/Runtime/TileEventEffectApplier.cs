@@ -5,7 +5,7 @@ internal static class TileEventEffectApplier
     private const float EventTintBlend = 0.82f;
     private const float MinimumTintIntensity = 0.12f;
 
-    public static void Apply(Config config, in WorldLightingState state)
+    public static void Apply(LightingSettings config, in WorldLightingState state)
     {
         if (state.BloodMoonActive && config.BloodMoonEventEffects)
         {

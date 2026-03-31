@@ -2,8 +2,8 @@ using System;
 
 namespace LightingEssentials;
 
-internal readonly record struct TileLightEntry(int TileId, Func<Config, Color> SelectColor);
-internal readonly record struct TileLightGroupEntry(int[] TileIds, Func<Config, Color> SelectColor);
+internal readonly record struct TileLightEntry(int TileId, Func<LightingSettings, Color> SelectColor);
+internal readonly record struct TileLightGroupEntry(int[] TileIds, Func<LightingSettings, Color> SelectColor);
 
 internal static class TileLightBaseEntries
 {

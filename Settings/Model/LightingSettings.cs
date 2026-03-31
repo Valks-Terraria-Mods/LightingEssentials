@@ -4,7 +4,7 @@ using Terraria.ModLoader.Config;
 namespace LightingEssentials;
 
 [BackgroundColor(0, 0, 0, 100)]
-public class Config : ModConfig
+public class LightingSettings : ModConfig
 {
     public override ConfigScope Mode => ConfigScope.ClientSide;
 
@@ -16,6 +16,10 @@ public class Config : ModConfig
     [DefaultValue(typeof(Color), "7, 7, 7, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color PlayerLight;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool PlayerLightEnabled;
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -477,15 +481,29 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public Color Sapphire;
 
-    public override void OnLoaded()
+    /// <summary>
+    /// Pushes current settings values into runtime systems and refreshes tile lighting.
+    /// </summary>
+    public void ApplyRuntimeChanges()
     {
         LightingEssentials.Config = this;
         LightRuntime.ApplyConfig(this);
+        LightTiles.InitLight();
     }
 
+    /// <summary>
+    /// Called by tModLoader when config data is first loaded.
+    /// </summary>
+    public override void OnLoaded()
+    {
+        ApplyRuntimeChanges();
+    }
+
+    /// <summary>
+    /// Called by tModLoader whenever config values change.
+    /// </summary>
     public override void OnChanged()
     {
-        LightRuntime.ApplyConfig(this);
-        LightTiles.InitLight();
+        ApplyRuntimeChanges();
     }
 }

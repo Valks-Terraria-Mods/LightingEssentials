@@ -9,7 +9,7 @@ namespace LightingEssentials;
 
 public class LightingEssentials : Mod
 {
-	public static Config Config { get; set; }
+    public static LightingSettings Config { get; set; }
 
 	public static ILog Log { get; private set; }
 

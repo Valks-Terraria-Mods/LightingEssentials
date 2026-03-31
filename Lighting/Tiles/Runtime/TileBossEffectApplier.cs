@@ -5,9 +5,9 @@ namespace LightingEssentials;
 internal static class TileBossEffectApplier
 {
     private const float MinBossMultiplier = 1f;
-    private const float MaxBossMultiplier = 4f;
+    private const float MaxBossMultiplier = 2f;
 
-    public static void Apply(Config config, in WorldLightingState state)
+    public static void Apply(LightingSettings config, in WorldLightingState state)
     {
         TryBrighten(config.BossKingSlimeEffects, state.DownedKingSlime, config.BossKingSlimeEffectsMultiplier, TileLightGroups.SurfaceGrowthTiles);
         TryBrighten(config.BossEyeofCthulhuEffects, state.DownedEyeOfCthulhu, config.BossEyeofCthulhuEffectsMultiplier, TileLightGroups.SurfaceGrowthTiles, TileLightGroups.HerbFloraTiles);

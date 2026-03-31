@@ -2,7 +2,7 @@ namespace LightingEssentials;
 
 internal static class LightRuntimeStateFactory
 {
-    public static LightRuntimeState Create(Config config)
+    public static LightRuntimeState Create(LightingSettings config)
     {
         if (config is null)
             return LightRuntimeState.Disabled;
@@ -10,7 +10,7 @@ internal static class LightRuntimeStateFactory
         bool modEnabled = config.ModEnabled;
 
         Vector3 playerLightColor = LightColorMath.Clamp(config.PlayerLight.ToVector3());
-        bool playerLightEnabled = modEnabled && !LightColorMath.IsDark(playerLightColor);
+        bool playerLightEnabled = modEnabled && config.PlayerLightEnabled && !LightColorMath.IsDark(playerLightColor);
 
         Vector3 projectileLightColor = LightColorMath.Clamp(config.ProjectileLightColor.ToVector3());
         bool projectileLightEnabled = modEnabled && config.ProjectileLightEnabled && !LightColorMath.IsDark(projectileLightColor);

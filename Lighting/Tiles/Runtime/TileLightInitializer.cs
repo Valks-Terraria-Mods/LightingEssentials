@@ -4,7 +4,7 @@ internal static class TileLightInitializer
 {
     public static void Initialize()
     {
-        Config config = LightingEssentials.Config;
+        LightingSettings config = LightingEssentials.Config;
         if (config is null)
             return;
 
@@ -20,7 +20,7 @@ internal static class TileLightInitializer
         TileEventEffectApplier.Apply(config, state);
     }
 
-    private static void ApplyBaseLighting(Config config)
+    private static void ApplyBaseLighting(LightingSettings config)
     {
         for (int i = 0; i < TileLightBaseEntries.SingleTileEntries.Length; i++)
         {

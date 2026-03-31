@@ -477,4 +477,490 @@ Configs: {
 			Tooltip: Light color for sapphire gem.
 		}
 	}
+
+	LightingSettings: {
+		DisplayName: Lighting Settings
+
+		ModEnabled: {
+			Label: Mod Enabled
+			Tooltip: ""
+		}
+
+		PlayerLight: {
+			Label: Player Light
+			Tooltip: ""
+		}
+
+		BossKingSlimeEffects: {
+			Label: Boss King Slime Effects
+			Tooltip: ""
+		}
+
+		BossKingSlimeEffectsMultiplier: {
+			Label: Boss King Slime Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossEyeofCthulhuEffects: {
+			Label: Boss Eyeof Cthulhu Effects
+			Tooltip: ""
+		}
+
+		BossEyeofCthulhuEffectsMultiplier: {
+			Label: Boss Eyeof Cthulhu Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossEvilBiomeEffects: {
+			Label: Boss Evil Biome Effects
+			Tooltip: ""
+		}
+
+		BossEvilBiomeEffectsMultiplier: {
+			Label: Boss Evil Biome Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossQueenBeeEffects: {
+			Label: Boss Queen Bee Effects
+			Tooltip: ""
+		}
+
+		BossQueenBeeEffectsMultiplier: {
+			Label: Boss Queen Bee Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossSkeletronEffects: {
+			Label: Boss Skeletron Effects
+			Tooltip: ""
+		}
+
+		BossSkeletronEffectsMultiplier: {
+			Label: Boss Skeletron Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossDeerclopsEffects: {
+			Label: Boss Deerclops Effects
+			Tooltip: ""
+		}
+
+		BossDeerclopsEffectsMultiplier: {
+			Label: Boss Deerclops Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossWallOfFleshEffects: {
+			Label: Boss Wall Of Flesh Effects
+			Tooltip: ""
+		}
+
+		BossWallOfFleshEffectsMultiplier: {
+			Label: Boss Wall Of Flesh Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossQueenSlimeEffects: {
+			Label: Boss Queen Slime Effects
+			Tooltip: ""
+		}
+
+		BossQueenSlimeEffectsMultiplier: {
+			Label: Boss Queen Slime Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossMechEffects: {
+			Label: Boss Mech Effects
+			Tooltip: ""
+		}
+
+		BossMechEffectsMultiplier: {
+			Label: Boss Mech Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossPlanteraEffects: {
+			Label: Boss Plantera Effects
+			Tooltip: ""
+		}
+
+		BossPlanteraEffectsMultiplier: {
+			Label: Boss Plantera Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossGolemEffects: {
+			Label: Boss Golem Effects
+			Tooltip: ""
+		}
+
+		BossGolemEffectsMultiplier: {
+			Label: Boss Golem Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossDukeFishronEffects: {
+			Label: Boss Duke Fishron Effects
+			Tooltip: ""
+		}
+
+		BossDukeFishronEffectsMultiplier: {
+			Label: Boss Duke Fishron Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossEmpressOfLightEffects: {
+			Label: Boss Empress Of Light Effects
+			Tooltip: ""
+		}
+
+		BossEmpressOfLightEffectsMultiplier: {
+			Label: Boss Empress Of Light Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossLunaticCultistEffects: {
+			Label: Boss Lunatic Cultist Effects
+			Tooltip: ""
+		}
+
+		BossLunaticCultistEffectsMultiplier: {
+			Label: Boss Lunatic Cultist Effects Multiplier
+			Tooltip: ""
+		}
+
+		BossMoonLordEffects: {
+			Label: Boss Moon Lord Effects
+			Tooltip: ""
+		}
+
+		BossMoonLordEffectsMultiplier: {
+			Label: Boss Moon Lord Effects Multiplier
+			Tooltip: ""
+		}
+
+		BloodMoonEventEffects: {
+			Label: Blood Moon Event Effects
+			Tooltip: ""
+		}
+
+		BloodMoonEventColor: {
+			Label: Blood Moon Event Color
+			Tooltip: ""
+		}
+
+		SolarEclipseEventEffects: {
+			Label: Solar Eclipse Event Effects
+			Tooltip: ""
+		}
+
+		SolarEclipseEventColor: {
+			Label: Solar Eclipse Event Color
+			Tooltip: ""
+		}
+
+		FrostLegionEventEffects: {
+			Label: Frost Legion Event Effects
+			Tooltip: ""
+		}
+
+		FrostLegionEventColor: {
+			Label: Frost Legion Event Color
+			Tooltip: ""
+		}
+
+		ProjectileLightEnabled: {
+			Label: Projectile Light Enabled
+			Tooltip: ""
+		}
+
+		ProjectileLightColor: {
+			Label: Projectile Light Color
+			Tooltip: ""
+		}
+
+		EnemyLightEnabled: {
+			Label: Enemy Light Enabled
+			Tooltip: ""
+		}
+
+		EnemyLightColor: {
+			Label: Enemy Light Color
+			Tooltip: ""
+		}
+
+		Grass: {
+			Label: Grass
+			Tooltip: ""
+		}
+
+		Plants: {
+			Label: Plants
+			Tooltip: ""
+		}
+
+		Containers: {
+			Label: Containers
+			Tooltip: ""
+		}
+
+		Pots: {
+			Label: Pots
+			Tooltip: ""
+		}
+
+		Cactus: {
+			Label: Cactus
+			Tooltip: ""
+		}
+
+		HallowedFlora: {
+			Label: Hallowed Flora
+			Tooltip: ""
+		}
+
+		MushroomFlora: {
+			Label: Mushroom Flora
+			Tooltip: ""
+		}
+
+		HerbFlora: {
+			Label: Herb Flora
+			Tooltip: ""
+		}
+
+		AquaticFlora: {
+			Label: Aquatic Flora
+			Tooltip: ""
+		}
+
+		SunflowerFlora: {
+			Label: Sunflower Flora
+			Tooltip: ""
+		}
+
+		AshFlora: {
+			Label: Ash Flora
+			Tooltip: ""
+		}
+
+		BambooFlora: {
+			Label: Bamboo Flora
+			Tooltip: ""
+		}
+
+		ExoticMoss: {
+			Label: Exotic Moss
+			Tooltip: ""
+		}
+
+		JungleBiome: {
+			Label: Jungle Biome
+			Tooltip: ""
+		}
+
+		SnowBiome: {
+			Label: Snow Biome
+			Tooltip: ""
+		}
+
+		DesertBiome: {
+			Label: Desert Biome
+			Tooltip: ""
+		}
+
+		CorruptionBiome: {
+			Label: Corruption Biome
+			Tooltip: ""
+		}
+
+		CrimsonBiome: {
+			Label: Crimson Biome
+			Tooltip: ""
+		}
+
+		LifeCrystal: {
+			Label: Life Crystal
+			Tooltip: ""
+		}
+
+		ManaCrystal: {
+			Label: Mana Crystal
+			Tooltip: ""
+		}
+
+		LifeFruit: {
+			Label: Life Fruit
+			Tooltip: ""
+		}
+
+		RedMoss: {
+			Label: Red Moss
+			Tooltip: ""
+		}
+
+		PurpleMoss: {
+			Label: Purple Moss
+			Tooltip: ""
+		}
+
+		LongMoss: {
+			Label: Long Moss
+			Tooltip: ""
+		}
+
+		LavaMoss: {
+			Label: Lava Moss
+			Tooltip: ""
+		}
+
+		GreenMoss: {
+			Label: Green Moss
+			Tooltip: ""
+		}
+
+		BrownMoss: {
+			Label: Brown Moss
+			Tooltip: ""
+		}
+
+		BlueMoss: {
+			Label: Blue Moss
+			Tooltip: ""
+		}
+
+		LunarOre: {
+			Label: Lunar Ore
+			Tooltip: ""
+		}
+
+		Titanium: {
+			Label: Titanium
+			Tooltip: ""
+		}
+
+		Adamantite: {
+			Label: Adamantite
+			Tooltip: ""
+		}
+
+		Orichalcum: {
+			Label: Orichalcum
+			Tooltip: ""
+		}
+
+		Mythril: {
+			Label: Mythril
+			Tooltip: ""
+		}
+
+		Palladium: {
+			Label: Palladium
+			Tooltip: ""
+		}
+
+		Cobalt: {
+			Label: Cobalt
+			Tooltip: ""
+		}
+
+		Hellstone: {
+			Label: Hellstone
+			Tooltip: ""
+		}
+
+		Chlorophyte: {
+			Label: Chlorophyte
+			Tooltip: ""
+		}
+
+		Meteorite: {
+			Label: Meteorite
+			Tooltip: ""
+		}
+
+		Iron: {
+			Label: Iron
+			Tooltip: ""
+		}
+
+		Lead: {
+			Label: Lead
+			Tooltip: ""
+		}
+
+		Copper: {
+			Label: Copper
+			Tooltip: ""
+		}
+
+		Tin: {
+			Label: Tin
+			Tooltip: ""
+		}
+
+		Silver: {
+			Label: Silver
+			Tooltip: ""
+		}
+
+		Gold: {
+			Label: Gold
+			Tooltip: ""
+		}
+
+		Platinum: {
+			Label: Platinum
+			Tooltip: ""
+		}
+
+		Tungsten: {
+			Label: Tungsten
+			Tooltip: ""
+		}
+
+		Amethyst: {
+			Label: Amethyst
+			Tooltip: ""
+		}
+
+		Topaz: {
+			Label: Topaz
+			Tooltip: ""
+		}
+
+		Emerald: {
+			Label: Emerald
+			Tooltip: ""
+		}
+
+		AmberGemspark: {
+			Label: Amber Gemspark
+			Tooltip: ""
+		}
+
+		Diamond: {
+			Label: Diamond
+			Tooltip: ""
+		}
+
+		Ruby: {
+			Label: Ruby
+			Tooltip: ""
+		}
+
+		Sapphire: {
+			Label: Sapphire
+			Tooltip: ""
+		}
+
+		PlayerLightEnabled: {
+			Label: Player Light Enabled
+			Tooltip: ""
+		}
+	}
 }
+
+"Keybinds.Lighting Settings Panel.DisplayName": Lighting  Settings  Panel
