@@ -12,6 +12,16 @@ Configs: {
 			Tooltip: Light color emitted by the player.
 		}
 
+		BossKingSlimeEffects: {
+			Label: King Slime Effects
+			Tooltip: After King Slime is defeated, brightens surface growth tiles.
+		}
+
+		BossKingSlimeEffectsMultiplier: {
+			Label: King Slime Multiplier
+			Tooltip: Brightness multiplier for King Slime effects.
+		}
+
 		BossEyeofCthulhuEffects: {
 			Label: Eye Of Cthulhu Effects
 			Tooltip: After Eye Of Cthulhu is defeated, brightens grass and plants.
@@ -32,9 +42,19 @@ Configs: {
 			Tooltip: Brightness multiplier for the boss evil biome.
 		}
 
+		BossQueenBeeEffects: {
+			Label: Queen Bee Effects
+			Tooltip: After Queen Bee is defeated, brightens jungle tiles and rare jungle flora.
+		}
+
+		BossQueenBeeEffectsMultiplier: {
+			Label: Queen Bee Multiplier
+			Tooltip: Brightness multiplier for Queen Bee effects.
+		}
+
 		BossSkeletronEffects: {
 			Label: Skeletron Effects
-			Tooltip: After Skeletron is defeated, brightens meteorite tiles.
+			Tooltip: After Skeletron is defeated, brightens underworld ore tiles.
 		}
 
 		BossSkeletronEffectsMultiplier: {
@@ -42,14 +62,34 @@ Configs: {
 			Tooltip: Brightness multiplier for Skeletron.
 		}
 
-		BossPlanteraEffects: {
-			Label: Plantera Effects
-			Tooltip: After Plantera is defeated, brightens jungle tiles.
+		BossDeerclopsEffects: {
+			Label: Deerclops Effects
+			Tooltip: After Deerclops is defeated, brightens snow tiles.
 		}
 
-		BossPlanteraEffectsMultiplier: {
-			Label: Plantera Multiplier
-			Tooltip: Brightness multiplier for Plantera jungle.
+		BossDeerclopsEffectsMultiplier: {
+			Label: Deerclops Multiplier
+			Tooltip: Brightness multiplier for Deerclops effects.
+		}
+
+		BossWallOfFleshEffects: {
+			Label: Wall Of Flesh Effects
+			Tooltip: After hardmode starts, brightens underworld ores and ash flora.
+		}
+
+		BossWallOfFleshEffectsMultiplier: {
+			Label: Wall Of Flesh Multiplier
+			Tooltip: Brightness multiplier for Wall Of Flesh effects.
+		}
+
+		BossQueenSlimeEffects: {
+			Label: Queen Slime Effects
+			Tooltip: After Queen Slime is defeated, brightens hardmode progression ores and hallow flora.
+		}
+
+		BossQueenSlimeEffectsMultiplier: {
+			Label: Queen Slime Multiplier
+			Tooltip: Brightness multiplier for Queen Slime effects.
 		}
 
 		BossMechEffects: {
@@ -62,14 +102,94 @@ Configs: {
 			Tooltip: Final multiplier at 3 mech bosses defeated.
 		}
 
+		BossPlanteraEffects: {
+			Label: Plantera Effects
+			Tooltip: After Plantera is defeated, brightens jungle tiles.
+		}
+
+		BossPlanteraEffectsMultiplier: {
+			Label: Plantera Multiplier
+			Tooltip: Brightness multiplier for Plantera jungle.
+		}
+
+		BossGolemEffects: {
+			Label: Golem Effects
+			Tooltip: After Golem is defeated, brightens chlorophyte tiles.
+		}
+
+		BossGolemEffectsMultiplier: {
+			Label: Golem Multiplier
+			Tooltip: Brightness multiplier for Golem effects.
+		}
+
+		BossDukeFishronEffects: {
+			Label: Duke Fishron Effects
+			Tooltip: After Duke Fishron is defeated, brightens gem and aquatic flora tiles.
+		}
+
+		BossDukeFishronEffectsMultiplier: {
+			Label: Duke Fishron Multiplier
+			Tooltip: Brightness multiplier for Duke Fishron effects.
+		}
+
+		BossEmpressOfLightEffects: {
+			Label: Empress Of Light Effects
+			Tooltip: After Empress Of Light is defeated, brightens crystal and hallow flora tiles.
+		}
+
+		BossEmpressOfLightEffectsMultiplier: {
+			Label: Empress Of Light Multiplier
+			Tooltip: Brightness multiplier for Empress Of Light effects.
+		}
+
+		BossLunaticCultistEffects: {
+			Label: Lunatic Cultist Effects
+			Tooltip: After Lunatic Cultist is defeated, brightens lunar ore tiles.
+		}
+
+		BossLunaticCultistEffectsMultiplier: {
+			Label: Lunatic Cultist Multiplier
+			Tooltip: Brightness multiplier for Lunatic Cultist effects.
+		}
+
 		BossMoonLordEffects: {
 			Label: Moon Lord Effects
-			Tooltip: After MoonLord is defeated, brightens lunar ore.
+			Tooltip: After Moon Lord is defeated, brightens lunar ore.
 		}
 
 		BossMoonLordEffectsMultiplier: {
 			Label: Moon Lord Multiplier
 			Tooltip: Brightness multiplier for the Moon Lord lunar ore.
+		}
+
+		BloodMoonEventEffects: {
+			Label: Blood Moon Tile Effects
+			Tooltip: During Blood Moon, tints all configured glowing tiles.
+		}
+
+		BloodMoonEventColor: {
+			Label: Blood Moon Color
+			Tooltip: Tint color used while Blood Moon is active.
+		}
+
+		SolarEclipseEventEffects: {
+			Label: Solar Eclipse Tile Effects
+			Tooltip: During a Solar Eclipse, tints all configured glowing tiles.
+		}
+
+		SolarEclipseEventColor: {
+			Label: Solar Eclipse Color
+			Tooltip: Tint color used while a Solar Eclipse is active.
+		}
+
+		FrostLegionEventEffects: {
+			Label: Frost Legion Tile Effects
+			Tooltip: During Frost Legion, tints all configured glowing tiles.
+		}
+
+		FrostLegionEventColor: {
+			Label: Frost Legion Color
+			Tooltip: Tint color used while Frost Legion is active.
 		}
 
 		ProjectileLightEnabled: {
@@ -105,6 +225,46 @@ Configs: {
 		Cactus: {
 			Label: Cactus
 			Tooltip: Light color for cactus tiles.
+		}
+
+		HallowedFlora: {
+			Label: Hallowed Flora
+			Tooltip: Light color for hallow grass, plants, and vines.
+		}
+
+		MushroomFlora: {
+			Label: Mushroom Flora
+			Tooltip: Light color for glowing mushroom flora tiles.
+		}
+
+		HerbFlora: {
+			Label: Herb Flora
+			Tooltip: Light color for herb growth stages and dye plants.
+		}
+
+		AquaticFlora: {
+			Label: Aquatic Flora
+			Tooltip: Light color for coral, seaweed, oasis plants, and lily pads.
+		}
+
+		SunflowerFlora: {
+			Label: Sunflower Flora
+			Tooltip: Light color for sunflowers.
+		}
+
+		AshFlora: {
+			Label: Ash Flora
+			Tooltip: Light color for ash grass, plants, and vines.
+		}
+
+		BambooFlora: {
+			Label: Bamboo Flora
+			Tooltip: Light color for bamboo growth.
+		}
+
+		ExoticMoss: {
+			Label: Exotic Moss
+			Tooltip: Light color for argon, krypton, xenon, violet, and rainbow moss.
 		}
 
 		JungleBiome: {

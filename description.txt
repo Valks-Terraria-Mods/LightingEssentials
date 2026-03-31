@@ -10,6 +10,7 @@ Featuring
 - Player has a very dim light
 - Killing bosses have different effects on lighting in world (see config)
 - Projectiles can have colored lighting (disabled by default)
+- Certain events like blood moon can drastically change lighting of your world temporarily
 
 You can configure EVERYTHING now
 

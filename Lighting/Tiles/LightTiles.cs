@@ -6,15 +6,97 @@ public class LightTiles : GlobalTile
 {
     private const float MinBossMultiplier = 1f;
     private const float MaxBossMultiplier = 4f;
+    private const float EventTintBlend = 0.82f;
+    private const float MinimumTintIntensity = 0.12f;
 
-    private static readonly int[] Boss1GrassPlantsTiles =
+    private static readonly int[] SurfaceGrowthTiles =
     [
         TileID.Grass,
         TileID.Plants,
         TileID.Plants2,
+        TileID.Cactus,
+        TileID.Sunflower,
     ];
 
-    private static readonly int[] Boss2EvilBiomeTiles =
+    private static readonly int[] CorruptionFloraTiles =
+    [
+        TileID.CorruptPlants,
+        TileID.CorruptThorns,
+        TileID.CorruptVines,
+    ];
+
+    private static readonly int[] HallowedFloraTiles =
+    [
+        TileID.HallowedGrass,
+        TileID.HallowedPlants,
+        TileID.HallowedPlants2,
+        TileID.HallowedVines,
+    ];
+
+    private static readonly int[] MushroomFloraTiles =
+    [
+        TileID.MushroomGrass,
+        TileID.MushroomPlants,
+        TileID.MushroomVines,
+        TileID.MushroomTrees,
+        TileID.MushroomBlock,
+    ];
+
+    private static readonly int[] HerbFloraTiles =
+    [
+        TileID.ImmatureHerbs,
+        TileID.MatureHerbs,
+        TileID.BloomingHerbs,
+        TileID.DyePlants,
+    ];
+
+    private static readonly int[] AquaticFloraTiles =
+    [
+        TileID.Coral,
+        TileID.Seaweed,
+        TileID.SeaOats,
+        TileID.OasisPlants,
+        TileID.LilyPad,
+    ];
+
+    private static readonly int[] AshFloraTiles =
+    [
+        TileID.AshGrass,
+        TileID.AshPlants,
+        TileID.AshVines,
+    ];
+
+    private static readonly int[] BambooFloraTiles =
+    [
+        TileID.Bamboo,
+        TileID.BambooBlock,
+        TileID.LargeBambooBlock,
+    ];
+
+    private static readonly int[] ExoticMossTiles =
+    [
+        TileID.KryptonMoss,
+        TileID.XenonMoss,
+        TileID.ArgonMoss,
+        TileID.VioletMoss,
+        TileID.RainbowMoss,
+        TileID.KryptonMossBlock,
+        TileID.XenonMossBlock,
+        TileID.ArgonMossBlock,
+        TileID.VioletMossBlock,
+        TileID.RainbowMossBlock,
+    ];
+
+    private static readonly int[] JungleRareFloraTiles =
+    [
+        TileID.PlanteraBulb,
+        TileID.PlantDetritus,
+        TileID.PlantDetritus3x2Echo,
+        TileID.PlantDetritus2x2Echo,
+        TileID.VineFlowers,
+    ];
+
+    private static readonly int[] EvilBiomeTiles =
     [
         TileID.CrimsonGrass,
         TileID.CrimsonJungleGrass,
@@ -24,7 +106,7 @@ public class LightTiles : GlobalTile
         TileID.CorruptGrass,
     ];
 
-    private static readonly int[] PlanteraJungleTiles =
+    private static readonly int[] JungleTiles =
     [
         TileID.JungleGrass,
         TileID.JunglePlants,
@@ -33,7 +115,7 @@ public class LightTiles : GlobalTile
         TileID.JungleVines,
     ];
 
-    private static readonly int[] MechBossOreTiles =
+    private static readonly int[] HardmodeOreTiles =
     [
         TileID.Cobalt,
         TileID.Palladium,
@@ -43,14 +125,56 @@ public class LightTiles : GlobalTile
         TileID.Titanium,
     ];
 
-    private static readonly int[] Boss3MeteoriteTiles =
+    private static readonly int[] UnderworldOreTiles =
     [
         TileID.Meteorite,
+        TileID.Hellstone,
     ];
 
-    private static readonly int[] MoonLordLunarOreTiles =
+    private static readonly int[] LunarOreTiles =
     [
         TileID.LunarOre,
+    ];
+
+    private static readonly int[] SnowTiles =
+    [
+        TileID.IceBlock,
+        TileID.BlueMoss,
+    ];
+
+    private static readonly int[] GemTiles =
+    [
+        TileID.Sapphire,
+        TileID.Ruby,
+        TileID.Diamond,
+        TileID.AmberGemspark,
+        TileID.Emerald,
+        TileID.Topaz,
+        TileID.Amethyst,
+    ];
+
+    private static readonly int[] CrystalTiles =
+    [
+        TileID.Heart,
+        TileID.ManaCrystal,
+        TileID.Crystals,
+        TileID.LifeFruit,
+    ];
+
+    private static readonly int[] ChlorophyteTiles =
+    [
+        TileID.Chlorophyte,
+    ];
+
+    private static readonly int[] HardmodeProgressionTiles =
+    [
+        TileID.Cobalt,
+        TileID.Palladium,
+        TileID.Mythril,
+        TileID.Orichalcum,
+        TileID.Adamantite,
+        TileID.Titanium,
+        TileID.Chlorophyte,
     ];
 
     private static Vector3[] _tileLight = [];
@@ -73,7 +197,7 @@ public class LightTiles : GlobalTile
         if (!LightRuntime.ModEnabled)
             return;
 
-        BossProgressionState progression = BossProgressionState.Capture();
+        WorldLightingState state = LightWorldSystem.GetCurrentState();
 
         // Ores
         SetOre(TileID.Sapphire, c.Sapphire);
@@ -110,6 +234,16 @@ public class LightTiles : GlobalTile
         SetEnv(TileID.CrimsonThorns, c.CrimsonBiome);
         SetEnv(TileID.CrimsonVines, c.CrimsonBiome);
         SetEnv(TileID.CorruptGrass, c.CorruptionBiome);
+        SetEnvTiles(CorruptionFloraTiles, c.CorruptionBiome);
+        SetEnvTiles(HallowedFloraTiles, c.HallowedFlora);
+        SetEnvTiles(MushroomFloraTiles, c.MushroomFlora);
+        SetEnvTiles(HerbFloraTiles, c.HerbFlora);
+        SetEnvTiles(AquaticFloraTiles, c.AquaticFlora);
+        SetEnvTiles(AshFloraTiles, c.AshFlora);
+        SetEnvTiles(BambooFloraTiles, c.BambooFlora);
+        SetEnvTiles(ExoticMossTiles, c.ExoticMoss);
+        SetEnvTiles(JungleRareFloraTiles, c.JungleBiome);
+        SetEnv(TileID.Sunflower, c.SunflowerFlora);
         SetEnv(TileID.Pots, c.Pots);
         SetEnv(TileID.FossilOre, c.DesertBiome);
         SetEnv(TileID.IceBlock, c.SnowBiome);
@@ -136,7 +270,8 @@ public class LightTiles : GlobalTile
         SetEnv(TileID.Plants, c.Plants);
         SetEnv(TileID.Plants2, c.Plants);
         SetEnv(TileID.Cactus, c.Cactus);
-        ApplyBossBrightnessBonuses(c, progression);
+        ApplyBossEffects(c, state);
+        ApplyEventEffects(c, state);
 
         return;
 
@@ -148,6 +283,15 @@ public class LightTiles : GlobalTile
         static void SetEnv(int tileId, Color color)
         {
             SetTileLight(tileId, color.ToVector3());
+        }
+
+        static void SetEnvTiles(int[] tileIds, Color color)
+        {
+            Vector3 colorVector = color.ToVector3();
+            for (int i = 0; i < tileIds.Length; i++)
+            {
+                SetTileLight(tileIds[i], colorVector);
+            }
         }
     }
 
@@ -173,39 +317,113 @@ public class LightTiles : GlobalTile
         Main.tileShine2[tileId] = false;
     }
 
-    private static void ApplyBossBrightnessBonuses(Config config, BossProgressionState progression)
+    private static void ApplyBossEffects(Config config, WorldLightingState state)
     {
-        if (config.BossEyeofCthulhuEffects && progression.DownedBoss1)
+        if (config.BossKingSlimeEffects && state.DownedKingSlime)
         {
-            BrightenTiles(Boss1GrassPlantsTiles, ClampBossMultiplier(config.BossEyeofCthulhuEffectsMultiplier));
+            BrightenTiles(SurfaceGrowthTiles, ClampBossMultiplier(config.BossKingSlimeEffectsMultiplier));
         }
 
-        if (config.BossEvilBiomeEffects && progression.DownedBoss2)
+        if (config.BossEyeofCthulhuEffects && state.DownedEyeOfCthulhu)
         {
-            BrightenTiles(Boss2EvilBiomeTiles, ClampBossMultiplier(config.BossEvilBiomeEffectsMultiplier));
+            BrightenTiles(SurfaceGrowthTiles, ClampBossMultiplier(config.BossEyeofCthulhuEffectsMultiplier));
+            BrightenTiles(HerbFloraTiles, ClampBossMultiplier(config.BossEyeofCthulhuEffectsMultiplier));
         }
 
-        if (config.BossSkeletronEffects && progression.DownedBoss3)
+        if (config.BossEvilBiomeEffects && state.DownedEvilBoss)
         {
-            BrightenTiles(Boss3MeteoriteTiles, ClampBossMultiplier(config.BossSkeletronEffectsMultiplier));
+            BrightenTiles(EvilBiomeTiles, ClampBossMultiplier(config.BossEvilBiomeEffectsMultiplier));
+            BrightenTiles(CorruptionFloraTiles, ClampBossMultiplier(config.BossEvilBiomeEffectsMultiplier));
         }
 
-        if (config.BossPlanteraEffects && progression.DownedPlantera)
+        if (config.BossQueenBeeEffects && state.DownedQueenBee)
         {
-            BrightenTiles(PlanteraJungleTiles, ClampBossMultiplier(config.BossPlanteraEffectsMultiplier));
+            BrightenTiles(JungleTiles, ClampBossMultiplier(config.BossQueenBeeEffectsMultiplier));
+            BrightenTiles(JungleRareFloraTiles, ClampBossMultiplier(config.BossQueenBeeEffectsMultiplier));
         }
 
-        if (config.BossMechEffects && progression.MechBossesDowned > 0)
+        if (config.BossSkeletronEffects && state.DownedSkeletron)
+        {
+            BrightenTiles(UnderworldOreTiles, ClampBossMultiplier(config.BossSkeletronEffectsMultiplier));
+        }
+
+        if (config.BossDeerclopsEffects && state.DownedDeerclops)
+        {
+            BrightenTiles(SnowTiles, ClampBossMultiplier(config.BossDeerclopsEffectsMultiplier));
+        }
+
+        if (config.BossWallOfFleshEffects && state.HardModeUnlocked)
+        {
+            BrightenTiles(UnderworldOreTiles, ClampBossMultiplier(config.BossWallOfFleshEffectsMultiplier));
+            BrightenTiles(AshFloraTiles, ClampBossMultiplier(config.BossWallOfFleshEffectsMultiplier));
+        }
+
+        if (config.BossQueenSlimeEffects && state.DownedQueenSlime)
+        {
+            BrightenTiles(HardmodeProgressionTiles, ClampBossMultiplier(config.BossQueenSlimeEffectsMultiplier));
+            BrightenTiles(HallowedFloraTiles, ClampBossMultiplier(config.BossQueenSlimeEffectsMultiplier));
+            BrightenTiles(MushroomFloraTiles, ClampBossMultiplier(config.BossQueenSlimeEffectsMultiplier));
+        }
+
+        if (config.BossMechEffects && state.MechBossesDowned > 0)
         {
             float mechMaxMultiplier = ClampBossMultiplier(config.BossMechEffectsMultiplier);
-            float mechProgress = progression.MechBossesDowned / 3f;
+            float mechProgress = state.MechBossesDowned / 3f;
             float mechMultiplier = 1f + ((mechMaxMultiplier - 1f) * mechProgress);
-            BrightenTiles(MechBossOreTiles, mechMultiplier);
+            BrightenTiles(HardmodeOreTiles, mechMultiplier);
         }
 
-        if (config.BossMoonLordEffects && progression.DownedMoonLord)
+        if (config.BossPlanteraEffects && state.DownedPlantera)
         {
-            BrightenTiles(MoonLordLunarOreTiles, ClampBossMultiplier(config.BossMoonLordEffectsMultiplier));
+            BrightenTiles(JungleTiles, ClampBossMultiplier(config.BossPlanteraEffectsMultiplier));
+            BrightenTiles(JungleRareFloraTiles, ClampBossMultiplier(config.BossPlanteraEffectsMultiplier));
+            BrightenTiles(HerbFloraTiles, ClampBossMultiplier(config.BossPlanteraEffectsMultiplier));
+        }
+
+        if (config.BossGolemEffects && state.DownedGolem)
+        {
+            BrightenTiles(ChlorophyteTiles, ClampBossMultiplier(config.BossGolemEffectsMultiplier));
+        }
+
+        if (config.BossDukeFishronEffects && state.DownedFishron)
+        {
+            BrightenTiles(GemTiles, ClampBossMultiplier(config.BossDukeFishronEffectsMultiplier));
+            BrightenTiles(AquaticFloraTiles, ClampBossMultiplier(config.BossDukeFishronEffectsMultiplier));
+        }
+
+        if (config.BossEmpressOfLightEffects && state.DownedEmpressOfLight)
+        {
+            BrightenTiles(CrystalTiles, ClampBossMultiplier(config.BossEmpressOfLightEffectsMultiplier));
+            BrightenTiles(HallowedFloraTiles, ClampBossMultiplier(config.BossEmpressOfLightEffectsMultiplier));
+        }
+
+        if (config.BossLunaticCultistEffects && state.DownedLunaticCultist)
+        {
+            BrightenTiles(LunarOreTiles, ClampBossMultiplier(config.BossLunaticCultistEffectsMultiplier));
+        }
+
+        if (config.BossMoonLordEffects && state.DownedMoonLord)
+        {
+            BrightenTiles(LunarOreTiles, ClampBossMultiplier(config.BossMoonLordEffectsMultiplier));
+            BrightenTiles(ExoticMossTiles, ClampBossMultiplier(config.BossMoonLordEffectsMultiplier));
+        }
+    }
+
+    private static void ApplyEventEffects(Config config, WorldLightingState state)
+    {
+        if (state.BloodMoonActive && config.BloodMoonEventEffects)
+        {
+            TintAllDefinedTiles(config.BloodMoonEventColor.ToVector3(), EventTintBlend);
+        }
+
+        if (state.EclipseActive && config.SolarEclipseEventEffects)
+        {
+            TintAllDefinedTiles(config.SolarEclipseEventColor.ToVector3(), EventTintBlend);
+        }
+
+        if (state.FrostLegionActive && config.FrostLegionEventEffects)
+        {
+            TintAllDefinedTiles(config.FrostLegionEventColor.ToVector3(), EventTintBlend);
         }
     }
 
@@ -229,35 +447,33 @@ public class LightTiles : GlobalTile
         }
     }
 
-    /*private static Color GetAverageTileColor(int tileId)
+    private static void TintAllDefinedTiles(Vector3 tintColor, float blendAmount)
     {
-        // Attempt to get the tile texture asset
-        Asset<Texture2D> tex = TextureAssets.Tile[tileId];
-
-        LightingEssentials.Log.Debug("Valk: " + tileId);
-
-        Color[] pixels = new Color[tex.Width() * tex.Height()];
-        ((Texture2D)tex).GetData(pixels);
-        long r = 0, g = 0, b = 0;
-
-        foreach (Color c in pixels)
+        for (int tileId = 0; tileId < _tileLight.Length; tileId++)
         {
-            r += c.R; g += c.G; b += c.B;
+            if (!_hasTileLight[tileId])
+                continue;
+
+            _tileLight[tileId] = BlendTint(_tileLight[tileId], tintColor, blendAmount);
         }
-
-        int total = pixels.Length;
-
-        Color defaultTileColor = new((int)(r / total), (int)(g / total), (int)(b / total));
-
-        return defaultTileColor;
     }
 
-    public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
+    private static Vector3 BlendTint(Vector3 baseColor, Vector3 tintColor, float blendAmount)
     {
-        base.PostDraw(i, j, type, spriteBatch);
+        if (blendAmount <= 0f)
+            return baseColor;
 
-        // We can safely get the texture tile in here with texture = TextureAssets.Tile[type] and texture.GetData(pixels)
-    }*/
+        Vector3 clampedTint = LightRuntime.ClampColor(tintColor);
+        if (clampedTint.X <= 0f && clampedTint.Y <= 0f && clampedTint.Z <= 0f)
+            return baseColor;
+
+        float intensity = Math.Max(baseColor.X, Math.Max(baseColor.Y, baseColor.Z));
+        if (intensity < MinimumTintIntensity)
+            intensity = MinimumTintIntensity;
+
+        Vector3 target = LightRuntime.ClampColor(clampedTint * intensity);
+        return LightRuntime.ClampColor(Vector3.Lerp(baseColor, target, blendAmount));
+    }
 
     public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
     {

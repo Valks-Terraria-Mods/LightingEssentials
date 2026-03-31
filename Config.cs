@@ -19,11 +19,21 @@ public class Config : ModConfig
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
+    public bool BossKingSlimeEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossKingSlimeEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
     public bool BossEyeofCthulhuEffects;
 
     [Range(1f, 4f)]
     [Increment(0.05f)]
-    [DefaultValue(1.2f)]
+    [DefaultValue(1.4f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float BossEyeofCthulhuEffectsMultiplier;
 
@@ -33,9 +43,19 @@ public class Config : ModConfig
 
     [Range(1f, 4f)]
     [Increment(0.05f)]
-    [DefaultValue(1.2f)]
+    [DefaultValue(1.4f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float BossEvilBiomeEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossQueenBeeEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossQueenBeeEffectsMultiplier;
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -43,9 +63,49 @@ public class Config : ModConfig
 
     [Range(1f, 4f)]
     [Increment(0.05f)]
-    [DefaultValue(1.2f)]
+    [DefaultValue(1.4f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float BossSkeletronEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossDeerclopsEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossDeerclopsEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossWallOfFleshEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossWallOfFleshEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossQueenSlimeEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossQueenSlimeEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossMechEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossMechEffectsMultiplier;
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -59,13 +119,43 @@ public class Config : ModConfig
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
-    public bool BossMechEffects;
+    public bool BossGolemEffects;
 
     [Range(1f, 4f)]
     [Increment(0.05f)]
-    [DefaultValue(1.2f)]
+    [DefaultValue(1.4f)]
     [BackgroundColor(0, 0, 0, 100)]
-    public float BossMechEffectsMultiplier;
+    public float BossGolemEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossDukeFishronEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossDukeFishronEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossEmpressOfLightEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossEmpressOfLightEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BossLunaticCultistEffects;
+
+    [Range(1f, 4f)]
+    [Increment(0.05f)]
+    [DefaultValue(1.4f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float BossLunaticCultistEffectsMultiplier;
 
     [DefaultValue(true)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -73,9 +163,36 @@ public class Config : ModConfig
 
     [Range(1f, 4f)]
     [Increment(0.05f)]
-    [DefaultValue(2f)]
+    [DefaultValue(1.4f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float BossMoonLordEffectsMultiplier;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool BloodMoonEventEffects;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "255, 35, 35, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color BloodMoonEventColor;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool SolarEclipseEventEffects;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "255, 130, 35, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color SolarEclipseEventColor;
+
+    [DefaultValue(true)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool FrostLegionEventEffects;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "90, 160, 255, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color FrostLegionEventColor;
 
     [DefaultValue(false)]
     [BackgroundColor(0, 0, 0, 100)]
@@ -110,6 +227,46 @@ public class Config : ModConfig
     [DefaultValue(typeof(Color), "20, 40, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]
     public Color Cactus;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "30, 16, 40, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color HallowedFlora;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 18, 32, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color MushroomFlora;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "18, 30, 8, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color HerbFlora;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "0, 24, 22, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color AquaticFlora;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "34, 30, 10, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color SunflowerFlora;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "18, 12, 8, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color AshFlora;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "5, 22, 8, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color BambooFlora;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "12, 12, 20, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color ExoticMoss;
 
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "0, 20, 0, 255")]
