@@ -203,6 +203,15 @@ public class Config : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public Color ProjectileLightColor;
 
+    [DefaultValue(false)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public bool EnemyLightEnabled;
+
+    [ColorNoAlpha]
+    [DefaultValue(typeof(Color), "35, 0, 0, 255")]
+    [BackgroundColor(0, 0, 0, 100)]
+    public Color EnemyLightColor;
+
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "0, 30, 0, 255")]
     [BackgroundColor(0, 0, 0, 100)]

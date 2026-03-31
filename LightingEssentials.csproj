@@ -4,6 +4,7 @@
   <PropertyGroup>
     <AssemblyName>LightingEssentials</AssemblyName>
     <LangVersion>latest</LangVersion>
+    <BuildMod>false</BuildMod>
   </PropertyGroup>
   <ItemGroup>
   </ItemGroup>
