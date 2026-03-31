@@ -12,7 +12,7 @@ Featuring
 - Projectiles can have colored lighting (disabled by default)
 - Certain events like blood moon can drastically change lighting of your world temporarily
 
-You can configure EVERYTHING now
+Configure the "Lighting Settings Panel" keybind to open up the custom config window.
 
 Discord for suggestions and support: https://discord.gg/j8HQZZ76r8
 Source code: https://github.com/Valks-Terraria-Mods/LightingEssentials
