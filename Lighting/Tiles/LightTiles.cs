@@ -157,7 +157,6 @@ public class LightTiles : GlobalTile
     [
         TileID.Heart,
         TileID.ManaCrystal,
-        TileID.Crystals,
         TileID.LifeFruit,
     ];
 
@@ -257,7 +256,6 @@ public class LightTiles : GlobalTile
         SetEnv(TileID.LifeFruit, c.LifeFruit);
         SetEnv(TileID.Heart, c.LifeCrystal);
         SetEnv(TileID.ManaCrystal, c.ManaCrystal);
-        SetEnv(TileID.Crystals, c.LifeCrystal);
         SetEnv(TileID.JungleGrass, c.JungleBiome);
         SetEnv(TileID.JunglePlants, c.JungleBiome);
         SetEnv(TileID.JunglePlants2, c.JungleBiome);
