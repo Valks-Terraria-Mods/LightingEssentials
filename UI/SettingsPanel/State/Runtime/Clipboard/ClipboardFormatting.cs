@@ -102,15 +102,26 @@ internal static class LightingSettingsPanelClipboardFormatting
 
     public static string FormatColor(Color color)
     {
-        return $"{color.R},{color.G},{color.B},{color.A}";
+        return $"{color.R}, {color.G}, {color.B}";
     }
 
     public static string FormatTileMember(int tileId)
     {
         if (TileID.Search.TryGetName(tileId, out string tileName) && !string.IsNullOrWhiteSpace(tileName))
-            return $"{tileName}({tileId})";
+            return tileName;
 
-        return $"Tile{tileId}";
+        return "Unknown Tile";
+    }
+
+    public static string EscapeMarkdownTableCell(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "-";
+
+        return value
+            .Replace("|", "\\|")
+            .Replace("\r", " ")
+            .Replace("\n", " ");
     }
 
     public static string FormatEventMember(LightingEventId eventId)

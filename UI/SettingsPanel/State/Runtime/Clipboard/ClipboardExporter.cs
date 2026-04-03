@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
 namespace LightingEssentials.UI.SettingsPanel.State.Runtime.Clipboard;
 
@@ -31,14 +32,15 @@ internal static class LightingSettingsPanelClipboardExporter
         if (!string.IsNullOrWhiteSpace(bossSection))
             sections.Add(bossSection);
 
-        return sections.Count == 0
-            ? string.Empty
-            : string.Join("\n\n", sections);
+        if (sections.Count == 0)
+            return string.Empty;
+
+        return string.Join("\n\n", sections);
     }
 
     private static string BuildModifiedScalarSection(LightingSettings settings, LightingSettings defaults)
     {
-        List<string> lines = [];
+        List<(string Name, string Modified, string Default)> rows = [];
 
         for (int i = 0; i < CopyableSettingsFields.Length; i++)
         {
@@ -54,11 +56,24 @@ internal static class LightingSettingsPanelClipboardExporter
             if (LightingSettingsPanelClipboardFormatting.ValuesEqual(currentValue, defaultValue))
                 continue;
 
-            lines.Add($"- {field.Name}: {LightingSettingsPanelClipboardFormatting.FormatValue(currentValue)} (default: {LightingSettingsPanelClipboardFormatting.FormatValue(defaultValue)})");
+            rows.Add((
+                field.Name,
+                LightingSettingsPanelClipboardFormatting.FormatValue(currentValue),
+                LightingSettingsPanelClipboardFormatting.FormatValue(defaultValue)));
         }
 
-        return lines.Count == 0
-            ? string.Empty
-            : "Scalar fields:\n" + string.Join("\n", lines);
+        if (rows.Count == 0)
+            return string.Empty;
+
+        StringBuilder builder = new();
+        builder.AppendLine("__Scalar Settings__");
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            (string name, string modified, string defaultValue) = rows[i];
+            builder.AppendLine($"**{name}:** `Modified` {modified} *(default: {defaultValue})*");
+        }
+
+        return builder.ToString().TrimEnd();
     }
 }
