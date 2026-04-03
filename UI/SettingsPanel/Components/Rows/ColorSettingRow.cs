@@ -21,32 +21,42 @@ internal sealed class ColorSettingRow : UIPanel
     /// <param name="descriptor">Descriptor that provides color get/set behavior.</param>
     /// <param name="settings">Mutable settings instance.</param>
     /// <param name="onPickRequested">Callback that opens the popup editor for this color descriptor.</param>
-    public ColorSettingRow(ColorSettingDescriptor descriptor, LightingSettings settings, Action<ColorSettingDescriptor> onPickRequested)
+    /// <param name="uiScale">Current panel UI scale factor.</param>
+    public ColorSettingRow(ColorSettingDescriptor descriptor, LightingSettings settings, Action<ColorSettingDescriptor> onPickRequested, float uiScale)
     {
         _descriptor = descriptor;
         _settings = settings;
         _onPickRequested = onPickRequested;
 
+        float rowHeight = SettingsPanelScale.Pixels(38f, uiScale);
+        float rowPadding = SettingsPanelScale.Pixels(8f, uiScale);
+        float labelScale = SettingsPanelScale.Text(0.82f, uiScale);
+        float pickTextScale = SettingsPanelScale.Text(0.74f, uiScale);
+        float pickWidth = SettingsPanelScale.Pixels(56f, uiScale);
+        float pickHeight = SettingsPanelScale.Pixels(22f, uiScale);
+        float previewOffset = SettingsPanelScale.Pixels(60f, uiScale);
+        float previewSize = SettingsPanelScale.Pixels(18f, uiScale);
+
         Width.Set(0f, 1f);
-        Height.Set(38f, 0f);
-        SetPadding(8f);
+        Height.Set(rowHeight, 0f);
+        SetPadding(rowPadding);
 
         BackgroundColor = SettingsPanelTheme.RowBackground;
         BorderColor = SettingsPanelTheme.RowBorder;
 
-        UIText label = new(descriptor.Label, 0.82f)
+        UIText label = new(descriptor.Label, labelScale)
         {
             VAlign = 0.5f,
         };
         Append(label);
 
-        FlatTextButton pickButton = new("Pick", 0.74f)
+        FlatTextButton pickButton = new("Pick", pickTextScale)
         {
             HAlign = 1f,
             VAlign = 0.5f,
         };
-        pickButton.Width.Set(56f, 0f);
-        pickButton.Height.Set(22f, 0f);
+        pickButton.Width.Set(pickWidth, 0f);
+        pickButton.Height.Set(pickHeight, 0f);
         pickButton.OnLeftClick += OnPickPressed;
         Append(pickButton);
 
@@ -54,10 +64,10 @@ internal sealed class ColorSettingRow : UIPanel
         {
             HAlign = 1f,
             VAlign = 0.5f,
-            Left = StyleDimension.FromPixels(-60f),
+            Left = StyleDimension.FromPixels(-previewOffset),
         };
-        _previewPanel.Width.Set(18f, 0f);
-        _previewPanel.Height.Set(18f, 0f);
+        _previewPanel.Width.Set(previewSize, 0f);
+        _previewPanel.Height.Set(previewSize, 0f);
         _previewPanel.BorderColor = Color.Transparent;
         _previewPanel.SetPadding(0f);
         Append(_previewPanel);

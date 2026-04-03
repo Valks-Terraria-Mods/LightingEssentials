@@ -21,32 +21,40 @@ internal sealed class BoolSettingRow : UIPanel
     /// <param name="descriptor">Descriptor defining getter/setter and label text.</param>
     /// <param name="settings">Mutable settings instance.</param>
     /// <param name="onSettingChanged">Callback invoked after the value changes.</param>
-    public BoolSettingRow(BoolSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged)
+    /// <param name="uiScale">Current panel UI scale factor.</param>
+    public BoolSettingRow(BoolSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged, float uiScale)
     {
         _descriptor = descriptor;
         _settings = settings;
         _onSettingChanged = onSettingChanged;
 
+        float rowHeight = SettingsPanelScale.Pixels(36f, uiScale);
+        float rowPadding = SettingsPanelScale.Pixels(8f, uiScale);
+        float labelScale = SettingsPanelScale.Text(0.84f, uiScale);
+        float toggleTextScale = SettingsPanelScale.Text(0.8f, uiScale);
+        float toggleWidth = SettingsPanelScale.Pixels(66f, uiScale);
+        float toggleHeight = SettingsPanelScale.Pixels(22f, uiScale);
+
         Width.Set(0f, 1f);
-        Height.Set(36f, 0f);
-        SetPadding(8f);
+        Height.Set(rowHeight, 0f);
+        SetPadding(rowPadding);
 
         BackgroundColor = SettingsPanelTheme.RowBackground;
         BorderColor = SettingsPanelTheme.RowBorder;
 
-        UIText label = new(descriptor.Label, 0.84f)
+        UIText label = new(descriptor.Label, labelScale)
         {
             VAlign = 0.5f,
         };
         Append(label);
 
-        _toggleButton = new FlatTextButton(string.Empty)
+        _toggleButton = new FlatTextButton(string.Empty, toggleTextScale)
         {
             HAlign = 1f,
             VAlign = 0.5f,
         };
-        _toggleButton.Width.Set(66f, 0f);
-        _toggleButton.Height.Set(22f, 0f);
+        _toggleButton.Width.Set(toggleWidth, 0f);
+        _toggleButton.Height.Set(toggleHeight, 0f);
         _toggleButton.HoverStyleEnabled = false;
         _toggleButton.OnLeftClick += OnTogglePressed;
         Append(_toggleButton);

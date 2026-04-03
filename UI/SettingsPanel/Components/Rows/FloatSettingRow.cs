@@ -14,13 +14,14 @@ internal sealed class FloatSettingRow : UIPanel
     private readonly LightingSettings _settings;
     private readonly FloatSettingDescriptor _descriptor;
     private readonly Action _onSettingChanged;
+    private readonly float _uiScale;
 
     private readonly UIElement _sliderTrack;
     private readonly UIText _valueText;
     private bool _dragging;
 
-    private const float KnobWidth = 14f;
-    private const float KnobHeight = 14f;
+    private const float KnobWidthBase = 14f;
+    private const float KnobHeightBase = 14f;
 
     private static readonly Color TrackBorderColor = new(70, 86, 112, 255);
     private static readonly Color TrackBackgroundColor = new(18, 22, 30, 255);
@@ -35,36 +36,46 @@ internal sealed class FloatSettingRow : UIPanel
     /// <param name="descriptor">Descriptor defining range, step, and get/set behavior.</param>
     /// <param name="settings">Mutable settings instance.</param>
     /// <param name="onSettingChanged">Callback invoked after value updates.</param>
-    public FloatSettingRow(FloatSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged)
+    /// <param name="uiScale">Current panel UI scale factor.</param>
+    public FloatSettingRow(FloatSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged, float uiScale)
     {
         _descriptor = descriptor;
         _settings = settings;
         _onSettingChanged = onSettingChanged;
+        _uiScale = uiScale;
+
+        float rowHeight = Scale(52f);
+        float rowPadding = Scale(8f);
+        float labelScale = ScaleText(0.82f);
+        float valueScale = ScaleText(0.76f);
+        float labelTop = Scale(2f);
+        float sliderHeight = Scale(10f);
+        float sliderTop = Scale(30f);
 
         Width.Set(0f, 1f);
-        Height.Set(52f, 0f);
-        SetPadding(8f);
+        Height.Set(rowHeight, 0f);
+        SetPadding(rowPadding);
 
         BackgroundColor = SettingsPanelTheme.RowBackground;
         BorderColor = SettingsPanelTheme.RowBorder;
 
-        UIText label = new(descriptor.Label, 0.82f)
+        UIText label = new(descriptor.Label, labelScale)
         {
-            Top = StyleDimension.FromPixels(2f),
+            Top = StyleDimension.FromPixels(labelTop),
         };
         Append(label);
 
-        _valueText = new UIText(string.Empty, 0.76f)
+        _valueText = new UIText(string.Empty, valueScale)
         {
             HAlign = 1f,
-            Top = StyleDimension.FromPixels(2f),
+            Top = StyleDimension.FromPixels(labelTop),
         };
         Append(_valueText);
 
         _sliderTrack = new UIElement();
         _sliderTrack.Width.Set(0f, 1f);
-        _sliderTrack.Height.Set(10f, 0f);
-        _sliderTrack.Top.Set(30f, 0f);
+        _sliderTrack.Height.Set(sliderHeight, 0f);
+        _sliderTrack.Top.Set(sliderTop, 0f);
         _sliderTrack.OnLeftMouseDown += OnSliderMouseDown;
         _sliderTrack.OnLeftClick += OnSliderMouseDown;
         _sliderTrack.OnLeftMouseUp += OnSliderMouseUp;
@@ -129,11 +140,13 @@ internal sealed class FloatSettingRow : UIPanel
         if (dimensions.Width <= 0f)
             return;
 
+        float knobWidth = Scale(KnobWidthBase);
+
         float sliderMinX = dimensions.X + 1f;
         float sliderWidth = Math.Max(1f, dimensions.Width - 2f);
-        float travelWidth = Math.Max(1f, sliderWidth - KnobWidth);
+        float travelWidth = Math.Max(1f, sliderWidth - knobWidth);
 
-        float knobLeft = Main.MouseScreen.X - (KnobWidth * 0.5f);
+        float knobLeft = Main.MouseScreen.X - (knobWidth * 0.5f);
         float t = (knobLeft - sliderMinX) / travelWidth;
         t = MathHelper.Clamp(t, 0f, 1f);
 
@@ -176,8 +189,8 @@ internal sealed class FloatSettingRow : UIPanel
             ? 0f
             : MathHelper.Clamp((value - min) / (max - min), 0f, 1f);
 
-        int knobPixelWidth = (int)KnobWidth;
-        int knobPixelHeight = (int)KnobHeight;
+        int knobPixelWidth = Math.Max(1, (int)MathF.Round(Scale(KnobWidthBase)));
+        int knobPixelHeight = Math.Max(1, (int)MathF.Round(Scale(KnobHeightBase)));
         int travelWidth = Math.Max(0, inner.Width - knobPixelWidth);
         int knobLeft = inner.X + (int)MathF.Round(travelWidth * t);
         int knobTop = inner.Y + ((inner.Height - knobPixelHeight) / 2);
@@ -196,12 +209,30 @@ internal sealed class FloatSettingRow : UIPanel
         spriteBatch.Draw(pixel, knobRect, KnobBorderColor);
         spriteBatch.Draw(pixel, knobInner, KnobFaceColor);
 
-        int gripHeight = Math.Max(4, knobInner.Height - 6);
+        int gripHeight = Math.Max(Math.Max(2, (int)MathF.Round(Scale(4f))), knobInner.Height - Math.Max(2, (int)MathF.Round(Scale(6f))));
         int gripTop = knobInner.Y + ((knobInner.Height - gripHeight) / 2);
+        int gripInset = Math.Max(1, (int)MathF.Round(Scale(4f)));
+        int gripSpacing = Math.Max(1, (int)MathF.Round(Scale(2f)));
         for (int i = 0; i < 3; i++)
         {
-            int gripX = knobInner.X + 4 + (i * 2);
+            int gripX = knobInner.X + gripInset + (i * gripSpacing);
             spriteBatch.Draw(pixel, new Rectangle(gripX, gripTop, 1, gripHeight), KnobGripColor);
         }
+    }
+
+    /// <summary>
+    /// Converts baseline pixel constants to the row's active UI scale.
+    /// </summary>
+    private float Scale(float baselinePixels)
+    {
+        return SettingsPanelScale.Pixels(baselinePixels, _uiScale);
+    }
+
+    /// <summary>
+    /// Converts baseline text scales to the row's active UI scale.
+    /// </summary>
+    private float ScaleText(float baselineTextScale)
+    {
+        return SettingsPanelScale.Text(baselineTextScale, _uiScale);
     }
 }

@@ -12,10 +12,11 @@ internal sealed class SettingsTabButton : FlatTextButton
     /// Creates a compact tab button for the settings tab strip.
     /// </summary>
     /// <param name="text">Tab label text.</param>
-    public SettingsTabButton(string text)
-        : base(text, 0.76f)
+    /// <param name="uiScale">Current panel UI scale factor.</param>
+    public SettingsTabButton(string text, float uiScale)
+        : base(text, SettingsPanelScale.Text(0.76f, uiScale))
     {
-        Height.Set(25f, 0f);
+        Height.Set(SettingsPanelScale.Pixels(25f, uiScale), 0f);
     }
 
     /// <summary>

@@ -12,6 +12,7 @@ internal sealed class ColorPickerPopup : UIPanel
     private readonly Action<Color> _onColorChanged;
     private readonly Action _onClose;
     private readonly Color _defaultColor;
+    private readonly float _uiScale;
 
     private readonly UIPanel _previewPanel;
     private readonly ByteSlider _redSlider;
@@ -27,43 +28,46 @@ internal sealed class ColorPickerPopup : UIPanel
     /// <param name="defaultColor">Default setting color used by reset action.</param>
     /// <param name="onColorChanged">Callback invoked whenever slider changes produce a new color.</param>
     /// <param name="onClose">Callback invoked when popup close is requested.</param>
-    public ColorPickerPopup(string title, Color initialColor, Color defaultColor, Action<Color> onColorChanged, Action onClose)
+    /// <param name="uiScale">Current panel UI scale factor.</param>
+    public ColorPickerPopup(string title, Color initialColor, Color defaultColor, Action<Color> onColorChanged, Action onClose, float uiScale)
     {
         _onColorChanged = onColorChanged;
         _onClose = onClose;
         _defaultColor = defaultColor;
+        _uiScale = uiScale;
 
-        Width.Set(352f, 0f);
-        Height.Set(220f, 0f);
+        Width.Set(Scale(352f), 0f);
+        Height.Set(Scale(230f), 0f);
         HAlign = 0.5f;
         VAlign = 0.5f;
-        SetPadding(12f);
+        SetPadding(Scale(12f));
 
         BackgroundColor = new Color(12, 12, 12, 245);
         BorderColor = Color.Transparent;
 
-        UIText header = new($"Color Picker: {title}", 0.86f);
+        UIText header = new($"Color Picker: {title}", ScaleText(0.86f));
         Append(header);
 
-        FlatTextButton closeButton = new("Close", 0.72f)
+        FlatTextButton closeButton = new("Close", ScaleText(0.72f))
         {
             HAlign = 1f,
         };
-        closeButton.Width.Set(54f, 0f);
-        closeButton.Height.Set(22f, 0f);
-        closeButton.Top.Set(-26f, 1f);
+        closeButton.Width.Set(Scale(54f), 0f);
+        closeButton.Height.Set(Scale(22f), 0f);
+        closeButton.Top.Set(-Scale(36f), 1f);
+        closeButton.Left.Set(Scale(5), 0f);
         closeButton.OnLeftClick += (_, _) => _onClose();
         Append(closeButton);
 
         // Footer actions are intentionally placed at the bottom edge for quick thumb travel.
-        FlatTextButton resetButton = new("Reset to Defaults", 0.72f)
+        FlatTextButton resetButton = new("Reset to Defaults", ScaleText(0.72f))
         {
             HAlign = 1f,
         };
-        resetButton.Width.Set(122f, 0f);
-        resetButton.Height.Set(22f, 0f);
-        resetButton.Top.Set(-26f, 1f);
-        resetButton.Left.Set(-118f, 0f);
+        resetButton.Width.Set(Scale(122f), 0f);
+        resetButton.Height.Set(Scale(22f), 0f);
+        resetButton.Top.Set(-Scale(36f), 1f);
+        resetButton.Left.Set(-Scale(55f), 0f);
         resetButton.OnLeftClick += (_, _) =>
         {
             SetColor(_defaultColor, notify: true);
@@ -73,19 +77,19 @@ internal sealed class ColorPickerPopup : UIPanel
         _previewPanel = new UIPanel
         {
             HAlign = 1f,
-            Top = StyleDimension.FromPixels(30f),
+            Top = StyleDimension.FromPixels(Scale(30f)),
             BackgroundColor = initialColor,
             BorderColor = Color.Transparent,
         };
-        _previewPanel.Width.Set(50f, 0f);
-        _previewPanel.Height.Set(50f, 0f);
+        _previewPanel.Width.Set(Scale(50f), 0f);
+        _previewPanel.Height.Set(Scale(50f), 0f);
         _previewPanel.SetPadding(0f);
         Append(_previewPanel);
 
-        _redSlider = CreateSlider("R", initialColor.R, 34f);
-        _greenSlider = CreateSlider("G", initialColor.G, 66f);
-        _blueSlider = CreateSlider("B", initialColor.B, 98f);
-        _alphaSlider = CreateSlider("A", initialColor.A, 130f);
+        _redSlider = CreateSlider("R", initialColor.R, Scale(34f));
+        _greenSlider = CreateSlider("G", initialColor.G, Scale(66f));
+        _blueSlider = CreateSlider("B", initialColor.B, Scale(98f));
+        _alphaSlider = CreateSlider("A", initialColor.A, Scale(130f));
 
         _redSlider.ValueChanged += _ => OnChannelChanged();
         _greenSlider.ValueChanged += _ => OnChannelChanged();
@@ -116,11 +120,27 @@ internal sealed class ColorPickerPopup : UIPanel
     /// <returns>Configured slider instance.</returns>
     private ByteSlider CreateSlider(string label, byte initialValue, float top)
     {
-        ByteSlider slider = new(label, initialValue);
-        slider.Width.Set(-72f, 1f);
+        ByteSlider slider = new(label, initialValue, _uiScale);
+        slider.Width.Set(-Scale(72f), 1f);
         slider.Top.Set(top, 0f);
         Append(slider);
         return slider;
+    }
+
+    /// <summary>
+    /// Converts baseline pixel constants to the popup's active UI scale.
+    /// </summary>
+    private float Scale(float baselinePixels)
+    {
+        return SettingsPanelScale.Pixels(baselinePixels, _uiScale);
+    }
+
+    /// <summary>
+    /// Converts baseline text scales to the popup's active UI scale.
+    /// </summary>
+    private float ScaleText(float baselineTextScale)
+    {
+        return SettingsPanelScale.Text(baselineTextScale, _uiScale);
     }
 
     /// <summary>
