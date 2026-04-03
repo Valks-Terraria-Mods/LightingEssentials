@@ -33,7 +33,7 @@ internal static class LightingSettingsPanelClipboardExporter
 
         return sections.Count == 0
             ? string.Empty
-            : "LightingEssentials Modified Settings\n\n" + string.Join("\n\n", sections);
+            : string.Join("\n\n", sections);
     }
 
     private static string BuildModifiedScalarSection(LightingSettings settings, LightingSettings defaults)
@@ -44,6 +44,9 @@ internal static class LightingSettingsPanelClipboardExporter
         {
             FieldInfo field = CopyableSettingsFields[i];
             if (NonScalarCopiedFields.Contains(field.Name))
+                continue;
+
+            if (field.Name.Equals("UiScale", System.StringComparison.OrdinalIgnoreCase))
                 continue;
 
             object currentValue = field.GetValue(settings);
