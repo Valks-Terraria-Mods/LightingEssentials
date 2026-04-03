@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
 namespace LightingEssentials;
@@ -17,6 +19,10 @@ public class LightingSettings : ModConfig
     [DefaultValue(1f)]
     [BackgroundColor(0, 0, 0, 100)]
     public float UiScale;
+
+    public List<LightingTileEffectEntry> TileEffectEntries;
+    public List<LightingEventEffectEntry> EventEffectEntries;
+    public List<LightingBossEffectEntry> BossEffectEntries;
 
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "7, 7, 7, 255")]
@@ -488,6 +494,191 @@ public class LightingSettings : ModConfig
     public Color Sapphire;
 
     /// <summary>
+    /// Ensures dynamic settings collections are initialized and valid.
+    /// </summary>
+    public void EnsureDynamicEntries()
+    {
+        if (TileEffectEntries is null)
+        {
+            TileEffectEntries = LightingDynamicCatalogs.CreateDefaultTileEntries();
+        }
+        else
+        {
+            TileEffectEntries = SanitizeTileEntries(TileEffectEntries);
+        }
+
+        if (EventEffectEntries is null)
+        {
+            EventEffectEntries = LightingDynamicCatalogs.CreateDefaultEventEntries();
+        }
+        else
+        {
+            EventEffectEntries = SanitizeEventEntries(EventEffectEntries);
+        }
+
+        if (BossEffectEntries is null)
+        {
+            BossEffectEntries = LightingDynamicCatalogs.CreateDefaultBossEntries();
+        }
+        else
+        {
+            BossEffectEntries = SanitizeBossEntries(BossEffectEntries);
+        }
+    }
+
+    /// <summary>
+    /// Replaces all dynamic entries with built-in defaults.
+    /// </summary>
+    public void ResetDynamicEntriesToDefaults()
+    {
+        TileEffectEntries = LightingDynamicCatalogs.CreateDefaultTileEntries();
+        EventEffectEntries = LightingDynamicCatalogs.CreateDefaultEventEntries();
+        BossEffectEntries = LightingDynamicCatalogs.CreateDefaultBossEntries();
+    }
+
+    private static List<LightingTileEffectEntry> SanitizeTileEntries(List<LightingTileEffectEntry> source)
+    {
+        List<LightingTileEffectEntry> sanitized = [];
+        HashSet<int> seenTileIds = [];
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            LightingTileEffectEntry entry = source[i];
+            if (entry is null || entry.TileIds is null || entry.TileIds.Count == 0)
+                continue;
+
+            List<int> tileIds = [];
+            for (int j = 0; j < entry.TileIds.Count; j++)
+            {
+                int tileId = entry.TileIds[j];
+                if (tileId < 0 || tileId >= TileLoader.TileCount)
+                    continue;
+
+                if (!seenTileIds.Add(tileId))
+                    continue;
+
+                tileIds.Add(tileId);
+            }
+
+            if (tileIds.Count == 0)
+                continue;
+
+            string name = string.IsNullOrWhiteSpace(entry.Name)
+                ? LightingDynamicCatalogs.TryGetTileCatalogItem(tileIds[0], out LightingTileCatalogItem item)
+                    ? item.DisplayName
+                    : "Tile Group"
+                : entry.Name.Trim();
+
+            sanitized.Add(new LightingTileEffectEntry(name, tileIds, entry.Color, entry.Enabled));
+        }
+
+        return sanitized;
+    }
+
+    private static List<LightingEventEffectEntry> SanitizeEventEntries(List<LightingEventEffectEntry> source)
+    {
+        List<LightingEventEffectEntry> sanitized = [];
+        HashSet<LightingEventId> seen = [];
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            LightingEventEffectEntry entry = source[i];
+            if (entry is null)
+                continue;
+
+            List<LightingEventId> eventIds = [];
+            if (entry.EventIds is not null)
+            {
+                for (int j = 0; j < entry.EventIds.Count; j++)
+                {
+                    LightingEventId eventId = entry.EventIds[j];
+                    if (!LightingDynamicCatalogs.TryGetEventCatalogItem(eventId, out _))
+                        continue;
+
+                    if (!seen.Add(eventId))
+                        continue;
+
+                    eventIds.Add(eventId);
+                }
+            }
+
+            if (eventIds.Count == 0 && LightingDynamicCatalogs.TryGetEventCatalogItem(entry.EventId, out _)
+                && seen.Add(entry.EventId))
+            {
+                eventIds.Add(entry.EventId);
+            }
+
+            if (eventIds.Count == 0)
+                continue;
+
+            LightingEventId firstEventId = eventIds[0];
+            string fallbackName = LightingDynamicCatalogs.TryGetEventCatalogItem(firstEventId, out LightingEventCatalogItem item)
+                ? item.DisplayName
+                : "Event Group";
+
+            string name = string.IsNullOrWhiteSpace(entry.Name)
+                ? fallbackName
+                : entry.Name.Trim();
+
+            sanitized.Add(new LightingEventEffectEntry(name, eventIds, entry.Enabled, entry.Color));
+        }
+
+        return sanitized;
+    }
+
+    private static List<LightingBossEffectEntry> SanitizeBossEntries(List<LightingBossEffectEntry> source)
+    {
+        List<LightingBossEffectEntry> sanitized = [];
+        HashSet<LightingBossId> seen = [];
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            LightingBossEffectEntry entry = source[i];
+            if (entry is null)
+                continue;
+
+            List<LightingBossId> bossIds = [];
+            if (entry.BossIds is not null)
+            {
+                for (int j = 0; j < entry.BossIds.Count; j++)
+                {
+                    LightingBossId bossId = entry.BossIds[j];
+                    if (!LightingDynamicCatalogs.TryGetBossCatalogItem(bossId, out _))
+                        continue;
+
+                    if (!seen.Add(bossId))
+                        continue;
+
+                    bossIds.Add(bossId);
+                }
+            }
+
+            if (bossIds.Count == 0 && LightingDynamicCatalogs.TryGetBossCatalogItem(entry.BossId, out _)
+                && seen.Add(entry.BossId))
+            {
+                bossIds.Add(entry.BossId);
+            }
+
+            if (bossIds.Count == 0)
+                continue;
+
+            LightingBossId firstBossId = bossIds[0];
+            string fallbackName = LightingDynamicCatalogs.TryGetBossCatalogItem(firstBossId, out LightingBossCatalogItem item)
+                ? item.DisplayName
+                : "Boss Group";
+
+            string name = string.IsNullOrWhiteSpace(entry.Name)
+                ? fallbackName
+                : entry.Name.Trim();
+
+            float multiplier = Math.Clamp(entry.Multiplier, 1f, 2f);
+            sanitized.Add(new LightingBossEffectEntry(name, bossIds, entry.Enabled, multiplier));
+        }
+
+        return sanitized;
+    }
+
+    /// <summary>
     /// Pushes current settings values into runtime systems and refreshes tile lighting.
     /// </summary>
     public void ApplyRuntimeChanges()
@@ -502,6 +693,7 @@ public class LightingSettings : ModConfig
     /// </summary>
     public override void OnLoaded()
     {
+        EnsureDynamicEntries();
         ApplyRuntimeChanges();
     }
 
@@ -510,6 +702,7 @@ public class LightingSettings : ModConfig
     /// </summary>
     public override void OnChanged()
     {
+        EnsureDynamicEntries();
         ApplyRuntimeChanges();
     }
 }

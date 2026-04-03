@@ -3,9 +3,25 @@ namespace LightingEssentials;
 public readonly struct WorldLightingState : System.IEquatable<WorldLightingState>
 {
     public const WorldLightingFlags EventMask =
+        WorldLightingFlags.PartyActive |
+        WorldLightingFlags.LanternNightActive |
+        WorldLightingFlags.RainActive |
+        WorldLightingFlags.SandstormActive |
+        WorldLightingFlags.WindyDayActive |
+        WorldLightingFlags.ThunderstormActive |
+        WorldLightingFlags.StarfallActive |
         WorldLightingFlags.BloodMoonActive |
+        WorldLightingFlags.GoblinArmyActive |
+        WorldLightingFlags.SlimeRainActive |
+        WorldLightingFlags.OldOnesArmyActive |
+        WorldLightingFlags.TorchGodActive |
         WorldLightingFlags.EclipseActive |
-        WorldLightingFlags.FrostLegionActive;
+        WorldLightingFlags.FrostLegionActive |
+        WorldLightingFlags.PirateInvasionActive |
+        WorldLightingFlags.PumpkinMoonActive |
+        WorldLightingFlags.FrostMoonActive |
+        WorldLightingFlags.MartianMadnessActive |
+        WorldLightingFlags.LunarEventsActive;
 
     public WorldLightingFlags Flags { get; }
     public int MechBossesDowned { get; }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LightingEssentials;
 
@@ -9,40 +10,55 @@ internal static class TileBossEffectApplier
 
     public static void Apply(LightingSettings config, in WorldLightingState state)
     {
-        TryBrighten(config.BossKingSlimeEffects, state.DownedKingSlime, config.BossKingSlimeEffectsMultiplier, TileLightGroups.SurfaceGrowthTiles);
-        TryBrighten(config.BossEyeofCthulhuEffects, state.DownedEyeOfCthulhu, config.BossEyeofCthulhuEffectsMultiplier, TileLightGroups.SurfaceGrowthTiles, TileLightGroups.HerbFloraTiles);
-        TryBrighten(config.BossEvilBiomeEffects, state.DownedEvilBoss, config.BossEvilBiomeEffectsMultiplier, TileLightGroups.EvilBiomeTiles, TileLightGroups.CorruptionFloraTiles);
-        TryBrighten(config.BossQueenBeeEffects, state.DownedQueenBee, config.BossQueenBeeEffectsMultiplier, TileLightGroups.JungleTiles, TileLightGroups.JungleRareFloraTiles);
-        TryBrighten(config.BossSkeletronEffects, state.DownedSkeletron, config.BossSkeletronEffectsMultiplier, TileLightGroups.UnderworldOreTiles);
-        TryBrighten(config.BossDeerclopsEffects, state.DownedDeerclops, config.BossDeerclopsEffectsMultiplier, TileLightGroups.SnowTiles);
-        TryBrighten(config.BossWallOfFleshEffects, state.HardModeUnlocked, config.BossWallOfFleshEffectsMultiplier, TileLightGroups.UnderworldOreTiles, TileLightGroups.AshFloraTiles);
-        TryBrighten(config.BossQueenSlimeEffects, state.DownedQueenSlime, config.BossQueenSlimeEffectsMultiplier, TileLightGroups.HardmodeProgressionTiles, TileLightGroups.HallowedFloraTiles, TileLightGroups.MushroomFloraTiles);
-
-        if (config.BossMechEffects && state.MechBossesDowned > 0)
+        List<LightingBossEffectEntry> entries = config.BossEffectEntries;
+        for (int i = 0; i < entries.Count; i++)
         {
-            float mechMaxMultiplier = ClampBossMultiplier(config.BossMechEffectsMultiplier);
-            float mechProgress = state.MechBossesDowned / 3f;
-            float mechMultiplier = 1f + ((mechMaxMultiplier - 1f) * mechProgress);
-            TileLightStore.Brighten(TileLightGroups.HardmodeOreTiles, mechMultiplier);
-        }
+            LightingBossEffectEntry entry = entries[i];
+            if (entry is null || !entry.Enabled)
+                continue;
 
-        TryBrighten(config.BossPlanteraEffects, state.DownedPlantera, config.BossPlanteraEffectsMultiplier, TileLightGroups.JungleTiles, TileLightGroups.JungleRareFloraTiles, TileLightGroups.HerbFloraTiles);
-        TryBrighten(config.BossGolemEffects, state.DownedGolem, config.BossGolemEffectsMultiplier, TileLightGroups.ChlorophyteTiles);
-        TryBrighten(config.BossDukeFishronEffects, state.DownedFishron, config.BossDukeFishronEffectsMultiplier, TileLightGroups.GemTiles, TileLightGroups.AquaticFloraTiles);
-        TryBrighten(config.BossEmpressOfLightEffects, state.DownedEmpressOfLight, config.BossEmpressOfLightEffectsMultiplier, TileLightGroups.CrystalTiles, TileLightGroups.HallowedFloraTiles);
-        TryBrighten(config.BossLunaticCultistEffects, state.DownedLunaticCultist, config.BossLunaticCultistEffectsMultiplier, TileLightGroups.LunarOreTiles);
-        TryBrighten(config.BossMoonLordEffects, state.DownedMoonLord, config.BossMoonLordEffectsMultiplier, TileLightGroups.LunarOreTiles, TileLightGroups.ExoticMossTiles);
+            if (entry.BossIds is null || entry.BossIds.Count == 0)
+            {
+                TryApplyBossEffect(entry.BossId, entry.Multiplier, state);
+                continue;
+            }
+
+            for (int j = 0; j < entry.BossIds.Count; j++)
+            {
+                TryApplyBossEffect(entry.BossIds[j], entry.Multiplier, state);
+            }
+        }
     }
 
-    private static void TryBrighten(bool effectEnabled, bool triggerActive, float multiplier, params int[][] targetTileGroups)
+    private static void TryApplyBossEffect(LightingBossId bossId, float configuredMultiplier, in WorldLightingState state)
     {
-        if (!effectEnabled || !triggerActive)
+        if (!LightingDynamicCatalogs.TryGetBossCatalogItem(bossId, out _))
             return;
 
-        float clampedMultiplier = ClampBossMultiplier(multiplier);
+        if (!LightingDynamicCatalogs.IsBossTriggered(bossId, state))
+            return;
+
+        int[][] targetTileGroups = LightingDynamicCatalogs.GetBossTargetTileGroups(bossId);
+        if (targetTileGroups.Length == 0)
+            return;
+
+        if (LightingDynamicCatalogs.UsesProgressiveMultiplier(bossId))
+        {
+            float mechMaxMultiplier = ClampBossMultiplier(configuredMultiplier);
+            float mechProgress = state.MechBossesDowned / 3f;
+            float mechMultiplier = 1f + ((mechMaxMultiplier - 1f) * mechProgress);
+            BrightenGroups(targetTileGroups, mechMultiplier);
+            return;
+        }
+
+        BrightenGroups(targetTileGroups, ClampBossMultiplier(configuredMultiplier));
+    }
+
+    private static void BrightenGroups(int[][] targetTileGroups, float multiplier)
+    {
         for (int i = 0; i < targetTileGroups.Length; i++)
         {
-            TileLightStore.Brighten(targetTileGroups[i], clampedMultiplier);
+            TileLightStore.Brighten(targetTileGroups[i], multiplier);
         }
     }
 

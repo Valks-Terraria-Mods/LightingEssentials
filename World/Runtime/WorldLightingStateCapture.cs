@@ -1,3 +1,5 @@
+using Terraria.GameContent.Events;
+
 namespace LightingEssentials;
 
 internal static class WorldLightingStateCapture
@@ -6,14 +8,62 @@ internal static class WorldLightingStateCapture
     {
         WorldLightingFlags flags = WorldLightingFlags.None;
 
+        if (BirthdayParty.PartyIsUp)
+            flags |= WorldLightingFlags.PartyActive;
+
+        if (LanternNight.LanternsUp)
+            flags |= WorldLightingFlags.LanternNightActive;
+
+        if (Main.IsItRaining)
+            flags |= WorldLightingFlags.RainActive;
+
+        if (Sandstorm.Happening)
+            flags |= WorldLightingFlags.SandstormActive;
+
+        if (Main.IsItAHappyWindyDay)
+            flags |= WorldLightingFlags.WindyDayActive;
+
+        if (Main.IsItStorming)
+            flags |= WorldLightingFlags.ThunderstormActive;
+
+        if (Main.starGame)
+            flags |= WorldLightingFlags.StarfallActive;
+
         if (Main.bloodMoon)
             flags |= WorldLightingFlags.BloodMoonActive;
+
+        if (Main.invasionType == InvasionID.GoblinArmy)
+            flags |= WorldLightingFlags.GoblinArmyActive;
+
+        if (Main.slimeRain)
+            flags |= WorldLightingFlags.SlimeRainActive;
+
+        if (DD2Event.Ongoing)
+            flags |= WorldLightingFlags.OldOnesArmyActive;
+
+        if (Main.netMode != NetmodeID.Server && Main.LocalPlayer?.HasBuff(BuffID.Blackout) == true)
+            flags |= WorldLightingFlags.TorchGodActive;
+
+        if (Main.invasionType == InvasionID.SnowLegion)
+            flags |= WorldLightingFlags.FrostLegionActive;
 
         if (Main.eclipse)
             flags |= WorldLightingFlags.EclipseActive;
 
-        if (Main.invasionType == InvasionID.SnowLegion)
-            flags |= WorldLightingFlags.FrostLegionActive;
+        if (Main.invasionType == InvasionID.PirateInvasion)
+            flags |= WorldLightingFlags.PirateInvasionActive;
+
+        if (Main.pumpkinMoon)
+            flags |= WorldLightingFlags.PumpkinMoonActive;
+
+        if (Main.snowMoon)
+            flags |= WorldLightingFlags.FrostMoonActive;
+
+        if (Main.invasionType == InvasionID.MartianMadness)
+            flags |= WorldLightingFlags.MartianMadnessActive;
+
+        if (NPC.LunarApocalypseIsUp)
+            flags |= WorldLightingFlags.LunarEventsActive;
 
         return flags;
     }
@@ -43,7 +93,14 @@ internal static class WorldLightingStateCapture
             flags |= WorldLightingFlags.DownedEyeOfCthulhu;
 
         if (NPC.downedBoss2)
+        {
+            if (WorldGen.crimson)
+                flags |= WorldLightingFlags.DownedBrainOfCthulhu;
+            else
+                flags |= WorldLightingFlags.DownedEaterOfWorlds;
+
             flags |= WorldLightingFlags.DownedEvilBoss;
+        }
 
         if (NPC.downedQueenBee)
             flags |= WorldLightingFlags.DownedQueenBee;
@@ -59,6 +116,15 @@ internal static class WorldLightingStateCapture
 
         if (NPC.downedQueenSlime)
             flags |= WorldLightingFlags.DownedQueenSlime;
+
+        if (NPC.downedMechBoss2)
+            flags |= WorldLightingFlags.DownedTwins;
+
+        if (NPC.downedMechBoss1)
+            flags |= WorldLightingFlags.DownedDestroyer;
+
+        if (NPC.downedMechBoss3)
+            flags |= WorldLightingFlags.DownedSkeletronPrime;
 
         if (NPC.downedPlantBoss)
             flags |= WorldLightingFlags.DownedPlantera;
@@ -77,6 +143,48 @@ internal static class WorldLightingStateCapture
 
         if (NPC.downedMoonlord)
             flags |= WorldLightingFlags.DownedMoonLord;
+
+        if (DD2Event.DownedInvasionT1)
+            flags |= WorldLightingFlags.DownedDarkMage;
+
+        if (DD2Event.DownedInvasionT2)
+            flags |= WorldLightingFlags.DownedOgre;
+
+        if (DD2Event.DownedInvasionT3)
+            flags |= WorldLightingFlags.DownedBetsy;
+
+        if (NPC.downedPirates)
+            flags |= WorldLightingFlags.DownedFlyingDutchman;
+
+        if (NPC.downedHalloweenTree)
+            flags |= WorldLightingFlags.DownedMourningWood;
+
+        if (NPC.downedHalloweenKing)
+            flags |= WorldLightingFlags.DownedPumpking;
+
+        if (NPC.downedChristmasTree)
+            flags |= WorldLightingFlags.DownedEverscream;
+
+        if (NPC.downedChristmasSantank)
+            flags |= WorldLightingFlags.DownedSantaNk1;
+
+        if (NPC.downedChristmasIceQueen)
+            flags |= WorldLightingFlags.DownedIceQueen;
+
+        if (NPC.downedMartians)
+            flags |= WorldLightingFlags.DownedMartianSaucer;
+
+        if (NPC.downedTowerSolar)
+            flags |= WorldLightingFlags.DownedSolarPillar;
+
+        if (NPC.downedTowerNebula)
+            flags |= WorldLightingFlags.DownedNebulaPillar;
+
+        if (NPC.downedTowerVortex)
+            flags |= WorldLightingFlags.DownedVortexPillar;
+
+        if (NPC.downedTowerStardust)
+            flags |= WorldLightingFlags.DownedStardustPillar;
 
         return flags;
     }

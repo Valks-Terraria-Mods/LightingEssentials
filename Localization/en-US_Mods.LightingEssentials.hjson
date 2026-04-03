@@ -965,6 +965,376 @@ Configs: {
 			Label: Ui Scale
 			Tooltip: ""
 		}
+
+		TileEffectEntries: {
+			Label: Tile Effect Entries
+			Tooltip: ""
+		}
+
+		EventEffectEntries: {
+			Label: Event Effect Entries
+			Tooltip: ""
+		}
+
+		BossEffectEntries: {
+			Label: Boss Effect Entries
+			Tooltip: ""
+		}
+	}
+
+	LightingTileEffectEntry: {
+		Tooltip: ""
+
+		Name: {
+			Label: Name
+			Tooltip: ""
+		}
+
+		TileIds: {
+			Label: Tile Ids
+			Tooltip: ""
+		}
+
+		Color: {
+			Label: Color
+			Tooltip: ""
+		}
+
+		Enabled: {
+			Label: Enabled
+			Tooltip: ""
+		}
+	}
+
+	LightingEventEffectEntry: {
+		Tooltip: ""
+
+		EventId: {
+			Label: Event Id
+			Tooltip: ""
+		}
+
+		Enabled: {
+			Label: Enabled
+			Tooltip: ""
+		}
+
+		Color: {
+			Label: Color
+			Tooltip: ""
+		}
+
+		Name: {
+			Label: Name
+			Tooltip: ""
+		}
+
+		EventIds: {
+			Label: Event Ids
+			Tooltip: ""
+		}
+	}
+
+	LightingEventId: {
+		Tooltip: ""
+
+		Party: {
+			Label: Party
+			Tooltip: ""
+		}
+
+		LanternNight: {
+			Label: Lantern Night
+			Tooltip: ""
+		}
+
+		Rain: {
+			Label: Rain
+			Tooltip: ""
+		}
+
+		Sandstorm: {
+			Label: Sandstorm
+			Tooltip: ""
+		}
+
+		WindyDay: {
+			Label: Windy Day
+			Tooltip: ""
+		}
+
+		Thunderstorm: {
+			Label: Thunderstorm
+			Tooltip: ""
+		}
+
+		Starfall: {
+			Label: Starfall
+			Tooltip: ""
+		}
+
+		BloodMoon: {
+			Label: Blood Moon
+			Tooltip: ""
+		}
+
+		GoblinArmy: {
+			Label: Goblin Army
+			Tooltip: ""
+		}
+
+		SlimeRain: {
+			Label: Slime Rain
+			Tooltip: ""
+		}
+
+		OldOnesArmy: {
+			Label: Old Ones Army
+			Tooltip: ""
+		}
+
+		TorchGod: {
+			Label: Torch God
+			Tooltip: ""
+		}
+
+		FrostLegion: {
+			Label: Frost Legion
+			Tooltip: ""
+		}
+
+		SolarEclipse: {
+			Label: Solar Eclipse
+			Tooltip: ""
+		}
+
+		PirateInvasion: {
+			Label: Pirate Invasion
+			Tooltip: ""
+		}
+
+		PumpkinMoon: {
+			Label: Pumpkin Moon
+			Tooltip: ""
+		}
+
+		FrostMoon: {
+			Label: Frost Moon
+			Tooltip: ""
+		}
+
+		MartianMadness: {
+			Label: Martian Madness
+			Tooltip: ""
+		}
+
+		LunarEvents: {
+			Label: Lunar Events
+			Tooltip: ""
+		}
+	}
+
+	LightingBossEffectEntry: {
+		Tooltip: ""
+
+		BossId: {
+			Label: Boss Id
+			Tooltip: ""
+		}
+
+		Enabled: {
+			Label: Enabled
+			Tooltip: ""
+		}
+
+		Multiplier: {
+			Label: Multiplier
+			Tooltip: ""
+		}
+
+		Name: {
+			Label: Name
+			Tooltip: ""
+		}
+
+		BossIds: {
+			Label: Boss Ids
+			Tooltip: ""
+		}
+	}
+
+	LightingBossId: {
+		Tooltip: ""
+
+		KingSlime: {
+			Label: King Slime
+			Tooltip: ""
+		}
+
+		EyeOfCthulhu: {
+			Label: Eye Of Cthulhu
+			Tooltip: ""
+		}
+
+		EaterOfWorlds: {
+			Label: Eater Of Worlds
+			Tooltip: ""
+		}
+
+		BrainOfCthulhu: {
+			Label: Brain Of Cthulhu
+			Tooltip: ""
+		}
+
+		EvilBiomeBoss: {
+			Label: Evil Biome Boss
+			Tooltip: ""
+		}
+
+		QueenBee: {
+			Label: Queen Bee
+			Tooltip: ""
+		}
+
+		Skeletron: {
+			Label: Skeletron
+			Tooltip: ""
+		}
+
+		Deerclops: {
+			Label: Deerclops
+			Tooltip: ""
+		}
+
+		WallOfFlesh: {
+			Label: Wall Of Flesh
+			Tooltip: ""
+		}
+
+		QueenSlime: {
+			Label: Queen Slime
+			Tooltip: ""
+		}
+
+		MechBosses: {
+			Label: Mech Bosses
+			Tooltip: ""
+		}
+
+		Twins: {
+			Label: Twins
+			Tooltip: ""
+		}
+
+		Destroyer: {
+			Label: Destroyer
+			Tooltip: ""
+		}
+
+		SkeletronPrime: {
+			Label: Skeletron Prime
+			Tooltip: ""
+		}
+
+		Plantera: {
+			Label: Plantera
+			Tooltip: ""
+		}
+
+		Golem: {
+			Label: Golem
+			Tooltip: ""
+		}
+
+		DukeFishron: {
+			Label: Duke Fishron
+			Tooltip: ""
+		}
+
+		EmpressOfLight: {
+			Label: Empress Of Light
+			Tooltip: ""
+		}
+
+		LunaticCultist: {
+			Label: Lunatic Cultist
+			Tooltip: ""
+		}
+
+		MoonLord: {
+			Label: Moon Lord
+			Tooltip: ""
+		}
+
+		DarkMage: {
+			Label: Dark Mage
+			Tooltip: ""
+		}
+
+		Ogre: {
+			Label: Ogre
+			Tooltip: ""
+		}
+
+		Betsy: {
+			Label: Betsy
+			Tooltip: ""
+		}
+
+		FlyingDutchman: {
+			Label: Flying Dutchman
+			Tooltip: ""
+		}
+
+		MourningWood: {
+			Label: Mourning Wood
+			Tooltip: ""
+		}
+
+		Pumpking: {
+			Label: Pumpking
+			Tooltip: ""
+		}
+
+		Everscream: {
+			Label: Everscream
+			Tooltip: ""
+		}
+
+		SantaNk1: {
+			Label: Santa Nk1
+			Tooltip: ""
+		}
+
+		IceQueen: {
+			Label: Ice Queen
+			Tooltip: ""
+		}
+
+		MartianSaucer: {
+			Label: Martian Saucer
+			Tooltip: ""
+		}
+
+		SolarPillar: {
+			Label: Solar Pillar
+			Tooltip: ""
+		}
+
+		NebulaPillar: {
+			Label: Nebula Pillar
+			Tooltip: ""
+		}
+
+		VortexPillar: {
+			Label: Vortex Pillar
+			Tooltip: ""
+		}
+
+		StardustPillar: {
+			Label: Stardust Pillar
+			Tooltip: ""
+		}
 	}
 }
 

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace LightingEssentials;
 
 internal static class TileLightInitializer
@@ -22,19 +24,21 @@ internal static class TileLightInitializer
 
     private static void ApplyBaseLighting(LightingSettings config)
     {
-        for (int i = 0; i < TileLightBaseEntries.SingleTileEntries.Length; i++)
+        List<LightingTileEffectEntry> entries = config.TileEffectEntries;
+        for (int i = 0; i < entries.Count; i++)
         {
-            TileLightEntry entry = TileLightBaseEntries.SingleTileEntries[i];
-            TileLightStore.SetColor(entry.TileId, entry.SelectColor(config).ToVector3());
-        }
+            LightingTileEffectEntry entry = entries[i];
+            if (entry is null || !entry.Enabled || entry.TileIds is null || entry.TileIds.Count == 0)
+                continue;
 
-        for (int i = 0; i < TileLightBaseEntries.GroupEntries.Length; i++)
-        {
-            TileLightGroupEntry groupEntry = TileLightBaseEntries.GroupEntries[i];
-            Vector3 groupColor = groupEntry.SelectColor(config).ToVector3();
-            for (int j = 0; j < groupEntry.TileIds.Length; j++)
+            Vector3 color = entry.Color.ToVector3();
+            for (int j = 0; j < entry.TileIds.Count; j++)
             {
-                TileLightStore.SetColor(groupEntry.TileIds[j], groupColor);
+                int tileId = entry.TileIds[j];
+                if (tileId < 0 || tileId >= TileLoader.TileCount)
+                    continue;
+
+                TileLightStore.SetColor(tileId, color);
             }
         }
     }

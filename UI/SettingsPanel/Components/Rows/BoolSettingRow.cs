@@ -22,7 +22,8 @@ internal sealed class BoolSettingRow : UIPanel
     /// <param name="settings">Mutable settings instance.</param>
     /// <param name="onSettingChanged">Callback invoked after the value changes.</param>
     /// <param name="uiScale">Current panel UI scale factor.</param>
-    public BoolSettingRow(BoolSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged, float uiScale)
+    /// <param name="onRemoveRequested">Optional callback to remove this setting group from dynamic tabs.</param>
+    public BoolSettingRow(BoolSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged, float uiScale, Action onRemoveRequested = null)
     {
         _descriptor = descriptor;
         _settings = settings;
@@ -34,6 +35,9 @@ internal sealed class BoolSettingRow : UIPanel
         float toggleTextScale = SettingsPanelScale.Text(0.8f, uiScale);
         float toggleWidth = SettingsPanelScale.Pixels(66f, uiScale);
         float toggleHeight = SettingsPanelScale.Pixels(22f, uiScale);
+        float removeButtonWidth = SettingsPanelScale.Pixels(22f, uiScale);
+        float removeButtonGap = SettingsPanelScale.Pixels(6f, uiScale);
+        float removeOffset = onRemoveRequested is null ? 0f : removeButtonWidth + removeButtonGap;
 
         Width.Set(0f, 1f);
         Height.Set(rowHeight, 0f);
@@ -52,12 +56,28 @@ internal sealed class BoolSettingRow : UIPanel
         {
             HAlign = 1f,
             VAlign = 0.5f,
+            Left = StyleDimension.FromPixels(-removeOffset),
         };
         _toggleButton.Width.Set(toggleWidth, 0f);
         _toggleButton.Height.Set(toggleHeight, 0f);
         _toggleButton.HoverStyleEnabled = false;
         _toggleButton.OnLeftClick += OnTogglePressed;
         Append(_toggleButton);
+
+        if (onRemoveRequested is not null)
+        {
+            FlatTextButton removeButton = new("-", toggleTextScale)
+            {
+                HAlign = 1f,
+                VAlign = 0.5f,
+            };
+            removeButton.Width.Set(removeButtonWidth, 0f);
+            removeButton.Height.Set(toggleHeight, 0f);
+            removeButton.BackgroundColor = SettingsPanelTheme.Negative;
+            removeButton.HoverStyleEnabled = false;
+            removeButton.OnLeftClick += (_, _) => onRemoveRequested();
+            Append(removeButton);
+        }
 
         RefreshVisualState();
     }

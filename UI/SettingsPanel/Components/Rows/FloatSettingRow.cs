@@ -18,6 +18,7 @@ internal sealed class FloatSettingRow : UIPanel
 
     private readonly UIElement _sliderTrack;
     private readonly UIText _valueText;
+    private readonly FlatTextButton _toggleButton;
     private bool _dragging;
 
     private const float KnobWidthBase = 14f;
@@ -37,7 +38,9 @@ internal sealed class FloatSettingRow : UIPanel
     /// <param name="settings">Mutable settings instance.</param>
     /// <param name="onSettingChanged">Callback invoked after value updates.</param>
     /// <param name="uiScale">Current panel UI scale factor.</param>
-    public FloatSettingRow(FloatSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged, float uiScale)
+    /// <param name="onEditRequested">Optional callback to edit grouped catalog members for this row.</param>
+    /// <param name="onRemoveRequested">Optional callback to remove this setting row from dynamic tabs.</param>
+    public FloatSettingRow(FloatSettingDescriptor descriptor, LightingSettings settings, Action onSettingChanged, float uiScale, Action onEditRequested = null, Action onRemoveRequested = null)
     {
         _descriptor = descriptor;
         _settings = settings;
@@ -51,6 +54,18 @@ internal sealed class FloatSettingRow : UIPanel
         float labelTop = Scale(2f);
         float sliderHeight = Scale(10f);
         float sliderTop = Scale(30f);
+        float buttonTextScale = ScaleText(0.74f);
+        float buttonHeight = Scale(22f);
+        float editButtonWidth = Scale(54f);
+        float toggleButtonWidth = Scale(54f);
+        float removeButtonWidth = Scale(24f);
+        float buttonGap = Scale(8f);
+        bool hasToggle = descriptor.EnabledGetter is not null && descriptor.EnabledSetter is not null;
+        float removeOffset = onRemoveRequested is null ? 0f : removeButtonWidth + buttonGap;
+        float toggleOffset = hasToggle ? toggleButtonWidth + buttonGap : 0f;
+        float editOffset = onEditRequested is null ? 0f : editButtonWidth + buttonGap;
+        float valueOffset = removeOffset + toggleOffset + editOffset + Scale(10f);
+        float sliderRightInset = valueOffset + Scale(8f);
 
         Width.Set(0f, 1f);
         Height.Set(rowHeight, 0f);
@@ -69,11 +84,57 @@ internal sealed class FloatSettingRow : UIPanel
         {
             HAlign = 1f,
             Top = StyleDimension.FromPixels(labelTop),
+            Left = StyleDimension.FromPixels(-valueOffset),
         };
         Append(_valueText);
 
+        if (hasToggle)
+        {
+            _toggleButton = new FlatTextButton(string.Empty, buttonTextScale)
+            {
+                HAlign = 1f,
+                Top = StyleDimension.FromPixels(labelTop - Scale(1f)),
+                Left = StyleDimension.FromPixels(-removeOffset),
+                HoverStyleEnabled = false,
+            };
+            _toggleButton.Width.Set(toggleButtonWidth, 0f);
+            _toggleButton.Height.Set(buttonHeight, 0f);
+            _toggleButton.OnLeftClick += OnTogglePressed;
+            Append(_toggleButton);
+        }
+
+        if (onEditRequested is not null)
+        {
+            FlatTextButton editButton = new("Edit", buttonTextScale)
+            {
+                HAlign = 1f,
+                Top = StyleDimension.FromPixels(labelTop - Scale(1f)),
+                Left = StyleDimension.FromPixels(-(removeOffset + toggleOffset)),
+                HoverStyleEnabled = false,
+            };
+            editButton.Width.Set(editButtonWidth, 0f);
+            editButton.Height.Set(buttonHeight, 0f);
+            editButton.OnLeftClick += (_, _) => onEditRequested();
+            Append(editButton);
+        }
+
+        if (onRemoveRequested is not null)
+        {
+            FlatTextButton removeButton = new("-", buttonTextScale)
+            {
+                HAlign = 1f,
+                Top = StyleDimension.FromPixels(labelTop - Scale(1f)),
+                HoverStyleEnabled = false,
+            };
+            removeButton.Width.Set(removeButtonWidth, 0f);
+            removeButton.Height.Set(buttonHeight, 0f);
+            removeButton.BackgroundColor = SettingsPanelTheme.Negative;
+            removeButton.OnLeftClick += (_, _) => onRemoveRequested();
+            Append(removeButton);
+        }
+
         _sliderTrack = new UIElement();
-        _sliderTrack.Width.Set(0f, 1f);
+        _sliderTrack.Width.Set(-sliderRightInset, 1f);
         _sliderTrack.Height.Set(sliderHeight, 0f);
         _sliderTrack.Top.Set(sliderTop, 0f);
         _sliderTrack.OnLeftMouseDown += OnSliderMouseDown;
@@ -101,6 +162,7 @@ internal sealed class FloatSettingRow : UIPanel
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
+        RefreshVisualState();
 
         if (!_dragging)
             return;
@@ -129,6 +191,20 @@ internal sealed class FloatSettingRow : UIPanel
     private void OnSliderMouseUp(UIMouseEvent evt, UIElement listeningElement)
     {
         _dragging = false;
+    }
+
+    /// <summary>
+    /// Toggles optional enabled state for grouped float settings.
+    /// </summary>
+    private void OnTogglePressed(UIMouseEvent evt, UIElement listeningElement)
+    {
+        if (_descriptor.EnabledGetter is null || _descriptor.EnabledSetter is null)
+            return;
+
+        bool nextValue = !_descriptor.EnabledGetter(_settings);
+        _descriptor.EnabledSetter(_settings, nextValue);
+        _onSettingChanged();
+        RefreshVisualState();
     }
 
     /// <summary>
@@ -166,6 +242,13 @@ internal sealed class FloatSettingRow : UIPanel
     {
         float value = _descriptor.Getter(_settings);
         _valueText.SetText(value.ToString("0.00"));
+
+        if (_toggleButton is null || _descriptor.EnabledGetter is null)
+            return;
+
+        bool enabled = _descriptor.EnabledGetter(_settings);
+        _toggleButton.SetText(enabled ? "ON" : "OFF");
+        _toggleButton.BackgroundColor = enabled ? SettingsPanelTheme.Positive : SettingsPanelTheme.Negative;
     }
 
     /// <summary>

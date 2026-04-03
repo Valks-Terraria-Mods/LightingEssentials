@@ -34,6 +34,9 @@ internal static class LightingSettingsDefaults
 
             field.SetValue(target, value);
         }
+
+        target.ResetDynamicEntriesToDefaults();
+        target.EnsureDynamicEntries();
     }
 
     /// <summary>
