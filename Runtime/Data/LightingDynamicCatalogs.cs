@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Terraria.GameContent.Events;
+using Terraria.ID;
 
 namespace LightingEssentials;
 
 internal readonly record struct LightingTileCatalogItem(int TileId, string DisplayName);
 internal readonly record struct LightingEventCatalogItem(LightingEventId EventId, string DisplayName, Color DefaultColor);
 internal readonly record struct LightingBossCatalogItem(LightingBossId BossId, string DisplayName, float DefaultMultiplier, bool UsesProgressiveMultiplier = false);
+internal readonly record struct LightingEntityCatalogItem(string Key, string DisplayName, Color SuggestedColor);
 
 internal sealed record DefaultTileTemplate(string Name, int[] TileIds, Color Color);
 
@@ -77,6 +79,8 @@ internal static class LightingDynamicCatalogs
 
     private static readonly IReadOnlyDictionary<LightingEventId, LightingEventCatalogItem> EventById = EventCatalogItems.ToDictionary(item => item.EventId);
     private static readonly IReadOnlyDictionary<LightingBossId, LightingBossCatalogItem> BossById = BossCatalogItems.ToDictionary(item => item.BossId);
+    private static readonly IReadOnlyList<LightingEntityCatalogItem> EntityCatalogItems = BuildEntityCatalogItems();
+    private static readonly IReadOnlyDictionary<string, LightingEntityCatalogItem> EntityByKey = EntityCatalogItems.ToDictionary(item => item.Key, StringComparer.Ordinal);
 
     private static readonly IReadOnlyList<DefaultTileTemplate> DefaultTileTemplates =
     [
@@ -177,6 +181,23 @@ internal static class LightingDynamicCatalogs
         return BossById.TryGetValue(bossId, out item);
     }
 
+    public static IReadOnlyList<LightingEntityCatalogItem> GetEntityCatalogItems()
+    {
+        return EntityCatalogItems;
+    }
+
+    public static bool TryGetEntityCatalogItem(string key, out LightingEntityCatalogItem item)
+    {
+        return EntityByKey.TryGetValue(key, out item);
+    }
+
+    public static Color GetSuggestedEntityColor(string key)
+    {
+        return EntityByKey.TryGetValue(key, out LightingEntityCatalogItem item)
+            ? item.SuggestedColor
+            : Rgb(8, 8, 8);
+    }
+
     public static List<LightingTileEffectEntry> CreateDefaultTileEntries()
     {
         List<LightingTileEffectEntry> entries = new(DefaultTileTemplates.Count);
@@ -221,6 +242,52 @@ internal static class LightingDynamicCatalogs
             CreateDefaultBossEntry(LightingBossId.EmpressOfLight),
             CreateDefaultBossEntry(LightingBossId.LunaticCultist),
             CreateDefaultBossEntry(LightingBossId.MoonLord),
+        ];
+
+        return entries;
+    }
+
+    public static List<LightingEntityEffectEntry> CreateDefaultEntityEntries(LightingSettings settings)
+    {
+        Color playerColor = settings is null ? Rgb(7, 7, 7) : settings.PlayerLight;
+        Color projectileColor = settings is null ? Rgb(10, 10, 10) : settings.ProjectileLightColor;
+        Color enemyColor = settings is null ? Rgb(35, 0, 0) : settings.EnemyLightColor;
+
+        bool playerEnabled = settings?.PlayerLightEnabled ?? true;
+        bool projectileEnabled = settings?.ProjectileLightEnabled ?? false;
+        bool enemyEnabled = settings?.EnemyLightEnabled ?? false;
+
+        List<LightingEntityEffectEntry> entries =
+        [
+            new LightingEntityEffectEntry(
+                "Player Light",
+                playerEnabled,
+                playerColor,
+                includePlayer: true,
+                includeAllEnemies: false,
+                includeAllProjectiles: false,
+                npcIds: null,
+                projectileIds: null),
+
+            new LightingEntityEffectEntry(
+                "Projectile Light",
+                projectileEnabled,
+                projectileColor,
+                includePlayer: false,
+                includeAllEnemies: false,
+                includeAllProjectiles: true,
+                npcIds: null,
+                projectileIds: null),
+
+            new LightingEntityEffectEntry(
+                "Enemy Light",
+                enemyEnabled,
+                enemyColor,
+                includePlayer: false,
+                includeAllEnemies: true,
+                includeAllProjectiles: false,
+                npcIds: null,
+                projectileIds: null),
         ];
 
         return entries;
@@ -368,6 +435,47 @@ internal static class LightingDynamicCatalogs
         }
 
         items.Sort(static (a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+        return items;
+    }
+
+    private static IReadOnlyList<LightingEntityCatalogItem> BuildEntityCatalogItems()
+    {
+        const string playerKey = "entity:player";
+        const string enemiesAllKey = "entity:npc-all";
+        const string projectilesAllKey = "entity:projectile-all";
+
+        List<LightingEntityCatalogItem> items =
+        [
+            new LightingEntityCatalogItem(playerKey, "Player", Rgb(7, 7, 7)),
+            new LightingEntityCatalogItem(enemiesAllKey, "Enemies (All)", Rgb(35, 0, 0)),
+            new LightingEntityCatalogItem(projectilesAllKey, "Projectiles (All)", Rgb(10, 10, 10)),
+        ];
+
+        List<LightingEntityCatalogItem> npcItems = [];
+        for (int npcId = 0; npcId < NPCID.Count; npcId++)
+        {
+            string displayName = NPCID.Search.TryGetName(npcId, out string npcName) && !string.IsNullOrWhiteSpace(npcName)
+                ? HumanizeIdentifier(npcName)
+                : $"NPC {npcId}";
+
+            npcItems.Add(new LightingEntityCatalogItem($"entity:npc:{npcId}", $"NPC: {displayName} ({npcId})", Rgb(35, 0, 0)));
+        }
+
+        List<LightingEntityCatalogItem> projectileItems = [];
+        for (int projectileId = 0; projectileId < ProjectileID.Count; projectileId++)
+        {
+            string displayName = ProjectileID.Search.TryGetName(projectileId, out string projectileName) && !string.IsNullOrWhiteSpace(projectileName)
+                ? HumanizeIdentifier(projectileName)
+                : $"Projectile {projectileId}";
+
+            projectileItems.Add(new LightingEntityCatalogItem($"entity:projectile:{projectileId}", $"Projectile: {displayName} ({projectileId})", Rgb(10, 10, 10)));
+        }
+
+        npcItems.Sort(static (a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+        projectileItems.Sort(static (a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+
+        items.AddRange(npcItems);
+        items.AddRange(projectileItems);
         return items;
     }
 

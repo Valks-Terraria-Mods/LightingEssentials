@@ -12,6 +12,10 @@ internal readonly record struct CatalogPickerOption(string Key, string Label);
 
 internal sealed class CatalogPickerPopup : UIPanel
 {
+    private const int OptionRowBuildBatchSize = 48;
+    private const int SearchDebounceMilliseconds = 90;
+    private const int MaxRenderedOptionsPerFilter = 320;
+
     private readonly IReadOnlyList<CatalogPickerOption> _allOptions;
     private readonly Action<IReadOnlyList<CatalogPickerOption>, string> _onItemsSelected;
     private readonly Action _onClose;
@@ -24,7 +28,26 @@ internal sealed class CatalogPickerPopup : UIPanel
     private readonly UIList _selectedList;
     private readonly FlatTextButton _addSelectedButton;
     private readonly HashSet<string> _selectedKeys = [];
+    private readonly List<CatalogPickerOption> _filteredOptions = [];
+    private readonly Dictionary<string, FlatTextButton> _optionButtonCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, string> _optionSearchTextByKey = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, List<CatalogPickerOption>> _filterCache = new(StringComparer.Ordinal);
+
+    private UIText _optionStatusText;
+
+    private int _nextOptionBuildIndex;
+
+    private bool _isBuildingOptionRows;
+    private bool _searchRefreshPending;
+    private bool _hasBuiltOptionRows;
+
+    private long _pendingSearchApplyTick;
+    private int _totalFilteredOptionCount;
+
     private string _searchText = string.Empty;
+    private string _searchTextLower = string.Empty;
+    private string _pendingSearchText = string.Empty;
+    private string _pendingSearchTextLower = string.Empty;
     private string _groupNameText = string.Empty;
 
     /// <summary>
@@ -45,6 +68,13 @@ internal sealed class CatalogPickerPopup : UIPanel
         _onClose = onClose;
         _uiScale = uiScale;
         _confirmButtonText = confirmButtonText;
+
+        for (int i = 0; i < _allOptions.Count; i++)
+        {
+            CatalogPickerOption option = _allOptions[i];
+            if (!_optionSearchTextByKey.ContainsKey(option.Key))
+                _optionSearchTextByKey[option.Key] = option.Label.ToLowerInvariant();
+        }
 
         if (initiallySelectedKeys is not null)
         {
@@ -171,7 +201,7 @@ internal sealed class CatalogPickerPopup : UIPanel
         // Initialize contents after list construction so callback-driven rebuilds are safe.
         _searchBar.SetContents(string.Empty, forced: true);
         _groupNameBar.SetContents(initialGroupName ?? string.Empty, forced: true);
-        RebuildOptionRows();
+        ApplyScheduledSearchRefresh(force: true);
         UpdateSelectionFeedback();
     }
 
@@ -190,6 +220,9 @@ internal sealed class CatalogPickerPopup : UIPanel
     {
         base.Update(gameTime);
 
+        ApplyScheduledSearchRefresh(force: false);
+        BuildOptionRowsIncrementally();
+
         if (!Main.mouseLeft || !Main.mouseLeftRelease)
             return;
 
@@ -204,8 +237,13 @@ internal sealed class CatalogPickerPopup : UIPanel
 
     private void OnSearchContentsChanged(string newSearchText)
     {
-        _searchText = newSearchText?.Trim() ?? string.Empty;
-        RebuildOptionRows();
+        _pendingSearchText = newSearchText?.Trim() ?? string.Empty;
+        _pendingSearchTextLower = _pendingSearchText.ToLowerInvariant();
+        _pendingSearchApplyTick = Environment.TickCount64 + SearchDebounceMilliseconds;
+        _searchRefreshPending = true;
+
+        if (_allOptions.Count <= 300)
+            ApplyScheduledSearchRefresh(force: true);
     }
 
     private void OnGroupNameChanged(string groupNameText)
@@ -222,33 +260,176 @@ internal sealed class CatalogPickerPopup : UIPanel
             focusedInput.ToggleTakingText();
     }
 
-    private void RebuildOptionRows()
+    private void QueueOptionRowRebuild()
     {
-        _optionsList.Clear();
+        BuildFilteredOptions();
+        _hasBuiltOptionRows = true;
 
-        bool hasFilter = !string.IsNullOrWhiteSpace(_searchText);
+        _optionsList.Clear();
+        _optionStatusText = null;
+        _nextOptionBuildIndex = 0;
+        _isBuildingOptionRows = false;
+
+        if (_filteredOptions.Count == 0)
+        {
+            _optionsList.Add(new UIText("No matching entries.", ScaleText(0.64f)));
+            _optionsList.Recalculate();
+            return;
+        }
+
+        _isBuildingOptionRows = true;
+        _optionStatusText = new UIText(string.Empty, ScaleText(0.62f));
+        _optionsList.Add(_optionStatusText);
+        UpdateOptionStatusLabel();
+
+        BuildOptionRowsIncrementally();
+        _optionsList.Recalculate();
+    }
+
+    private void BuildFilteredOptions()
+    {
+        if (_filterCache.TryGetValue(_searchTextLower, out List<CatalogPickerOption> cachedOptions))
+        {
+            SetFilteredOptionsForRendering(cachedOptions);
+            return;
+        }
+
+        bool hasFilter = !string.IsNullOrWhiteSpace(_searchTextLower);
+        HashSet<string> addedKeys = [];
+        List<CatalogPickerOption> allMatchingOptions = [];
 
         for (int i = 0; i < _allOptions.Count; i++)
         {
             CatalogPickerOption option = _allOptions[i];
-            if (hasFilter && option.Label.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) < 0)
+            if (IsPinnedEntityOption(option.Key))
                 continue;
 
-            FlatTextButton button = new(FormatOptionLabel(option), ScaleText(0.72f));
-            button.Width.Set(0f, 1f);
-            button.Height.Set(Scale(26f), 0f);
-            button.OnLeftClick += (_, _) =>
-            {
-                if (!_selectedKeys.Add(option.Key))
-                    _selectedKeys.Remove(option.Key);
+            if (hasFilter && !OptionMatchesSearch(option.Key, _searchTextLower))
+                continue;
 
-                button.SetText(FormatOptionLabel(option));
-                UpdateSelectionFeedback();
-            };
-            _optionsList.Add(button);
+            if (!addedKeys.Add(option.Key))
+                continue;
+
+            allMatchingOptions.Add(option);
         }
 
+        for (int i = 0; i < _allOptions.Count; i++)
+        {
+            CatalogPickerOption option = _allOptions[i];
+            if (!IsPinnedEntityOption(option.Key) || !addedKeys.Add(option.Key))
+                continue;
+
+            allMatchingOptions.Add(option);
+        }
+
+        _filterCache[_searchTextLower] = allMatchingOptions;
+        SetFilteredOptionsForRendering(allMatchingOptions);
+    }
+
+    private void BuildOptionRowsIncrementally()
+    {
+        if (!_isBuildingOptionRows)
+            return;
+
+        int endIndex = Math.Min(_nextOptionBuildIndex + OptionRowBuildBatchSize, _filteredOptions.Count);
+        for (int i = _nextOptionBuildIndex; i < endIndex; i++)
+            _optionsList.Add(CreateOptionButton(_filteredOptions[i]));
+
+        _nextOptionBuildIndex = endIndex;
+        _isBuildingOptionRows = _nextOptionBuildIndex < _filteredOptions.Count;
+
+        UpdateOptionStatusLabel();
         _optionsList.Recalculate();
+    }
+
+    private FlatTextButton CreateOptionButton(CatalogPickerOption option)
+    {
+        if (_optionButtonCache.TryGetValue(option.Key, out FlatTextButton cachedButton))
+        {
+            cachedButton.SetText(FormatOptionLabel(option));
+            return cachedButton;
+        }
+
+        FlatTextButton button = new(FormatOptionLabel(option), ScaleText(0.72f));
+        button.Width.Set(0f, 1f);
+        button.Height.Set(Scale(26f), 0f);
+        button.OnLeftClick += (_, _) =>
+        {
+            if (!_selectedKeys.Add(option.Key))
+                _selectedKeys.Remove(option.Key);
+
+            button.SetText(FormatOptionLabel(option));
+            UpdateSelectionFeedback();
+        };
+
+        _optionButtonCache[option.Key] = button;
+        return button;
+    }
+
+    private bool OptionMatchesSearch(string optionKey, string searchTextLower)
+    {
+        if (string.IsNullOrEmpty(searchTextLower))
+            return true;
+
+        return _optionSearchTextByKey.TryGetValue(optionKey, out string normalizedOptionLabel)
+            && normalizedOptionLabel.Contains(searchTextLower, StringComparison.Ordinal);
+    }
+
+    private void SetFilteredOptionsForRendering(IReadOnlyList<CatalogPickerOption> allMatchingOptions)
+    {
+        _filteredOptions.Clear();
+        _totalFilteredOptionCount = allMatchingOptions.Count;
+
+        int renderCount = Math.Min(allMatchingOptions.Count, MaxRenderedOptionsPerFilter);
+        for (int i = 0; i < renderCount; i++)
+            _filteredOptions.Add(allMatchingOptions[i]);
+    }
+
+    private void UpdateOptionStatusLabel()
+    {
+        if (_optionStatusText is null)
+            return;
+
+        if (_isBuildingOptionRows)
+        {
+            _optionStatusText.SetText($"Loading {_nextOptionBuildIndex}/{_filteredOptions.Count} entries...");
+            return;
+        }
+
+        if (_totalFilteredOptionCount > _filteredOptions.Count)
+        {
+            _optionStatusText.SetText($"Showing first {_filteredOptions.Count}/{_totalFilteredOptionCount} entries (refine search for more)");
+            return;
+        }
+
+        _optionStatusText.SetText($"Showing {_filteredOptions.Count} entries");
+    }
+
+    private static bool IsPinnedEntityOption(string key)
+    {
+        return string.Equals(key, "entity:player", StringComparison.Ordinal)
+            || string.Equals(key, "entity:npc-all", StringComparison.Ordinal)
+            || string.Equals(key, "entity:projectile-all", StringComparison.Ordinal);
+    }
+
+    private void ApplyScheduledSearchRefresh(bool force)
+    {
+        if (!_searchRefreshPending)
+            return;
+
+        if (!force && Environment.TickCount64 < _pendingSearchApplyTick)
+            return;
+
+        _searchRefreshPending = false;
+
+        bool searchUnchanged = string.Equals(_searchText, _pendingSearchText, StringComparison.Ordinal);
+        _searchText = _pendingSearchText;
+        _searchTextLower = _pendingSearchTextLower;
+
+        if (searchUnchanged && _hasBuiltOptionRows)
+            return;
+
+        QueueOptionRowRebuild();
     }
 
     private string FormatOptionLabel(in CatalogPickerOption option)

@@ -16,6 +16,7 @@ internal sealed class LightingSettingsPanelGroupAddService
         {
             LightingSettingsTab.TileEffects => TryAddTileGroup(settings, selectedOptions, groupName),
             LightingSettingsTab.Events => TryAddEventGroup(settings, selectedOptions, groupName),
+            LightingSettingsTab.EntityLights => TryAddEntityGroup(settings, selectedOptions, groupName),
             LightingSettingsTab.BossEffects => TryAddBossGroup(settings, selectedOptions, groupName),
             _ => false,
         };
@@ -140,5 +141,87 @@ internal sealed class LightingSettingsPanelGroupAddService
         string resolvedName = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedOptions, "Boss Group");
         settings.BossEffectEntries.Add(new LightingBossEffectEntry(resolvedName, bossIds, true, Math.Clamp(defaultMultiplier, 1f, 2f)));
         return true;
+    }
+
+    private static bool TryAddEntityGroup(LightingSettings settings, IReadOnlyList<CatalogPickerOption> selectedOptions, string groupName)
+    {
+        bool playerUsed = false;
+        bool allEnemiesUsed = false;
+        bool allProjectilesUsed = false;
+        HashSet<int> usedNpcIds = [];
+        HashSet<int> usedProjectileIds = [];
+
+        for (int i = 0; i < settings.EntityEffectEntries.Count; i++)
+        {
+            LightingEntityEffectEntry entry = settings.EntityEffectEntries[i];
+            if (entry is null)
+                continue;
+
+            playerUsed |= entry.IncludePlayer;
+            allEnemiesUsed |= entry.IncludeAllEnemies;
+            allProjectilesUsed |= entry.IncludeAllProjectiles;
+
+            if (entry.NpcIds is not null)
+                for (int j = 0; j < entry.NpcIds.Count; j++)
+                    usedNpcIds.Add(entry.NpcIds[j]);
+
+            if (entry.ProjectileIds is not null)
+                for (int j = 0; j < entry.ProjectileIds.Count; j++)
+                    usedProjectileIds.Add(entry.ProjectileIds[j]);
+        }
+
+        LightingSettingsPanelEntrySelectionParser.EntitySelection selection = LightingSettingsPanelEntrySelectionParser.ParseSelectedEntitySelection(selectedOptions);
+
+        bool includePlayer = selection.IncludePlayer && !playerUsed;
+        bool includeAllEnemies = selection.IncludeAllEnemies && !allEnemiesUsed;
+        bool includeAllProjectiles = selection.IncludeAllProjectiles && !allProjectilesUsed;
+
+        List<int> npcIds = [];
+        for (int i = 0; i < selection.NpcIds.Count; i++)
+        {
+            int npcId = selection.NpcIds[i];
+            if (usedNpcIds.Add(npcId))
+                npcIds.Add(npcId);
+        }
+
+        List<int> projectileIds = [];
+        for (int i = 0; i < selection.ProjectileIds.Count; i++)
+        {
+            int projectileId = selection.ProjectileIds[i];
+            if (usedProjectileIds.Add(projectileId))
+                projectileIds.Add(projectileId);
+        }
+
+        if (!includePlayer && !includeAllEnemies && !includeAllProjectiles && npcIds.Count == 0 && projectileIds.Count == 0)
+            return false;
+
+        string resolvedName = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedOptions, "Entity Group");
+        Color defaultColor = ResolveDefaultEntityColor(includePlayer, includeAllEnemies, npcIds, includeAllProjectiles, projectileIds);
+
+        settings.EntityEffectEntries.Add(new LightingEntityEffectEntry(
+            resolvedName,
+            true,
+            defaultColor,
+            includePlayer,
+            includeAllEnemies,
+            includeAllProjectiles,
+            npcIds,
+            projectileIds));
+
+        return true;
+    }
+
+    private static Color ResolveDefaultEntityColor(bool includePlayer, bool includeAllEnemies, IReadOnlyList<int> npcIds, bool includeAllProjectiles, IReadOnlyList<int> projectileIds)
+    {
+        if (includePlayer)
+            return LightingDynamicCatalogs.GetSuggestedEntityColor("entity:player");
+
+        if (includeAllEnemies || npcIds.Count > 0)
+            return LightingDynamicCatalogs.GetSuggestedEntityColor("entity:npc-all");
+
+        if (includeAllProjectiles || projectileIds.Count > 0)
+            return LightingDynamicCatalogs.GetSuggestedEntityColor("entity:projectile-all");
+
+        return new Color(8, 8, 8);
     }
 }

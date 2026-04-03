@@ -6,18 +6,24 @@ public static class LightRuntime
 
     public static bool ModEnabled => _state.ModEnabled;
 
-    public static bool PlayerLightEnabled => _state.PlayerLightEnabled;
-    public static Vector3 PlayerLightColor => _state.PlayerLightColor;
-
-    public static bool ProjectileLightEnabled => _state.ProjectileLightEnabled;
-    public static Vector3 ProjectileLightColor => _state.ProjectileLightColor;
-
-    public static bool EnemyLightEnabled => _state.EnemyLightEnabled;
-    public static Vector3 EnemyLightColor => _state.EnemyLightColor;
-
     public static void ApplyConfig(LightingSettings config)
     {
         _state = LightRuntimeStateFactory.Create(config);
+    }
+
+    public static bool TryGetPlayerLightColor(out Vector3 color)
+    {
+        return _state.TryGetPlayerLightColor(out color);
+    }
+
+    public static bool TryGetProjectileLightColor(int projectileType, out Vector3 color)
+    {
+        return _state.TryGetProjectileLightColor(projectileType, out color);
+    }
+
+    public static bool TryGetEnemyLightColor(int npcType, out Vector3 color)
+    {
+        return _state.TryGetEnemyLightColor(npcType, out color);
     }
 
     public static Vector3 ClampColor(Vector3 color)

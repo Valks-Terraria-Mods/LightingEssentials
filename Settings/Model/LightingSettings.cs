@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Terraria.ID;
 using Terraria.ModLoader.Config;
 
 namespace LightingEssentials;
@@ -23,6 +24,7 @@ public class LightingSettings : ModConfig
     public List<LightingTileEffectEntry> TileEffectEntries;
     public List<LightingEventEffectEntry> EventEffectEntries;
     public List<LightingBossEffectEntry> BossEffectEntries;
+    public List<LightingEntityEffectEntry> EntityEffectEntries;
 
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "7, 7, 7, 255")]
@@ -524,6 +526,15 @@ public class LightingSettings : ModConfig
         {
             BossEffectEntries = SanitizeBossEntries(BossEffectEntries);
         }
+
+        if (EntityEffectEntries is null)
+        {
+            EntityEffectEntries = LightingDynamicCatalogs.CreateDefaultEntityEntries(this);
+        }
+        else
+        {
+            EntityEffectEntries = SanitizeEntityEntries(EntityEffectEntries);
+        }
     }
 
     /// <summary>
@@ -534,6 +545,7 @@ public class LightingSettings : ModConfig
         TileEffectEntries = LightingDynamicCatalogs.CreateDefaultTileEntries();
         EventEffectEntries = LightingDynamicCatalogs.CreateDefaultEventEntries();
         BossEffectEntries = LightingDynamicCatalogs.CreateDefaultBossEntries();
+        EntityEffectEntries = LightingDynamicCatalogs.CreateDefaultEntityEntries(this);
     }
 
     private static List<LightingTileEffectEntry> SanitizeTileEntries(List<LightingTileEffectEntry> source)
@@ -676,6 +688,108 @@ public class LightingSettings : ModConfig
         }
 
         return sanitized;
+    }
+
+    private static List<LightingEntityEffectEntry> SanitizeEntityEntries(List<LightingEntityEffectEntry> source)
+    {
+        List<LightingEntityEffectEntry> sanitized = [];
+        HashSet<int> seenNpcIds = [];
+        HashSet<int> seenProjectileIds = [];
+
+        bool playerUsed = false;
+        bool allEnemiesUsed = false;
+        bool allProjectilesUsed = false;
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            LightingEntityEffectEntry entry = source[i];
+            if (entry is null)
+                continue;
+
+            bool includePlayer = entry.IncludePlayer && !playerUsed;
+            if (includePlayer)
+                playerUsed = true;
+
+            bool includeAllEnemies = entry.IncludeAllEnemies && !allEnemiesUsed;
+            if (includeAllEnemies)
+                allEnemiesUsed = true;
+
+            bool includeAllProjectiles = entry.IncludeAllProjectiles && !allProjectilesUsed;
+            if (includeAllProjectiles)
+                allProjectilesUsed = true;
+
+            List<int> npcIds = [];
+            if (entry.NpcIds is not null)
+            {
+                for (int j = 0; j < entry.NpcIds.Count; j++)
+                {
+                    int npcId = entry.NpcIds[j];
+                    if (npcId < 0 || npcId >= NPCID.Count)
+                        continue;
+
+                    if (!seenNpcIds.Add(npcId))
+                        continue;
+
+                    npcIds.Add(npcId);
+                }
+            }
+
+            List<int> projectileIds = [];
+            if (entry.ProjectileIds is not null)
+            {
+                for (int j = 0; j < entry.ProjectileIds.Count; j++)
+                {
+                    int projectileId = entry.ProjectileIds[j];
+                    if (projectileId < 0 || projectileId >= ProjectileID.Count)
+                        continue;
+
+                    if (!seenProjectileIds.Add(projectileId))
+                        continue;
+
+                    projectileIds.Add(projectileId);
+                }
+            }
+
+            if (!includePlayer && !includeAllEnemies && !includeAllProjectiles && npcIds.Count == 0 && projectileIds.Count == 0)
+                continue;
+
+            string fallbackName = ResolveEntityFallbackName(includePlayer, includeAllEnemies, includeAllProjectiles, npcIds, projectileIds);
+            string name = string.IsNullOrWhiteSpace(entry.Name)
+                ? fallbackName
+                : entry.Name.Trim();
+
+            sanitized.Add(new LightingEntityEffectEntry(
+                name,
+                entry.Enabled,
+                entry.Color,
+                includePlayer,
+                includeAllEnemies,
+                includeAllProjectiles,
+                npcIds,
+                projectileIds));
+        }
+
+        return sanitized;
+    }
+
+    private static string ResolveEntityFallbackName(bool includePlayer, bool includeAllEnemies, bool includeAllProjectiles, IReadOnlyList<int> npcIds, IReadOnlyList<int> projectileIds)
+    {
+        if (includePlayer)
+            return "Player";
+
+        if (includeAllEnemies)
+            return "Enemies";
+
+        if (includeAllProjectiles)
+            return "Projectiles";
+
+        if (npcIds.Count > 0 && LightingDynamicCatalogs.TryGetEntityCatalogItem($"entity:npc:{npcIds[0]}", out LightingEntityCatalogItem npcItem))
+            return npcItem.DisplayName;
+
+        if (projectileIds.Count > 0 && LightingDynamicCatalogs.TryGetEntityCatalogItem($"entity:projectile:{projectileIds[0]}", out LightingEntityCatalogItem projectileItem))
+            return projectileItem.DisplayName;
+
+        return "Entity Group";
     }
 
     /// <summary>

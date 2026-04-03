@@ -133,6 +133,8 @@ internal sealed class LightingSettingsPanelRowBuilder
             BuildTileRows(state, settings, callbacks);
         else if (state.ActiveTab == LightingSettingsTab.Events)
             BuildEventRows(state, settings, callbacks);
+        else if (state.ActiveTab == LightingSettingsTab.EntityLights)
+            BuildEntityRows(state, settings, callbacks);
         else if (state.ActiveTab == LightingSettingsTab.BossEffects)
             BuildBossRows(state, settings, callbacks);
     }
@@ -287,6 +289,112 @@ internal sealed class LightingSettingsPanelRowBuilder
 
         if (!hasRows)
             state.SettingsList.Add(new UIText("No boss entries. Add one below.", state.ScaleText(0.74f)));
+    }
+
+    private static void BuildEntityRows(LightingSettingsPanelRuntimeState state, LightingSettings settings, LightingSettingsPanelRowCallbacks callbacks)
+    {
+        bool hasRows = false;
+        for (int i = 0; i < settings.EntityEffectEntries.Count; i++)
+        {
+            int entryIndex = i;
+            LightingEntityEffectEntry entry = settings.EntityEffectEntries[i];
+            if (entry is null)
+                continue;
+
+            int memberCount = CountEntityMembers(entry);
+            if (memberCount == 0)
+                continue;
+
+            string label = string.IsNullOrWhiteSpace(entry.Name)
+                ? ResolveEntityFallbackLabel(entry)
+                : entry.Name;
+
+            string displayLabel = LightingSettingsPanelEntryCatalogService.FormatGroupLabel(label, memberCount);
+            Color defaultColor = entry.Color;
+
+            LightingEntityEffectEntry GetCurrentEntry()
+            {
+                return entryIndex >= 0 && entryIndex < settings.EntityEffectEntries.Count
+                    ? settings.EntityEffectEntries[entryIndex]
+                    : null;
+            }
+
+            ColorSettingDescriptor descriptor = new(
+                displayLabel,
+                _ => GetCurrentEntry()?.Color ?? defaultColor,
+                (_, value) =>
+                {
+                    LightingEntityEffectEntry current = GetCurrentEntry();
+                    if (current is not null)
+                        current.Color = value;
+                },
+                _ => defaultColor,
+                _ => GetCurrentEntry()?.Enabled ?? true,
+                (_, value) =>
+                {
+                    LightingEntityEffectEntry current = GetCurrentEntry();
+                    if (current is not null)
+                        current.Enabled = value;
+                });
+
+            state.SettingsList.Add(new ColorSettingRow(
+                descriptor,
+                settings,
+                d => callbacks.OpenColorPicker(d, settings),
+                state.UiScale,
+                () => callbacks.EditEntityEntry(entryIndex),
+                () => callbacks.RemoveEntityEntry(entryIndex),
+                () => callbacks.ApplySettingsChange(settings)));
+
+            hasRows = true;
+        }
+
+        if (!hasRows)
+            state.SettingsList.Add(new UIText("No entity entries. Add one below.", state.ScaleText(0.74f)));
+    }
+
+    private static int CountEntityMembers(LightingEntityEffectEntry entry)
+    {
+        if (entry is null)
+            return 0;
+
+        int count = 0;
+        if (entry.IncludePlayer)
+            count++;
+
+        if (entry.IncludeAllEnemies)
+            count++;
+
+        if (entry.IncludeAllProjectiles)
+            count++;
+
+        if (entry.NpcIds is not null)
+            count += entry.NpcIds.Count;
+
+        if (entry.ProjectileIds is not null)
+            count += entry.ProjectileIds.Count;
+
+        return count;
+    }
+
+    private static string ResolveEntityFallbackLabel(LightingEntityEffectEntry entry)
+    {
+        if (entry.IncludePlayer)
+            return "Player";
+
+        if (entry.IncludeAllEnemies)
+            return "Enemies";
+
+        if (entry.IncludeAllProjectiles)
+            return "Projectiles";
+
+        if (entry.NpcIds is { Count: > 0 } && LightingDynamicCatalogs.TryGetEntityCatalogItem($"entity:npc:{entry.NpcIds[0]}", out LightingEntityCatalogItem npcItem))
+            return npcItem.DisplayName;
+
+        if (entry.ProjectileIds is { Count: > 0 } && LightingDynamicCatalogs.TryGetEntityCatalogItem($"entity:projectile:{entry.ProjectileIds[0]}", out LightingEntityCatalogItem projectileItem))
+            return projectileItem.DisplayName;
+
+        return "Entity Group";
     }
 
     private static UIElement CreateDescriptorRow(LightingSettingDescriptor descriptor, LightingSettings settings, LightingSettingsPanelRuntimeState state, LightingSettingsPanelRowCallbacks callbacks)

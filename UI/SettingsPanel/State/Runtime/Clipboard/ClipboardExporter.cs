@@ -7,7 +7,7 @@ namespace LightingEssentials.UI.SettingsPanel.State.Runtime.Clipboard;
 internal static class LightingSettingsPanelClipboardExporter
 {
     private static readonly FieldInfo[] CopyableSettingsFields = typeof(LightingSettings).GetFields(BindingFlags.Instance | BindingFlags.Public);
-    private static readonly HashSet<string> NonScalarCopiedFields = ["TileEffectEntries", "EventEffectEntries", "BossEffectEntries"];
+    private static readonly HashSet<string> NonScalarCopiedFields = ["TileEffectEntries", "EventEffectEntries", "BossEffectEntries", "EntityEffectEntries"];
 
     public static string BuildModifiedSettingsClipboardText(LightingSettings settings)
     {
@@ -31,6 +31,10 @@ internal static class LightingSettingsPanelClipboardExporter
         string bossSection = LightingSettingsPanelClipboardSections.BuildBossEntriesSection(settings.BossEffectEntries, defaults.BossEffectEntries);
         if (!string.IsNullOrWhiteSpace(bossSection))
             sections.Add(bossSection);
+
+        string entitySection = LightingSettingsPanelClipboardSections.BuildEntityEntriesSection(settings.EntityEffectEntries, defaults.EntityEffectEntries);
+        if (!string.IsNullOrWhiteSpace(entitySection))
+            sections.Add(entitySection);
 
         if (sections.Count == 0)
             return string.Empty;

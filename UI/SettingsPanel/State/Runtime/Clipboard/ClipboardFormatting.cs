@@ -49,6 +49,30 @@ internal static class LightingSettingsPanelClipboardFormatting
         return SequenceEquals(GetBossIds(left), GetBossIds(right));
     }
 
+    public static bool AreEntityEntryEquivalent(LightingEntityEffectEntry left, LightingEntityEffectEntry right)
+    {
+        if (left is null || right is null)
+            return ReferenceEquals(left, right);
+
+        if (!string.Equals(left.Name, right.Name, StringComparison.Ordinal))
+            return false;
+
+        if (left.Enabled != right.Enabled || left.Color != right.Color)
+            return false;
+
+        if (left.IncludePlayer != right.IncludePlayer
+            || left.IncludeAllEnemies != right.IncludeAllEnemies
+            || left.IncludeAllProjectiles != right.IncludeAllProjectiles)
+        {
+            return false;
+        }
+
+        if (!SequenceEquals(left.NpcIds, right.NpcIds))
+            return false;
+
+        return SequenceEquals(left.ProjectileIds, right.ProjectileIds);
+    }
+
     public static List<LightingEventId> GetEventIds(LightingEventEffectEntry entry)
     {
         return entry.EventIds is { Count: > 0 }
@@ -136,6 +160,40 @@ internal static class LightingSettingsPanelClipboardFormatting
         return LightingDynamicCatalogs.TryGetBossCatalogItem(bossId, out LightingBossCatalogItem item)
             ? item.DisplayName
             : bossId.ToString();
+    }
+
+    public static List<string> GetEntityMemberKeys(LightingEntityEffectEntry entry)
+    {
+        List<string> memberKeys = [];
+        if (entry is null)
+            return memberKeys;
+
+        if (entry.IncludePlayer)
+            memberKeys.Add("entity:player");
+
+        if (entry.IncludeAllEnemies)
+            memberKeys.Add("entity:npc-all");
+
+        if (entry.IncludeAllProjectiles)
+            memberKeys.Add("entity:projectile-all");
+
+        if (entry.NpcIds is not null)
+            for (int i = 0; i < entry.NpcIds.Count; i++)
+                memberKeys.Add($"entity:npc:{entry.NpcIds[i]}");
+
+        if (entry.ProjectileIds is not null)
+            for (int i = 0; i < entry.ProjectileIds.Count; i++)
+                memberKeys.Add($"entity:projectile:{entry.ProjectileIds[i]}");
+
+        return memberKeys;
+    }
+
+    public static string FormatEntityMember(string key)
+    {
+        if (LightingDynamicCatalogs.TryGetEntityCatalogItem(key, out LightingEntityCatalogItem item))
+            return item.DisplayName;
+
+        return key;
     }
 
     private static bool SequenceEquals<T>(IReadOnlyList<T> left, IReadOnlyList<T> right)

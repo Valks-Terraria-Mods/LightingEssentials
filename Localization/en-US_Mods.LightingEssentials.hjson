@@ -980,6 +980,11 @@ Configs: {
 			Label: Boss Effect Entries
 			Tooltip: ""
 		}
+
+		EntityEffectEntries: {
+			Label: Entity Effect Entries
+			Tooltip: ""
+		}
 	}
 
 	LightingTileEffectEntry: {
@@ -1333,6 +1338,50 @@ Configs: {
 
 		StardustPillar: {
 			Label: Stardust Pillar
+			Tooltip: ""
+		}
+	}
+
+	LightingEntityEffectEntry: {
+		Tooltip: ""
+
+		Name: {
+			Label: Name
+			Tooltip: ""
+		}
+
+		Enabled: {
+			Label: Enabled
+			Tooltip: ""
+		}
+
+		Color: {
+			Label: Color
+			Tooltip: ""
+		}
+
+		IncludePlayer: {
+			Label: Include Player
+			Tooltip: ""
+		}
+
+		IncludeAllEnemies: {
+			Label: Include All Enemies
+			Tooltip: ""
+		}
+
+		IncludeAllProjectiles: {
+			Label: Include All Projectiles
+			Tooltip: ""
+		}
+
+		NpcIds: {
+			Label: Npc Ids
+			Tooltip: ""
+		}
+
+		ProjectileIds: {
+			Label: Projectile Ids
 			Tooltip: ""
 		}
 	}

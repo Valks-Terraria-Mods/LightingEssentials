@@ -10,30 +10,6 @@ internal static class LightingSettingsCatalog
     private static readonly IReadOnlyDictionary<LightingSettingsTab, IReadOnlyList<LightingSettingDescriptor>> _hardcodedTabDescriptors =
         new Dictionary<LightingSettingsTab, IReadOnlyList<LightingSettingDescriptor>>
         {
-            [LightingSettingsTab.EntityLights] =
-            [
-                new ColorSettingDescriptor(
-                    "Player Light",
-                    static s => s.PlayerLight,
-                    static (s, v) => s.PlayerLight = v,
-                    EnabledGetter: static s => s.PlayerLightEnabled,
-                    EnabledSetter: static (s, v) => s.PlayerLightEnabled = v),
-
-                new ColorSettingDescriptor(
-                    "Projectile Light",
-                    static s => s.ProjectileLightColor,
-                    static (s, v) => s.ProjectileLightColor = v,
-                    EnabledGetter: static s => s.ProjectileLightEnabled,
-                    EnabledSetter: static (s, v) => s.ProjectileLightEnabled = v),
-
-                new ColorSettingDescriptor(
-                    "Enemy Light",
-                    static s => s.EnemyLightColor,
-                    static (s, v) => s.EnemyLightColor = v,
-                    EnabledGetter: static s => s.EnemyLightEnabled,
-                    EnabledSetter: static (s, v) => s.EnemyLightEnabled = v),
-            ],
-
             [LightingSettingsTab.Config] =
             [
                 new FloatSettingDescriptor("UI Scale", 1f, 1.10f, 0.025f, static s => s.UiScale, static (s, v) => s.UiScale = v),
@@ -58,7 +34,7 @@ internal static class LightingSettingsCatalog
     /// <param name="tab">Tab to inspect.</param>
     public static bool UsesDynamicEntries(LightingSettingsTab tab)
     {
-        return tab is LightingSettingsTab.TileEffects or LightingSettingsTab.Events or LightingSettingsTab.BossEffects;
+        return tab is LightingSettingsTab.TileEffects or LightingSettingsTab.Events or LightingSettingsTab.EntityLights or LightingSettingsTab.BossEffects;
     }
 
     /// <summary>
@@ -71,6 +47,7 @@ internal static class LightingSettingsCatalog
         {
             LightingSettingsTab.TileEffects => "Add new tile",
             LightingSettingsTab.Events => "Add new event",
+            LightingSettingsTab.EntityLights => "Add new entity",
             LightingSettingsTab.BossEffects => "Add new boss",
             _ => "Add",
         };

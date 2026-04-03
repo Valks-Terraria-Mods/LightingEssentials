@@ -113,7 +113,17 @@ internal sealed class LightingSettingsPanelState : UIState
         _popupManager.CloseAll();
         EnsureEntryEditService();
 
-        LightingSettingsPanelRowCallbacks callbacks = new(ApplySettingsChange, OpenColorPicker, _entryEditService.EditTileEntry, _entryEditService.RemoveTileEntry, _entryEditService.EditEventEntry, _entryEditService.RemoveEventEntry, _entryEditService.EditBossEntry, _entryEditService.RemoveBossEntry);
+        LightingSettingsPanelRowCallbacks callbacks = new(
+            ApplySettingsChange,
+            OpenColorPicker,
+            _entryEditService.EditTileEntry,
+            _entryEditService.RemoveTileEntry,
+            _entryEditService.EditEventEntry,
+            _entryEditService.RemoveEventEntry,
+            _entryEditService.EditEntityEntry,
+            _entryEditService.RemoveEntityEntry,
+            _entryEditService.EditBossEntry,
+            _entryEditService.RemoveBossEntry);
         LightingSettingsPanelConfigActionCallbacks configActionCallbacks = new(
             () => LightingSettingsPanelSettingsActions.ToggleModEnabled(ApplySettingsChange),
             () => LightingSettingsPanelSettingsActions.ResetAllSettings(ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab)),

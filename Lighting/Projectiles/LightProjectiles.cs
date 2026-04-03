@@ -4,12 +4,12 @@ public class LightProjectiles : GlobalProjectile
 {
     public override void PostAI(Projectile projectile)
     {
-        if (!LightRuntime.ProjectileLightEnabled)
-            return;
-
         if (!projectile.active)
             return;
 
-        Lighting.AddLight(projectile.Center, LightRuntime.ProjectileLightColor);
+        if (!LightRuntime.TryGetProjectileLightColor(projectile.type, out Vector3 lightColor))
+            return;
+
+        Lighting.AddLight(projectile.Center, lightColor);
     }
 }

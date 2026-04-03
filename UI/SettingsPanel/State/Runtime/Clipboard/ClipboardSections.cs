@@ -106,6 +106,39 @@ internal static class LightingSettingsPanelClipboardSections
         return BuildSection("__Boss Groups__", blocks);
     }
 
+    public static string BuildEntityEntriesSection(IReadOnlyList<LightingEntityEffectEntry> currentEntries, IReadOnlyList<LightingEntityEffectEntry> defaultEntries)
+    {
+        List<string> blocks = [];
+
+        int maxCount = Math.Max(currentEntries.Count, defaultEntries.Count);
+        for (int i = 0; i < maxCount; i++)
+        {
+            LightingEntityEffectEntry currentEntry = i < currentEntries.Count ? currentEntries[i] : null;
+            LightingEntityEffectEntry defaultEntry = i < defaultEntries.Count ? defaultEntries[i] : null;
+            if (currentEntry is null && defaultEntry is null)
+                continue;
+
+            if (currentEntry is null)
+            {
+                blocks.Add(BuildEntitySingleValueBlock("Removed", defaultEntry));
+                continue;
+            }
+
+            if (defaultEntry is null)
+            {
+                blocks.Add(BuildEntitySingleValueBlock("Added", currentEntry));
+                continue;
+            }
+
+            if (LightingSettingsPanelClipboardFormatting.AreEntityEntryEquivalent(currentEntry, defaultEntry))
+                continue;
+
+            blocks.Add(BuildEntityModifiedBlock(currentEntry, defaultEntry));
+        }
+
+        return BuildSection("__Entity Groups__", blocks);
+    }
+
     private static string BuildSection(string title, List<string> blocks)
     {
         if (blocks.Count == 0)
@@ -187,6 +220,28 @@ internal static class LightingSettingsPanelClipboardSections
         return BuildModifiedBlock(currentName, differences);
     }
 
+    private static string BuildEntityModifiedBlock(LightingEntityEffectEntry currentEntry, LightingEntityEffectEntry defaultEntry)
+    {
+        List<string> differences = [];
+        string currentName = GetGroupName(currentEntry.Name, "Entity Group");
+        string defaultName = GetGroupName(defaultEntry.Name, "Entity Group");
+        if (!string.Equals(currentName, defaultName, StringComparison.Ordinal))
+            differences.Add(BuildDifference("Name", currentName, defaultName));
+
+        if (currentEntry.Enabled != defaultEntry.Enabled)
+            differences.Add(BuildDifference("Enabled", LightingSettingsPanelClipboardFormatting.FormatValue(currentEntry.Enabled), LightingSettingsPanelClipboardFormatting.FormatValue(defaultEntry.Enabled)));
+
+        if (currentEntry.Color != defaultEntry.Color)
+            differences.Add(BuildDifference("Color", LightingSettingsPanelClipboardFormatting.FormatColor(currentEntry.Color), LightingSettingsPanelClipboardFormatting.FormatColor(defaultEntry.Color)));
+
+        List<string> currentMembers = LightingSettingsPanelClipboardFormatting.GetEntityMemberKeys(currentEntry);
+        List<string> defaultMembers = LightingSettingsPanelClipboardFormatting.GetEntityMemberKeys(defaultEntry);
+        if (!SequenceEquals(currentMembers, defaultMembers))
+            differences.Add(BuildDifference("Members", JoinEntityMembers(currentMembers), JoinEntityMembers(defaultMembers)));
+
+        return BuildModifiedBlock(currentName, differences);
+    }
+
     private static string BuildTileSingleValueBlock(string status, LightingTileEffectEntry entry)
     {
         string name = GetGroupName(entry.Name, "Tile Group");
@@ -215,6 +270,17 @@ internal static class LightingSettingsPanelClipboardSections
         string primaryLine = $"Enabled: {LightingSettingsPanelClipboardFormatting.FormatValue(entry.Enabled)} | Multiplier: {entry.Multiplier.ToString("0.00", CultureInfo.InvariantCulture)}";
 
         string members = JoinBossMembers(LightingSettingsPanelClipboardFormatting.GetBossIds(entry));
+        string membersLine = string.IsNullOrWhiteSpace(members) ? null : $"Members: {members}";
+
+        return BuildSingleValueBlock(name, status, primaryLine, membersLine);
+    }
+
+    private static string BuildEntitySingleValueBlock(string status, LightingEntityEffectEntry entry)
+    {
+        string name = GetGroupName(entry.Name, "Entity Group");
+        string primaryLine = $"Enabled: {LightingSettingsPanelClipboardFormatting.FormatValue(entry.Enabled)} | Color: {LightingSettingsPanelClipboardFormatting.FormatColor(entry.Color)}";
+
+        string members = JoinEntityMembers(LightingSettingsPanelClipboardFormatting.GetEntityMemberKeys(entry));
         string membersLine = string.IsNullOrWhiteSpace(members) ? null : $"Members: {members}";
 
         return BuildSingleValueBlock(name, status, primaryLine, membersLine);
@@ -277,6 +343,14 @@ internal static class LightingSettingsPanelClipboardSections
             return string.Empty;
 
         return LightingSettingsPanelClipboardFormatting.JoinFormattedMembers(bossIds, static bossId => LightingSettingsPanelClipboardFormatting.FormatBossMember(bossId));
+    }
+
+    private static string JoinEntityMembers(IReadOnlyList<string> memberKeys)
+    {
+        if (memberKeys is null || memberKeys.Count == 0)
+            return string.Empty;
+
+        return LightingSettingsPanelClipboardFormatting.JoinFormattedMembers(memberKeys, static key => LightingSettingsPanelClipboardFormatting.FormatEntityMember(key));
     }
 
     private static string GetGroupName(string name, string fallback)

@@ -39,4 +39,16 @@ internal static class LightingSettingsPanelEntryRemoval
         applySettingsChange(settings);
         rebuildRows();
     }
+
+    public static void RemoveEntityEntry(int index, Action<LightingSettings> applySettingsChange, Action rebuildRows)
+    {
+        LightingSettings settings = ModContent.GetInstance<LightingSettings>();
+        settings.EnsureDynamicEntries();
+        if (index < 0 || index >= settings.EntityEffectEntries.Count)
+            return;
+
+        settings.EntityEffectEntries.RemoveAt(index);
+        applySettingsChange(settings);
+        rebuildRows();
+    }
 }

@@ -15,7 +15,7 @@ internal static class LightingSettingsPanelClipboardTransferCodec
 
     private static readonly FieldInfo[] CopyableSettingsFields = typeof(LightingSettings).GetFields(BindingFlags.Instance | BindingFlags.Public);
     private static readonly Dictionary<string, FieldInfo> CopyableSettingsFieldMap = BuildFieldMap();
-    private static readonly HashSet<string> NonScalarCopiedFields = ["TileEffectEntries", "EventEffectEntries", "BossEffectEntries", "UiScale"];
+    private static readonly HashSet<string> NonScalarCopiedFields = ["TileEffectEntries", "EventEffectEntries", "BossEffectEntries", "EntityEffectEntries", "UiScale"];
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -136,6 +136,9 @@ internal static class LightingSettingsPanelClipboardTransferCodec
         if (!AreBossEntryListsEquivalent(settings.BossEffectEntries, defaults.BossEffectEntries))
             payload.BossEntries = BuildBossEntriesPayload(settings.BossEffectEntries);
 
+        if (!AreEntityEntryListsEquivalent(settings.EntityEffectEntries, defaults.EntityEffectEntries))
+            payload.EntityEntries = BuildEntityEntriesPayload(settings.EntityEffectEntries);
+
         return payload;
     }
 
@@ -153,6 +156,9 @@ internal static class LightingSettingsPanelClipboardTransferCodec
 
         if (payload.BossEntries is not null)
             settings.BossEffectEntries = BuildBossEntriesFromPayload(payload.BossEntries);
+
+        if (payload.EntityEntries is not null)
+            settings.EntityEffectEntries = BuildEntityEntriesFromPayload(payload.EntityEntries);
     }
 
     private static void ApplyBoolScalars(LightingSettingsPanelTransferPayload payload, LightingSettings settings)
@@ -368,6 +374,56 @@ internal static class LightingSettingsPanelClipboardTransferCodec
         return entries;
     }
 
+    private static List<LightingSettingsPanelTransferEntityEntry> BuildEntityEntriesPayload(IReadOnlyList<LightingEntityEffectEntry> entries)
+    {
+        List<LightingSettingsPanelTransferEntityEntry> payloadEntries = [];
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            LightingEntityEffectEntry entry = entries[i];
+            if (entry is null)
+                continue;
+
+            payloadEntries.Add(new LightingSettingsPanelTransferEntityEntry
+            {
+                Name = entry.Name ?? string.Empty,
+                Enabled = entry.Enabled,
+                ColorValue = LightingSettingsPanelTransferColor.FromColor(entry.Color),
+                IncludePlayer = entry.IncludePlayer,
+                IncludeAllEnemies = entry.IncludeAllEnemies,
+                IncludeAllProjectiles = entry.IncludeAllProjectiles,
+                NpcIds = entry.NpcIds is null ? [] : [..entry.NpcIds],
+                ProjectileIds = entry.ProjectileIds is null ? [] : [..entry.ProjectileIds],
+            });
+        }
+
+        return payloadEntries;
+    }
+
+    private static List<LightingEntityEffectEntry> BuildEntityEntriesFromPayload(IReadOnlyList<LightingSettingsPanelTransferEntityEntry> payloadEntries)
+    {
+        List<LightingEntityEffectEntry> entries = [];
+
+        for (int i = 0; i < payloadEntries.Count; i++)
+        {
+            LightingSettingsPanelTransferEntityEntry payloadEntry = payloadEntries[i];
+            if (payloadEntry is null)
+                continue;
+
+            entries.Add(new LightingEntityEffectEntry(
+                payloadEntry.Name ?? string.Empty,
+                payloadEntry.Enabled,
+                payloadEntry.ColorValue.ToColor(),
+                payloadEntry.IncludePlayer,
+                payloadEntry.IncludeAllEnemies,
+                payloadEntry.IncludeAllProjectiles,
+                payloadEntry.NpcIds,
+                payloadEntry.ProjectileIds));
+        }
+
+        return entries;
+    }
+
     private static bool AreTileEntryListsEquivalent(IReadOnlyList<LightingTileEffectEntry> left, IReadOnlyList<LightingTileEffectEntry> right)
     {
         if (left is null || right is null)
@@ -413,6 +469,23 @@ internal static class LightingSettingsPanelClipboardTransferCodec
         for (int i = 0; i < left.Count; i++)
         {
             if (!LightingSettingsPanelClipboardFormatting.AreBossEntryEquivalent(left[i], right[i]))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static bool AreEntityEntryListsEquivalent(IReadOnlyList<LightingEntityEffectEntry> left, IReadOnlyList<LightingEntityEffectEntry> right)
+    {
+        if (left is null || right is null)
+            return ReferenceEquals(left, right);
+
+        if (left.Count != right.Count)
+            return false;
+
+        for (int i = 0; i < left.Count; i++)
+        {
+            if (!LightingSettingsPanelClipboardFormatting.AreEntityEntryEquivalent(left[i], right[i]))
                 return false;
         }
 
@@ -468,6 +541,8 @@ internal sealed class LightingSettingsPanelTransferPayload
 
     public List<LightingSettingsPanelTransferBossEntry> BossEntries { get; set; }
 
+    public List<LightingSettingsPanelTransferEntityEntry> EntityEntries { get; set; }
+
     [JsonIgnore]
     public bool HasAnyChanges =>
         (BoolScalars is { Count: > 0 })
@@ -475,7 +550,8 @@ internal sealed class LightingSettingsPanelTransferPayload
         || (ColorScalars is { Count: > 0 })
         || TileEntries is not null
         || EventEntries is not null
-        || BossEntries is not null;
+        || BossEntries is not null
+        || EntityEntries is not null;
 }
 
 internal readonly record struct LightingSettingsPanelTransferColor(byte R, byte G, byte B, byte A)
@@ -522,4 +598,23 @@ internal sealed class LightingSettingsPanelTransferBossEntry
     public bool Enabled { get; set; } = true;
 
     public float Multiplier { get; set; } = 1.4f;
+}
+
+internal sealed class LightingSettingsPanelTransferEntityEntry
+{
+    public string Name { get; set; } = string.Empty;
+
+    public bool Enabled { get; set; } = true;
+
+    public LightingSettingsPanelTransferColor ColorValue { get; set; } = new(255, 255, 255, 255);
+
+    public bool IncludePlayer { get; set; }
+
+    public bool IncludeAllEnemies { get; set; }
+
+    public bool IncludeAllProjectiles { get; set; }
+
+    public List<int> NpcIds { get; set; } = [];
+
+    public List<int> ProjectileIds { get; set; } = [];
 }

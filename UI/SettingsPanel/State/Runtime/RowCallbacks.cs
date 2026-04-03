@@ -11,5 +11,7 @@ internal readonly record struct LightingSettingsPanelRowCallbacks(
     Action<int> RemoveTileEntry,
     Action<int> EditEventEntry,
     Action<int> RemoveEventEntry,
+    Action<int> EditEntityEntry,
+    Action<int> RemoveEntityEntry,
     Action<int> EditBossEntry,
     Action<int> RemoveBossEntry);

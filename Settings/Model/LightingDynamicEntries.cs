@@ -180,3 +180,63 @@ public sealed class LightingBossEffectEntry
         };
     }
 }
+
+public sealed class LightingEntityEffectEntry
+{
+    public string Name;
+    public bool Enabled;
+
+    [ColorNoAlpha]
+    public Color Color;
+
+    public bool IncludePlayer;
+    public bool IncludeAllEnemies;
+    public bool IncludeAllProjectiles;
+    public List<int> NpcIds;
+    public List<int> ProjectileIds;
+
+    public LightingEntityEffectEntry()
+    {
+        Name = string.Empty;
+        Enabled = true;
+        Color = Color.White;
+        IncludePlayer = false;
+        IncludeAllEnemies = false;
+        IncludeAllProjectiles = false;
+        NpcIds = [];
+        ProjectileIds = [];
+    }
+
+    public LightingEntityEffectEntry(
+        string name,
+        bool enabled,
+        Color color,
+        bool includePlayer,
+        bool includeAllEnemies,
+        bool includeAllProjectiles,
+        IEnumerable<int> npcIds,
+        IEnumerable<int> projectileIds)
+    {
+        Name = name;
+        Enabled = enabled;
+        Color = color;
+        IncludePlayer = includePlayer;
+        IncludeAllEnemies = includeAllEnemies;
+        IncludeAllProjectiles = includeAllProjectiles;
+        NpcIds = npcIds is null ? [] : [..npcIds];
+        ProjectileIds = projectileIds is null ? [] : [..projectileIds];
+    }
+
+    public LightingEntityEffectEntry Clone()
+    {
+        return new LightingEntityEffectEntry(
+            Name,
+            Enabled,
+            Color,
+            IncludePlayer,
+            IncludeAllEnemies,
+            IncludeAllProjectiles,
+            NpcIds,
+            ProjectileIds);
+    }
+}

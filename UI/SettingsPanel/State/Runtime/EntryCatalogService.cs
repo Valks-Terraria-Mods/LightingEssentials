@@ -5,6 +5,16 @@ using LightingEssentials.UI.SettingsPanel.Models;
 
 namespace LightingEssentials.UI.SettingsPanel.State.Runtime;
 
+internal enum LightingEntityCatalogOptionKind
+{
+    None,
+    Player,
+    AllEnemies,
+    AllProjectiles,
+    Npc,
+    Projectile,
+}
+
 internal sealed class LightingSettingsPanelEntryCatalogService
 {
     private readonly LightingSettingsPanelGroupAddService _groupAddService = new();
@@ -17,10 +27,14 @@ internal sealed class LightingSettingsPanelEntryCatalogService
             AddTileOptions(settings, options, ignoreEntryIndex);
         else if (tab == LightingSettingsTab.Events)
             AddEventOptions(settings, options, ignoreEntryIndex);
+        else if (tab == LightingSettingsTab.EntityLights)
+            AddEntityOptions(settings, options, ignoreEntryIndex);
         else if (tab == LightingSettingsTab.BossEffects)
             AddBossOptions(settings, options, ignoreEntryIndex);
 
-        options.Sort(static (a, b) => string.Compare(a.Label, b.Label, StringComparison.OrdinalIgnoreCase));
+        if (tab != LightingSettingsTab.EntityLights)
+            options.Sort(static (a, b) => string.Compare(a.Label, b.Label, StringComparison.OrdinalIgnoreCase));
+
         return options;
     }
 
@@ -37,6 +51,51 @@ internal sealed class LightingSettingsPanelEntryCatalogService
 
         string[] parts = key.Split(':', 2, StringSplitOptions.RemoveEmptyEntries);
         return parts.Length == 2 && parts[0] == expectedPrefix && int.TryParse(parts[1], out value);
+    }
+
+    public static bool TryParseEntityOptionKey(string key, out LightingEntityCatalogOptionKind kind, out int value)
+    {
+        kind = LightingEntityCatalogOptionKind.None;
+        value = 0;
+
+        if (string.IsNullOrWhiteSpace(key))
+            return false;
+
+        if (string.Equals(key, "entity:player", StringComparison.Ordinal))
+        {
+            kind = LightingEntityCatalogOptionKind.Player;
+            return true;
+        }
+
+        if (string.Equals(key, "entity:npc-all", StringComparison.Ordinal))
+        {
+            kind = LightingEntityCatalogOptionKind.AllEnemies;
+            return true;
+        }
+
+        if (string.Equals(key, "entity:projectile-all", StringComparison.Ordinal))
+        {
+            kind = LightingEntityCatalogOptionKind.AllProjectiles;
+            return true;
+        }
+
+        string[] parts = key.Split(':', 3, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 3 || !string.Equals(parts[0], "entity", StringComparison.Ordinal) || !int.TryParse(parts[2], out value))
+            return false;
+
+        if (string.Equals(parts[1], "npc", StringComparison.Ordinal))
+        {
+            kind = LightingEntityCatalogOptionKind.Npc;
+            return true;
+        }
+
+        if (string.Equals(parts[1], "projectile", StringComparison.Ordinal))
+        {
+            kind = LightingEntityCatalogOptionKind.Projectile;
+            return true;
+        }
+
+        return false;
     }
 
     public static string ResolveGroupName(string groupName, IReadOnlyList<CatalogPickerOption> selectedOptions, string multiSelectionFallback)
@@ -137,6 +196,67 @@ internal sealed class LightingSettingsPanelEntryCatalogService
             if (!usedBosses.Contains(bossItem.BossId))
                 options.Add(new CatalogPickerOption($"boss:{(int)bossItem.BossId}", bossItem.DisplayName));
         }
+    }
+
+    private static void AddEntityOptions(LightingSettings settings, List<CatalogPickerOption> options, int ignoreEntryIndex)
+    {
+        HashSet<string> usedKeys = [];
+        for (int i = 0; i < settings.EntityEffectEntries.Count; i++)
+        {
+            if (i == ignoreEntryIndex)
+                continue;
+
+            LightingEntityEffectEntry entry = settings.EntityEffectEntries[i];
+            AddUsedEntityKeys(entry, usedKeys);
+        }
+
+        IReadOnlyList<LightingEntityCatalogItem> entities = LightingDynamicCatalogs.GetEntityCatalogItems();
+        for (int i = 0; i < entities.Count; i++)
+        {
+            LightingEntityCatalogItem entityItem = entities[i];
+            if (IsPinnedTopEntityOption(entityItem.Key))
+                continue;
+
+            if (!usedKeys.Contains(entityItem.Key))
+                options.Add(new CatalogPickerOption(entityItem.Key, entityItem.DisplayName));
+        }
+
+        for (int i = 0; i < entities.Count; i++)
+        {
+            LightingEntityCatalogItem entityItem = entities[i];
+            if (IsPinnedTopEntityOption(entityItem.Key))
+                options.Add(new CatalogPickerOption(entityItem.Key, entityItem.DisplayName));
+        }
+    }
+
+    private static bool IsPinnedTopEntityOption(string key)
+    {
+        return string.Equals(key, "entity:player", StringComparison.Ordinal)
+            || string.Equals(key, "entity:npc-all", StringComparison.Ordinal)
+            || string.Equals(key, "entity:projectile-all", StringComparison.Ordinal);
+    }
+
+    private static void AddUsedEntityKeys(LightingEntityEffectEntry entry, HashSet<string> usedKeys)
+    {
+        if (entry is null)
+            return;
+
+        if (entry.IncludePlayer)
+            usedKeys.Add("entity:player");
+
+        if (entry.IncludeAllEnemies)
+            usedKeys.Add("entity:npc-all");
+
+        if (entry.IncludeAllProjectiles)
+            usedKeys.Add("entity:projectile-all");
+
+        if (entry.NpcIds is not null)
+            for (int i = 0; i < entry.NpcIds.Count; i++)
+                usedKeys.Add($"entity:npc:{entry.NpcIds[i]}");
+
+        if (entry.ProjectileIds is not null)
+            for (int i = 0; i < entry.ProjectileIds.Count; i++)
+                usedKeys.Add($"entity:projectile:{entry.ProjectileIds[i]}");
     }
 
 }

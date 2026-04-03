@@ -155,6 +155,54 @@ internal sealed class LightingSettingsPanelEntryEditService
             "Save Group");
     }
 
+    public void EditEntityEntry(int index)
+    {
+        LightingSettings settings = ModContent.GetInstance<LightingSettings>();
+        settings.EnsureDynamicEntries();
+
+        if (index < 0 || index >= settings.EntityEffectEntries.Count)
+            return;
+
+        LightingEntityEffectEntry entry = settings.EntityEffectEntries[index];
+        if (entry is null)
+            return;
+
+        List<CatalogPickerOption> options = _catalogService.BuildCatalogOptionsForTab(LightingSettingsTab.EntityLights, settings, index);
+        List<string> selectedKeys = LightingSettingsPanelEntrySelectionParser.BuildSelectedEntityKeys(entry);
+
+        _openCatalogPicker(
+            "Edit Entity Group",
+            options,
+            (selectedOptions, groupName) =>
+            {
+                LightingSettingsPanelEntrySelectionParser.EntitySelection selection = LightingSettingsPanelEntrySelectionParser.ParseSelectedEntitySelection(selectedOptions);
+                if (!selection.HasAny || index < 0 || index >= settings.EntityEffectEntries.Count)
+                    return;
+
+                LightingEntityEffectEntry currentEntry = settings.EntityEffectEntries[index];
+                if (currentEntry is null)
+                    return;
+
+                string fallback = string.IsNullOrWhiteSpace(currentEntry.Name) ? "Entity Group" : currentEntry.Name;
+                string resolved = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedOptions, fallback);
+                settings.EntityEffectEntries[index] = new LightingEntityEffectEntry(
+                    resolved,
+                    currentEntry.Enabled,
+                    currentEntry.Color,
+                    selection.IncludePlayer,
+                    selection.IncludeAllEnemies,
+                    selection.IncludeAllProjectiles,
+                    selection.NpcIds,
+                    selection.ProjectileIds);
+
+                _applySettingsChange(settings);
+                _rebuildRows();
+            },
+            selectedKeys,
+            entry.Name,
+            "Save Group");
+    }
+
     public void RemoveTileEntry(int index)
     {
         LightingSettingsPanelEntryRemoval.RemoveTileEntry(index, _applySettingsChange, _rebuildRows);
@@ -168,5 +216,10 @@ internal sealed class LightingSettingsPanelEntryEditService
     public void RemoveBossEntry(int index)
     {
         LightingSettingsPanelEntryRemoval.RemoveBossEntry(index, _applySettingsChange, _rebuildRows);
+    }
+
+    public void RemoveEntityEntry(int index)
+    {
+        LightingSettingsPanelEntryRemoval.RemoveEntityEntry(index, _applySettingsChange, _rebuildRows);
     }
 }
