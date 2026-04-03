@@ -9,6 +9,10 @@ namespace LightingEssentials.UI.SettingsPanel.State.Runtime;
 
 internal static class LightingSettingsPanelSettingsActions
 {
+    private static readonly Color FeedbackColor = new(85, 85, 85);
+
+    private const string LimeTag = "94ff94";
+
     public static void ToggleModEnabled(Action<LightingSettings> applySettingsChange)
     {
         LightingSettings settings = ModContent.GetInstance<LightingSettings>();
@@ -22,6 +26,7 @@ internal static class LightingSettingsPanelSettingsActions
         LightingSettingsDefaults.ApplyDefaults(settings);
         applySettingsChange(settings);
         rebuildRows();
+        ShowFeedback($"All settings were {Highlight("reset to their defaults")}.");
     }
 
     public static void CopyModifiedSettings()
@@ -30,12 +35,53 @@ internal static class LightingSettingsPanelSettingsActions
         string clipboardText = LightingSettingsPanelClipboardExporter.BuildModifiedSettingsClipboardText(settings);
         if (string.IsNullOrWhiteSpace(clipboardText))
         {
-            Main.NewText("No settings were modified, nothing was copied to clipboard.");
+            ShowFeedback($"No settings were modified, {Highlight("nothing was copied")} to clipboard.");
             return;
         }
 
         Platform.Get<IClipboard>().Value = clipboardText;
-        Main.NewText("Copied modified settings to clipboard");
+        ShowFeedback($"{Highlight("Copied modified settings")} to clipboard.");
+    }
+
+    public static void ExportModifiedSettings()
+    {
+        LightingSettings settings = ModContent.GetInstance<LightingSettings>();
+        string transferCode = LightingSettingsPanelClipboardTransferCodec.BuildTransferCode(settings);
+        if (string.IsNullOrWhiteSpace(transferCode))
+        {
+            ShowFeedback($"No settings were modified, {Highlight("nothing was exported")}.");
+            return;
+        }
+
+        Platform.Get<IClipboard>().Value = transferCode;
+        ShowFeedback($"{Highlight("Copied settings")} to clipboard.");
+    }
+
+    public static bool ImportModifiedSettings(string transferCode, Action<LightingSettings> applySettingsChange, Action rebuildRows)
+    {
+        LightingSettings settings = ModContent.GetInstance<LightingSettings>();
+        settings.EnsureDynamicEntries();
+
+        if (!LightingSettingsPanelClipboardTransferCodec.TryApplyTransferCode(transferCode, settings, out string errorMessage))
+        {
+            ShowFeedback($"{Highlight("Import failed")}: {Highlight(errorMessage)}");
+            return false;
+        }
+
+        applySettingsChange(settings);
+        rebuildRows();
+        ShowFeedback($"{Highlight("Settings successfully imported")}");
+        return true;
+    }
+
+    private static string Highlight(string text)
+    {
+        return $"[c/{LimeTag}:{text}]";
+    }
+
+    private static void ShowFeedback(string message)
+    {
+        Main.NewText(message, FeedbackColor);
     }
 
     public static void ApplySettingsChange(LightingSettings settings, LightingSettingsPanelRuntimeState state, int persistDebounceFrames)

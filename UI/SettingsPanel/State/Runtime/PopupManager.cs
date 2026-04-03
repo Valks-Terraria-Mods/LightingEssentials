@@ -10,11 +10,13 @@ internal sealed class LightingSettingsPanelPopupManager
 {
     private ColorPickerPopup _colorPickerPopup;
     private CatalogPickerPopup _catalogPickerPopup;
+    private ImportSettingsPopup _importSettingsPopup;
 
     public void CloseAll()
     {
         CloseColorPicker();
         CloseCatalogPicker();
+        CloseImportSettings();
     }
 
     public void OpenColorPicker(UIState host, LightingSettingsPanelRuntimeState state, ColorSettingDescriptor descriptor, LightingSettings settings, LightingSettings defaults, Action<LightingSettings> applySettingsChange)
@@ -67,6 +69,16 @@ internal sealed class LightingSettingsPanelPopupManager
         host.Append(_catalogPickerPopup);
     }
 
+    public void OpenImportSettings(UIState host, LightingSettingsPanelRuntimeState state, Func<string, bool> onImportRequested)
+    {
+        CloseAll();
+
+        _importSettingsPopup = new ImportSettingsPopup(onImportRequested, CloseImportSettings, state.UiScale);
+
+        PositionPopupToPanelLeft(state, _importSettingsPopup, state.Scale(460f), state.Scale(224f));
+        host.Append(_importSettingsPopup);
+    }
+
     public void CloseColorPicker()
     {
         if (_colorPickerPopup is null)
@@ -84,6 +96,16 @@ internal sealed class LightingSettingsPanelPopupManager
         _catalogPickerPopup.EndSearchInput();
         _catalogPickerPopup.Remove();
         _catalogPickerPopup = null;
+    }
+
+    public void CloseImportSettings()
+    {
+        if (_importSettingsPopup is null)
+            return;
+
+        _importSettingsPopup.EndInput();
+        _importSettingsPopup.Remove();
+        _importSettingsPopup = null;
     }
 
     private static void PositionPopupToPanelLeft(LightingSettingsPanelRuntimeState state, UIElement popup, float popupWidth, float popupHeight)

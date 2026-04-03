@@ -90,9 +90,6 @@ internal sealed class LightingSettingsPanelState : UIState
 
         LightingSettingsPanelLayoutCallbacks callbacks = new(
             ToggleMinimize,
-            () => LightingSettingsPanelSettingsActions.ToggleModEnabled(ApplySettingsChange),
-            () => LightingSettingsPanelSettingsActions.ResetAllSettings(ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab)),
-            LightingSettingsPanelSettingsActions.CopyModifiedSettings,
             ClosePanelFromUi,
             SelectTab,
             OpenCatalogPickerForActiveTab);
@@ -117,7 +114,13 @@ internal sealed class LightingSettingsPanelState : UIState
         EnsureEntryEditService();
 
         LightingSettingsPanelRowCallbacks callbacks = new(ApplySettingsChange, OpenColorPicker, _entryEditService.EditTileEntry, _entryEditService.RemoveTileEntry, _entryEditService.EditEventEntry, _entryEditService.RemoveEventEntry, _entryEditService.EditBossEntry, _entryEditService.RemoveBossEntry);
-        _rowBuilder.BuildRowsForTab(_runtime, settings, callbacks);
+        LightingSettingsPanelConfigActionCallbacks configActionCallbacks = new(
+            () => LightingSettingsPanelSettingsActions.ToggleModEnabled(ApplySettingsChange),
+            () => LightingSettingsPanelSettingsActions.ResetAllSettings(ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab)),
+            LightingSettingsPanelSettingsActions.CopyModifiedSettings,
+            OpenImportSettingsPopup,
+            LightingSettingsPanelSettingsActions.ExportModifiedSettings);
+        _rowBuilder.BuildRowsForTab(_runtime, settings, callbacks, configActionCallbacks);
     }
 
     private void ApplySettingsChange(LightingSettings settings)
@@ -150,6 +153,11 @@ internal sealed class LightingSettingsPanelState : UIState
         _popupManager.OpenColorPicker(this, _runtime, descriptor, settings, _runtime.DefaultSettings, ApplySettingsChange);
     }
 
+    private void OpenImportSettingsPopup()
+    {
+        _popupManager.OpenImportSettings(this, _runtime, ImportSettingsFromPopupText);
+    }
+
     private void OpenCatalogPickerForActiveTab()
     {
         if (!LightingSettingsCatalog.UsesDynamicEntries(_runtime.ActiveTab))
@@ -176,6 +184,11 @@ internal sealed class LightingSettingsPanelState : UIState
     private void OnCatalogSelectionConfirmed(IReadOnlyList<CatalogPickerOption> selectedOptions, string groupName)
     {
         LightingSettingsPanelSettingsActions.TryApplyCatalogSelection(_entryCatalogService, _runtime.ActiveTab, selectedOptions, groupName, ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab));
+    }
+
+    private bool ImportSettingsFromPopupText(string importText)
+    {
+        return LightingSettingsPanelSettingsActions.ImportModifiedSettings(importText, ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab));
     }
 
     private static void ClosePanelFromUi()

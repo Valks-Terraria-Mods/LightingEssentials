@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using LightingEssentials.UI.SettingsPanel.Catalog;
+using LightingEssentials.UI.SettingsPanel.Components.Common;
 using LightingEssentials.UI.SettingsPanel.Components.Rows;
 using LightingEssentials.UI.SettingsPanel.Models;
+using LightingEssentials.UI.SettingsPanel.Styling;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -10,7 +12,11 @@ namespace LightingEssentials.UI.SettingsPanel.State.Runtime;
 
 internal sealed class LightingSettingsPanelRowBuilder
 {
-    public void BuildRowsForTab(LightingSettingsPanelRuntimeState state, LightingSettings settings, LightingSettingsPanelRowCallbacks callbacks)
+    public void BuildRowsForTab(
+        LightingSettingsPanelRuntimeState state,
+        LightingSettings settings,
+        LightingSettingsPanelRowCallbacks callbacks,
+        LightingSettingsPanelConfigActionCallbacks configActionCallbacks)
     {
         if (state.SettingsList is null)
             return;
@@ -32,12 +38,15 @@ internal sealed class LightingSettingsPanelRowBuilder
         for (int i = 0; i < descriptors.Count; i++)
             state.SettingsList.Add(CreateDescriptorRow(descriptors[i], settings, state, callbacks));
 
+        if (state.ActiveTab == LightingSettingsTab.Config)
+            state.SettingsList.Add(CreateConfigActionsRow(state, configActionCallbacks));
+
         state.SettingsList.Recalculate();
     }
 
     private static void ApplyTabLayoutMode(LightingSettingsPanelRuntimeState state, bool usesDynamicEntries)
     {
-        state.SettingsScrollPanel?.Height.Set(usesDynamicEntries ? -state.Scale(112f) : -state.Scale(76f), 1f);
+        state.SettingsScrollPanel?.Height.Set(usesDynamicEntries ? -state.Scale(78f) : -state.Scale(76f), 1f);
 
         if (state.AddEntryButton is null)
             return;
@@ -53,6 +62,69 @@ internal sealed class LightingSettingsPanelRowBuilder
         {
             state.AddEntryButton.Remove();
         }
+    }
+
+    private static UIElement CreateConfigActionsRow(LightingSettingsPanelRuntimeState state, LightingSettingsPanelConfigActionCallbacks configActions)
+    {
+        UIElement row = new();
+        row.Width.Set(0f, 1f);
+        row.Height.Set(state.Scale(68f), 0f);
+
+        FlatTextButton modEnabledButton = new(string.Empty, state.ScaleText(0.68f))
+        {
+            HoverStyleEnabled = false,
+        };
+        modEnabledButton.Width.Set(-state.Scale(4f), 0.3334f);
+        modEnabledButton.Height.Set(state.Scale(24f), 0f);
+        modEnabledButton.OnLeftClick += (_, _) =>
+        {
+            configActions.ToggleModEnabled();
+            RefreshConfigModEnabledButton(modEnabledButton);
+        };
+        row.Append(modEnabledButton);
+
+        FlatTextButton resetAllButton = new("Reset to Defaults", state.ScaleText(0.66f));
+        resetAllButton.Width.Set(-state.Scale(4f), 0.3333f);
+        resetAllButton.Height.Set(state.Scale(24f), 0f);
+        resetAllButton.Left.Set(0f, 0.3333f);
+        resetAllButton.OnLeftClick += (_, _) =>
+        {
+            configActions.ResetAll();
+            RefreshConfigModEnabledButton(modEnabledButton);
+        };
+        row.Append(resetAllButton);
+
+        FlatTextButton copyModifiedButton = new("Copy Modified", state.ScaleText(0.66f));
+        copyModifiedButton.Width.Set(-state.Scale(4f), 0.3333f);
+        copyModifiedButton.Height.Set(state.Scale(24f), 0f);
+        copyModifiedButton.Left.Set(0f, 0.6666f);
+        copyModifiedButton.OnLeftClick += (_, _) => configActions.CopyModified();
+        row.Append(copyModifiedButton);
+
+        FlatTextButton importSettingsButton = new("Import Settings", state.ScaleText(0.66f));
+        importSettingsButton.Width.Set(-state.Scale(4f), 0.5f);
+        importSettingsButton.Height.Set(state.Scale(24f), 0f);
+        importSettingsButton.Top.Set(state.Scale(40f), 0f);
+        importSettingsButton.OnLeftClick += (_, _) => configActions.OpenImportPopup();
+        row.Append(importSettingsButton);
+
+        FlatTextButton exportSettingsButton = new("Export Settings", state.ScaleText(0.66f));
+        exportSettingsButton.Width.Set(-state.Scale(4f), 0.5f);
+        exportSettingsButton.Height.Set(state.Scale(24f), 0f);
+        exportSettingsButton.Top.Set(state.Scale(40f), 0f);
+        exportSettingsButton.Left.Set(0f, 0.5f);
+        exportSettingsButton.OnLeftClick += (_, _) => configActions.ExportModified();
+        row.Append(exportSettingsButton);
+
+        RefreshConfigModEnabledButton(modEnabledButton);
+        return row;
+    }
+
+    private static void RefreshConfigModEnabledButton(FlatTextButton modEnabledButton)
+    {
+        bool isEnabled = ModContent.GetInstance<LightingSettings>().ModEnabled;
+        modEnabledButton.SetText(isEnabled ? "Mod: ON" : "Mod: OFF");
+        modEnabledButton.BackgroundColor = isEnabled ? SettingsPanelTheme.Positive : SettingsPanelTheme.Negative;
     }
 
     private static void BuildDynamicRows(LightingSettingsPanelRuntimeState state, LightingSettings settings, LightingSettingsPanelRowCallbacks callbacks)

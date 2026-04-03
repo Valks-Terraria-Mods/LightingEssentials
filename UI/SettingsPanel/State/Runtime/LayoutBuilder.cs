@@ -44,11 +44,10 @@ internal sealed class LightingSettingsPanelLayoutBuilder
 
         state.ContentContainer = new UIElement();
         state.ContentContainer.Width.Set(0f, 1f);
-        state.ContentContainer.Height.Set(-state.Scale(30f), 1f);
-        state.ContentContainer.Top.Set(state.Scale(30f), 0f);
+        state.ContentContainer.Height.Set(-state.Scale(38f), 1f);
+        state.ContentContainer.Top.Set(state.Scale(38f), 0f);
         state.RootPanel.Append(state.ContentContainer);
 
-        BuildTopControls(state, callbacks);
         BuildTabBar(state, callbacks);
         BuildSettingsList(state);
 
@@ -60,62 +59,12 @@ internal sealed class LightingSettingsPanelLayoutBuilder
         state.ContentContainer.Append(state.AddEntryButton);
     }
 
-    private static void BuildTopControls(LightingSettingsPanelRuntimeState state, LightingSettingsPanelLayoutCallbacks callbacks)
-    {
-        UIElement topControls = new();
-        topControls.Width.Set(0f, 1f);
-        topControls.Height.Set(state.Scale(26f), 0f);
-        state.ContentContainer.Append(topControls);
-
-        UIText modEnabledText = new("Mod Enabled", state.ScaleText(0.78f)) { VAlign = 0.5f };
-        topControls.Append(modEnabledText);
-
-        FlatTextButton modEnabledButton = new(string.Empty, state.ScaleText(0.72f)) { VAlign = 0.5f };
-        modEnabledButton.Left.Set(state.Scale(92f), 0f);
-        modEnabledButton.Width.Set(state.Scale(58f), 0f);
-        modEnabledButton.Height.Set(state.Scale(22f), 0f);
-        modEnabledButton.OnLeftClick += (_, _) =>
-        {
-            callbacks.ToggleModEnabled();
-            RefreshModEnabledButton(modEnabledButton);
-        };
-        topControls.Append(modEnabledButton);
-
-        FlatTextButton resetAllButton = new("Reset to Defaults", state.ScaleText(0.72f)) { VAlign = 0.5f };
-        resetAllButton.Left.Set(state.Scale(156f), 0f);
-        resetAllButton.Width.Set(state.Scale(122f), 0f);
-        resetAllButton.Height.Set(state.Scale(22f), 0f);
-        resetAllButton.OnLeftClick += (_, _) =>
-        {
-            callbacks.ResetAll();
-            RefreshModEnabledButton(modEnabledButton);
-        };
-        topControls.Append(resetAllButton);
-
-        FlatTextButton copyModifiedButton = new("Copy Modified", state.ScaleText(0.72f)) { VAlign = 0.5f };
-        copyModifiedButton.Left.Set(state.Scale(284f), 0f);
-        copyModifiedButton.Width.Set(state.Scale(98f), 0f);
-        copyModifiedButton.Height.Set(state.Scale(22f), 0f);
-        copyModifiedButton.OnLeftClick += (_, _) => callbacks.CopyModified();
-        topControls.Append(copyModifiedButton);
-
-        RefreshModEnabledButton(modEnabledButton);
-    }
-
-    private static void RefreshModEnabledButton(FlatTextButton modEnabledButton)
-    {
-        LightingSettings currentSettings = ModContent.GetInstance<LightingSettings>();
-        bool isEnabled = currentSettings.ModEnabled;
-        modEnabledButton.SetText(isEnabled ? "ON" : "OFF");
-        modEnabledButton.BackgroundColor = isEnabled ? SettingsPanelTheme.Positive : SettingsPanelTheme.Negative;
-    }
-
     private static void BuildTabBar(LightingSettingsPanelRuntimeState state, LightingSettingsPanelLayoutCallbacks callbacks)
     {
         UIElement tabBar = new();
         tabBar.Width.Set(0f, 1f);
         tabBar.Height.Set(state.Scale(32f), 0f);
-        tabBar.Top.Set(state.Scale(34f), 0f);
+        tabBar.Top.Set(0f, 0f);
         state.ContentContainer.Append(tabBar);
 
         LightingSettingsTab[] tabs =
@@ -147,7 +96,7 @@ internal sealed class LightingSettingsPanelLayoutBuilder
         state.SettingsScrollPanel = new UIPanel();
         state.SettingsScrollPanel.Width.Set(0f, 1f);
         state.SettingsScrollPanel.Height.Set(-state.Scale(76f), 1f);
-        state.SettingsScrollPanel.Top.Set(state.Scale(80f), 0f);
+        state.SettingsScrollPanel.Top.Set(state.Scale(46f), 0f);
         state.SettingsScrollPanel.SetPadding(state.Scale(8f));
         state.SettingsScrollPanel.BackgroundColor = new Color(14, 14, 14, 150);
         state.SettingsScrollPanel.BorderColor = SettingsPanelTheme.RowBorder;

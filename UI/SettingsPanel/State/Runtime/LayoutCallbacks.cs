@@ -5,9 +5,6 @@ namespace LightingEssentials.UI.SettingsPanel.State.Runtime;
 
 internal readonly record struct LightingSettingsPanelLayoutCallbacks(
     Action ToggleMinimize,
-    Action ToggleModEnabled,
-    Action ResetAll,
-    Action CopyModified,
     Action ClosePanel,
     Action<LightingSettingsTab> SelectTab,
     Action OpenCatalogForActiveTab);
