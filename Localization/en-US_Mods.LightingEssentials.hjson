@@ -960,6 +960,11 @@ Configs: {
 			Label: Player Light Enabled
 			Tooltip: ""
 		}
+
+		UiScale: {
+			Label: Ui Scale
+			Tooltip: ""
+		}
 	}
 }
 

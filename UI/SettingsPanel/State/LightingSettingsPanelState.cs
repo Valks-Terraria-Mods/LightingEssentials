@@ -177,10 +177,22 @@ internal sealed class LightingSettingsPanelState : UIState
         tabBar.Top.Set(Scale(34f), 0f);
         _contentContainer.Append(tabBar);
 
-        AddTabButton(tabBar, LightingSettingsTab.TileEffects, 0);
-        AddTabButton(tabBar, LightingSettingsTab.Events, 1);
-        AddTabButton(tabBar, LightingSettingsTab.EntityLights, 2);
-        AddTabButton(tabBar, LightingSettingsTab.BossEffects, 3);
+        LightingSettingsTab[] tabs =
+        [
+            LightingSettingsTab.TileEffects,
+            LightingSettingsTab.Events,
+            LightingSettingsTab.EntityLights,
+            LightingSettingsTab.BossEffects,
+            LightingSettingsTab.Config
+        ];
+        
+        int numTabs = tabs.Length;
+        float tabWidth = 1f / numTabs;
+
+        for (int i = 0; i < numTabs; i++)
+        {
+            AddTabButton(tabBar, tabs[i], i, tabWidth);
+        }
 
         UIPanel scrollPanel = new();
         scrollPanel.Width.Set(0f, 1f);
@@ -197,15 +209,17 @@ internal sealed class LightingSettingsPanelState : UIState
         _settingsList = new UIList
         {
             ListPadding = Scale(8f),
+            // UIList can reorder elements unless a manual sort delegate is supplied.
+            ManualSortMethod = static _ => { }
         };
-        // UIList can reorder elements unless a manual sort delegate is supplied.
-        _settingsList.ManualSortMethod = static _ => { };
         _settingsList.Width.Set(-(scaledScrollbarWidth + scaledScrollbarGap), 1f);
         _settingsList.Height.Set(0f, 1f);
         scrollPanel.Append(_settingsList);
 
-        UIScrollbar scrollbar = new DarkScrollbar();
-        scrollbar.HAlign = 1f;
+        UIScrollbar scrollbar = new DarkScrollbar
+        {
+            HAlign = 1f
+        };
         scrollbar.Width.Set(scaledScrollbarWidth, 0f);
         scrollbar.Height.Set(0f, 1f);
         scrollPanel.Append(scrollbar);
@@ -238,11 +252,11 @@ internal sealed class LightingSettingsPanelState : UIState
     /// <param name="tabBar">Parent tab strip container.</param>
     /// <param name="tab">Associated logical tab.</param>
     /// <param name="index">Zero-based tab index in display order.</param>
-    private void AddTabButton(UIElement tabBar, LightingSettingsTab tab, int index)
+    private void AddTabButton(UIElement tabBar, LightingSettingsTab tab, int index, float tabWidth)
     {
         SettingsTabButton button = new(LightingSettingsCatalog.GetTabTitle(tab), _uiScale);
-        button.Width.Set(0f, 0.25f);
-        button.Left.Set(0f, index * 0.25f);
+        button.Width.Set(0f, tabWidth);
+        button.Left.Set(0f, index * tabWidth);
         button.OnLeftClick += (_, _) =>
         {
             if (_activeTab == tab)

@@ -135,6 +135,11 @@ internal static class LightingSettingsCatalog
                 new BoolSettingDescriptor("Enemy Light Enabled", static s => s.EnemyLightEnabled, static (s, v) => s.EnemyLightEnabled = v),
                 new ColorSettingDescriptor("Enemy Light Color", static s => s.EnemyLightColor, static (s, v) => s.EnemyLightColor = v),
             ],
+
+            [LightingSettingsTab.Config] =
+            [
+                new FloatSettingDescriptor("UI Scale", 1f, 1.10f, 0.025f, static s => s.UiScale, static (s, v) => s.UiScale = v),
+            ]
         };
 
     /// <summary>
@@ -156,11 +161,12 @@ internal static class LightingSettingsCatalog
     {
         return tab switch
         {
-            LightingSettingsTab.TileEffects => "Tile Effects",
+            LightingSettingsTab.TileEffects => "Tiles",
             LightingSettingsTab.Events => "Events",
-            LightingSettingsTab.EntityLights => "Entity Lights",
-            LightingSettingsTab.BossEffects => "Boss Effects",
-            _ => "Settings",
+            LightingSettingsTab.EntityLights => "Entity",
+            LightingSettingsTab.BossEffects => "Boss",
+            LightingSettingsTab.Config => "Config",
+            _ => "TabNeedsName",
         };
     }
 }

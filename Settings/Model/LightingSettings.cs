@@ -12,6 +12,12 @@ public class LightingSettings : ModConfig
     [BackgroundColor(0, 0, 0, 100)]
     public bool ModEnabled;
 
+    [Range(1f, 1.10f)]
+    [Increment(0.025f)]
+    [DefaultValue(1f)]
+    [BackgroundColor(0, 0, 0, 100)]
+    public float UiScale;
+
     [ColorNoAlpha]
     [DefaultValue(typeof(Color), "7, 7, 7, 255")]
     [BackgroundColor(0, 0, 0, 100)]

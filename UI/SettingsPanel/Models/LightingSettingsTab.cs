@@ -6,4 +6,5 @@ internal enum LightingSettingsTab
     Events,
     EntityLights,
     BossEffects,
+    Config
 }
