@@ -8,11 +8,17 @@ using Terraria.UI;
 
 namespace LightingEssentials.UI.SettingsPanel.Components.Popups;
 
+internal readonly record struct BossGroupPickerResetState(
+    IReadOnlyCollection<string> SelectedBossKeys,
+    IReadOnlyCollection<string> SelectedTargetTileGroupKeys,
+    string GroupName);
+
 internal sealed class BossGroupPickerPopup : UIPanel
 {
     private readonly IReadOnlyList<CatalogPickerOption> _bossOptions;
     private readonly IReadOnlyList<CatalogPickerOption> _targetTileGroupOptions;
     private readonly Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string> _onItemsSelected;
+    private readonly Func<BossGroupPickerResetState> _onResetToDefaults;
     private readonly Action _onClose;
     private readonly float _uiScale;
     private readonly string _confirmButtonText;
@@ -40,6 +46,7 @@ internal sealed class BossGroupPickerPopup : UIPanel
         IReadOnlyList<CatalogPickerOption> bossOptions,
         IReadOnlyList<CatalogPickerOption> targetTileGroupOptions,
         Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string> onItemsSelected,
+        Func<BossGroupPickerResetState> onResetToDefaults,
         Action onClose,
         float uiScale,
         IReadOnlyCollection<string> initiallySelectedBossKeys = null,
@@ -50,6 +57,7 @@ internal sealed class BossGroupPickerPopup : UIPanel
         _bossOptions = bossOptions;
         _targetTileGroupOptions = targetTileGroupOptions;
         _onItemsSelected = onItemsSelected;
+        _onResetToDefaults = onResetToDefaults;
         _onClose = onClose;
         _uiScale = uiScale;
         _confirmButtonText = confirmButtonText;
@@ -108,6 +116,23 @@ internal sealed class BossGroupPickerPopup : UIPanel
         _confirmButton.Top.Set(-Scale(30f), 1f);
         _confirmButton.OnLeftClick += OnConfirmPressed;
         Append(_confirmButton);
+
+        if (_onResetToDefaults is not null)
+        {
+            FlatTextButton resetButton = new("Reset to Defaults", ScaleText(0.70f))
+            {
+                HoverStyleEnabled = false,
+            };
+            resetButton.Width.Set(Scale(140f), 0f);
+            resetButton.Height.Set(Scale(24f), 0f);
+            resetButton.Top.Set(-Scale(30f), 1f);
+            resetButton.OnLeftClick += (_, _) =>
+            {
+                BossGroupPickerResetState resetState = _onResetToDefaults();
+                ApplyResetState(resetState);
+            };
+            Append(resetButton);
+        }
 
         _groupNameBar.SetContents(initialGroupName ?? string.Empty, forced: true);
         _bossSearchBar.SetContents(string.Empty, forced: true);
@@ -532,6 +557,34 @@ internal sealed class BossGroupPickerPopup : UIPanel
 
         _onItemsSelected(selectedBossOptions, selectedTargetOptions, groupName);
         RequestClose();
+    }
+
+    private void ApplyResetState(BossGroupPickerResetState resetState)
+    {
+        _selectedBossKeys.Clear();
+        if (resetState.SelectedBossKeys is not null)
+        {
+            foreach (string selectedKey in resetState.SelectedBossKeys)
+            {
+                if (!string.IsNullOrWhiteSpace(selectedKey))
+                    _selectedBossKeys.Add(selectedKey);
+            }
+        }
+
+        _selectedTargetGroupKeys.Clear();
+        if (resetState.SelectedTargetTileGroupKeys is not null)
+        {
+            foreach (string selectedKey in resetState.SelectedTargetTileGroupKeys)
+            {
+                if (!string.IsNullOrWhiteSpace(selectedKey))
+                    _selectedTargetGroupKeys.Add(selectedKey);
+            }
+        }
+
+        _groupNameBar.SetContents(resetState.GroupName ?? string.Empty, forced: true);
+        RebuildBossList();
+        RebuildTargetList();
+        UpdateSelectionFeedback();
     }
 
     private void FocusInput(UISearchBar focusedInput, UISearchBar firstOther, UISearchBar secondOther)

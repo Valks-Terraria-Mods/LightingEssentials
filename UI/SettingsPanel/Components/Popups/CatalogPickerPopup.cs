@@ -9,6 +9,7 @@ using Terraria.UI;
 namespace LightingEssentials.UI.SettingsPanel.Components.Popups;
 
 internal readonly record struct CatalogPickerOption(string Key, string Label);
+internal readonly record struct CatalogPickerResetState(IReadOnlyCollection<string> SelectedKeys, string GroupName);
 
 internal sealed class CatalogPickerPopup : UIPanel
 {
@@ -18,6 +19,7 @@ internal sealed class CatalogPickerPopup : UIPanel
 
     private readonly IReadOnlyList<CatalogPickerOption> _allOptions;
     private readonly Action<IReadOnlyList<CatalogPickerOption>, string> _onItemsSelected;
+    private readonly Func<CatalogPickerResetState> _onResetToDefaults;
     private readonly Action _onClose;
     private readonly float _uiScale;
     private readonly string _confirmButtonText;
@@ -57,6 +59,7 @@ internal sealed class CatalogPickerPopup : UIPanel
         string title,
         IReadOnlyList<CatalogPickerOption> options,
         Action<IReadOnlyList<CatalogPickerOption>, string> onItemsSelected,
+        Func<CatalogPickerResetState> onResetToDefaults,
         Action onClose,
         float uiScale,
         IReadOnlyCollection<string> initiallySelectedKeys = null,
@@ -65,6 +68,7 @@ internal sealed class CatalogPickerPopup : UIPanel
     {
         _allOptions = options;
         _onItemsSelected = onItemsSelected;
+        _onResetToDefaults = onResetToDefaults;
         _onClose = onClose;
         _uiScale = uiScale;
         _confirmButtonText = confirmButtonText;
@@ -197,6 +201,23 @@ internal sealed class CatalogPickerPopup : UIPanel
         _addSelectedButton.Top.Set(-Scale(36f), 1f);
         _addSelectedButton.OnLeftClick += OnAddSelectedPressed;
         Append(_addSelectedButton);
+
+        if (_onResetToDefaults is not null)
+        {
+            FlatTextButton resetButton = new("Reset to Defaults", ScaleText(0.70f))
+            {
+                HoverStyleEnabled = false,
+            };
+            resetButton.Width.Set(Scale(140f), 0f);
+            resetButton.Height.Set(Scale(24f), 0f);
+            resetButton.Top.Set(-Scale(36f), 1f);
+            resetButton.OnLeftClick += (_, _) =>
+            {
+                CatalogPickerResetState resetState = _onResetToDefaults();
+                ApplyResetState(resetState);
+            };
+            Append(resetButton);
+        }
 
         // Initialize contents after list construction so callback-driven rebuilds are safe.
         _searchBar.SetContents(string.Empty, forced: true);
@@ -507,6 +528,23 @@ internal sealed class CatalogPickerPopup : UIPanel
 
         _onItemsSelected(selectedOptions, groupName);
         RequestClose();
+    }
+
+    private void ApplyResetState(CatalogPickerResetState resetState)
+    {
+        _selectedKeys.Clear();
+        if (resetState.SelectedKeys is not null)
+        {
+            foreach (string selectedKey in resetState.SelectedKeys)
+            {
+                if (!string.IsNullOrWhiteSpace(selectedKey))
+                    _selectedKeys.Add(selectedKey);
+            }
+        }
+
+        _groupNameBar.SetContents(resetState.GroupName ?? string.Empty, forced: true);
+        QueueOptionRowRebuild();
+        UpdateSelectionFeedback();
     }
 
     private float Scale(float baselinePixels)

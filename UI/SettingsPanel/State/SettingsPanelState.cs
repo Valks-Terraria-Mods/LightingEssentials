@@ -188,6 +188,7 @@ internal sealed class LightingSettingsPanelState : UIState
                 OnBossGroupSelectionConfirmed,
                 null,
                 null,
+                null,
                 string.Empty,
                 "Add Group");
 
@@ -195,18 +196,19 @@ internal sealed class LightingSettingsPanelState : UIState
         }
 
         List<CatalogPickerOption> options = _entryCatalogService.BuildCatalogOptionsForTab(_runtime.ActiveTab, settings);
-        OpenCatalogPicker($"Select {LightingSettingsCatalog.GetTabTitle(_runtime.ActiveTab)} Entry", options, OnCatalogSelectionConfirmed, null, string.Empty, "Add Selected");
+        OpenCatalogPicker($"Select {LightingSettingsCatalog.GetTabTitle(_runtime.ActiveTab)} Entry", options, OnCatalogSelectionConfirmed, null, null, string.Empty, "Add Selected");
     }
 
     private void OpenCatalogPicker(
         string title,
         IReadOnlyList<CatalogPickerOption> options,
         Action<IReadOnlyList<CatalogPickerOption>, string> onConfirm,
+        Func<CatalogPickerResetState> onResetToDefaults,
         IReadOnlyCollection<string> initiallySelectedKeys,
         string initialGroupName,
         string confirmButtonText)
     {
-        _popupManager.OpenCatalogPicker(this, _runtime, title, options, onConfirm, initiallySelectedKeys, initialGroupName, confirmButtonText);
+        _popupManager.OpenCatalogPicker(this, _runtime, title, options, onConfirm, onResetToDefaults, initiallySelectedKeys, initialGroupName, confirmButtonText);
     }
 
     private void OpenBossGroupPicker(
@@ -214,6 +216,7 @@ internal sealed class LightingSettingsPanelState : UIState
         IReadOnlyList<CatalogPickerOption> bossOptions,
         IReadOnlyList<CatalogPickerOption> targetTileGroupOptions,
         Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string> onConfirm,
+        Func<BossGroupPickerResetState> onResetToDefaults,
         IReadOnlyCollection<string> initiallySelectedBossKeys,
         IReadOnlyCollection<string> initiallySelectedTargetTileGroupKeys,
         string initialGroupName,
@@ -226,6 +229,7 @@ internal sealed class LightingSettingsPanelState : UIState
             bossOptions,
             targetTileGroupOptions,
             onConfirm,
+            onResetToDefaults,
             initiallySelectedBossKeys,
             initiallySelectedTargetTileGroupKeys,
             initialGroupName,

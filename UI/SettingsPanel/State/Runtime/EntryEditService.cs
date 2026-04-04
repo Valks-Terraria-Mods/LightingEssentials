@@ -8,15 +8,15 @@ namespace LightingEssentials.UI.SettingsPanel.State.Runtime;
 internal sealed class LightingSettingsPanelEntryEditService
 {
     private readonly LightingSettingsPanelEntryCatalogService _catalogService;
-    private readonly Action<string, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, string, string> _openCatalogPicker;
-    private readonly Action<string, IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, IReadOnlyCollection<string>, string, string> _openBossGroupPicker;
+    private readonly Action<string, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, string>, Func<CatalogPickerResetState>, IReadOnlyCollection<string>, string, string> _openCatalogPicker;
+    private readonly Action<string, IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string>, Func<BossGroupPickerResetState>, IReadOnlyCollection<string>, IReadOnlyCollection<string>, string, string> _openBossGroupPicker;
     private readonly Action<LightingSettings> _applySettingsChange;
     private readonly Action _rebuildRows;
 
     public LightingSettingsPanelEntryEditService(
         LightingSettingsPanelEntryCatalogService catalogService,
-        Action<string, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, string, string> openCatalogPicker,
-        Action<string, IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, IReadOnlyCollection<string>, string, string> openBossGroupPicker,
+        Action<string, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, string>, Func<CatalogPickerResetState>, IReadOnlyCollection<string>, string, string> openCatalogPicker,
+        Action<string, IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string>, Func<BossGroupPickerResetState>, IReadOnlyCollection<string>, IReadOnlyCollection<string>, string, string> openBossGroupPicker,
         Action<LightingSettings> applySettingsChange,
         Action rebuildRows)
     {
@@ -63,6 +63,30 @@ internal sealed class LightingSettingsPanelEntryEditService
                 _applySettingsChange(settings);
                 _rebuildRows();
             },
+            () =>
+            {
+                if (index < 0 || index >= settings.TileEffectEntries.Count)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                LightingSettings defaults = LightingSettingsDefaults.CreateDefaults();
+                defaults.EnsureDynamicEntries();
+                if (index < 0 || index >= defaults.TileEffectEntries.Count)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                LightingTileEffectEntry currentEntry = settings.TileEffectEntries[index];
+                LightingTileEffectEntry defaultEntry = defaults.TileEffectEntries[index];
+                if (currentEntry is null || defaultEntry is null)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                settings.TileEffectEntries[index] = new LightingTileEffectEntry(defaultEntry.Name, defaultEntry.TileIds, currentEntry.Color, currentEntry.Enabled);
+                _applySettingsChange(settings);
+
+                List<string> resetSelectedKeys = [];
+                for (int i = 0; i < defaultEntry.TileIds.Count; i++)
+                    resetSelectedKeys.Add($"tile:{defaultEntry.TileIds[i]}");
+
+                return new CatalogPickerResetState(resetSelectedKeys, defaultEntry.Name);
+            },
             selectedKeys,
             entry.Name,
             "Save Group");
@@ -107,6 +131,34 @@ internal sealed class LightingSettingsPanelEntryEditService
                 settings.EventEffectEntries[index] = new LightingEventEffectEntry(resolved, eventIds, currentEntry.Enabled, currentEntry.Color);
                 _applySettingsChange(settings);
                 _rebuildRows();
+            },
+            () =>
+            {
+                if (index < 0 || index >= settings.EventEffectEntries.Count)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                LightingSettings defaults = LightingSettingsDefaults.CreateDefaults();
+                defaults.EnsureDynamicEntries();
+                if (index < 0 || index >= defaults.EventEffectEntries.Count)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                LightingEventEffectEntry currentEntry = settings.EventEffectEntries[index];
+                LightingEventEffectEntry defaultEntry = defaults.EventEffectEntries[index];
+                if (currentEntry is null || defaultEntry is null)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                List<LightingEventId> defaultEventIds = defaultEntry.EventIds is { Count: > 0 }
+                    ? [..defaultEntry.EventIds]
+                    : [defaultEntry.EventId];
+
+                settings.EventEffectEntries[index] = new LightingEventEffectEntry(defaultEntry.Name, defaultEventIds, currentEntry.Enabled, currentEntry.Color);
+                _applySettingsChange(settings);
+
+                List<string> resetSelectedKeys = [];
+                for (int i = 0; i < defaultEventIds.Count; i++)
+                    resetSelectedKeys.Add($"event:{(int)defaultEventIds[i]}");
+
+                return new CatalogPickerResetState(resetSelectedKeys, defaultEntry.Name);
             },
             selectedKeys,
             entry.Name,
@@ -156,6 +208,36 @@ internal sealed class LightingSettingsPanelEntryEditService
                 _applySettingsChange(settings);
                 _rebuildRows();
             },
+            () =>
+            {
+                if (index < 0 || index >= settings.BossEffectEntries.Count)
+                    return new BossGroupPickerResetState(selectedBossKeys, selectedTargetTileGroupKeys, entry.Name);
+
+                LightingSettings defaults = LightingSettingsDefaults.CreateDefaults();
+                defaults.EnsureDynamicEntries();
+                if (index < 0 || index >= defaults.BossEffectEntries.Count)
+                    return new BossGroupPickerResetState(selectedBossKeys, selectedTargetTileGroupKeys, entry.Name);
+
+                LightingBossEffectEntry currentEntry = settings.BossEffectEntries[index];
+                LightingBossEffectEntry defaultEntry = defaults.BossEffectEntries[index];
+                if (currentEntry is null || defaultEntry is null)
+                    return new BossGroupPickerResetState(selectedBossKeys, selectedTargetTileGroupKeys, entry.Name);
+
+                List<LightingBossId> defaultBossIds = defaultEntry.BossIds is { Count: > 0 }
+                    ? [..defaultEntry.BossIds]
+                    : [defaultEntry.BossId];
+
+                List<string> defaultTargetTileGroupKeys = LightingDynamicCatalogs.ResolveBossTargetTileGroupKeys(defaultBossIds, defaultEntry.TargetTileGroupKeys);
+                settings.BossEffectEntries[index] = new LightingBossEffectEntry(defaultEntry.Name, defaultBossIds, currentEntry.Enabled, currentEntry.Multiplier, defaultTargetTileGroupKeys);
+
+                _applySettingsChange(settings);
+
+                List<string> resetBossKeys = [];
+                for (int i = 0; i < defaultBossIds.Count; i++)
+                    resetBossKeys.Add($"boss:{(int)defaultBossIds[i]}");
+
+                return new BossGroupPickerResetState(resetBossKeys, defaultTargetTileGroupKeys, defaultEntry.Name);
+            },
             selectedBossKeys,
             selectedTargetTileGroupKeys,
             entry.Name,
@@ -204,6 +286,36 @@ internal sealed class LightingSettingsPanelEntryEditService
 
                 _applySettingsChange(settings);
                 _rebuildRows();
+            },
+            () =>
+            {
+                if (index < 0 || index >= settings.EntityEffectEntries.Count)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                LightingSettings defaults = LightingSettingsDefaults.CreateDefaults();
+                defaults.EnsureDynamicEntries();
+                if (index < 0 || index >= defaults.EntityEffectEntries.Count)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                LightingEntityEffectEntry currentEntry = settings.EntityEffectEntries[index];
+                LightingEntityEffectEntry defaultEntry = defaults.EntityEffectEntries[index];
+                if (currentEntry is null || defaultEntry is null)
+                    return new CatalogPickerResetState(selectedKeys, entry.Name);
+
+                settings.EntityEffectEntries[index] = new LightingEntityEffectEntry(
+                    defaultEntry.Name,
+                    currentEntry.Enabled,
+                    currentEntry.Color,
+                    defaultEntry.IncludePlayer,
+                    defaultEntry.IncludeAllEnemies,
+                    defaultEntry.IncludeAllProjectiles,
+                    defaultEntry.NpcIds,
+                    defaultEntry.ProjectileIds);
+
+                _applySettingsChange(settings);
+
+                List<string> resetSelectedKeys = LightingSettingsPanelEntrySelectionParser.BuildSelectedEntityKeys(defaultEntry);
+                return new CatalogPickerResetState(resetSelectedKeys, defaultEntry.Name);
             },
             selectedKeys,
             entry.Name,
