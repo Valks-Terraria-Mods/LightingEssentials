@@ -2,43 +2,67 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Terraria.GameContent.Events;
-using Terraria.ID;
 
 namespace LightingEssentials;
 
-internal readonly record struct LightingTileCatalogItem(int TileId, string DisplayName);
-internal readonly record struct LightingEventCatalogItem(LightingEventId EventId, string DisplayName, Color DefaultColor);
-internal readonly record struct LightingBossCatalogItem(LightingBossId BossId, string DisplayName, float DefaultMultiplier, bool UsesProgressiveMultiplier = false);
-internal readonly record struct LightingEntityCatalogItem(string Key, string DisplayName, Color SuggestedColor);
-internal readonly record struct LightingBossTargetTileGroupCatalogItem(string Key, string DisplayName);
-
-internal sealed record DefaultTileTemplate(string Name, int[] TileIds, Color Color);
-internal sealed record BossTargetTileGroupDefinition(string Key, string DisplayName, int[] TileIds);
-
 internal static class LightingDynamicCatalogs
 {
-    private const string BossTileGroupSurfaceGrowth = "boss-tile-group:surface-growth";
-    private const string BossTileGroupCorruptionFlora = "boss-tile-group:corruption-flora";
-    private const string BossTileGroupHallowedFlora = "boss-tile-group:hallowed-flora";
-    private const string BossTileGroupMushroomFlora = "boss-tile-group:mushroom-flora";
-    private const string BossTileGroupHerbFlora = "boss-tile-group:herb-flora";
-    private const string BossTileGroupAquaticFlora = "boss-tile-group:aquatic-flora";
-    private const string BossTileGroupAshFlora = "boss-tile-group:ash-flora";
-    private const string BossTileGroupBambooFlora = "boss-tile-group:bamboo-flora";
-    private const string BossTileGroupExoticMoss = "boss-tile-group:exotic-moss";
-    private const string BossTileGroupJungleRareFlora = "boss-tile-group:jungle-rare-flora";
-    private const string BossTileGroupEvilBiome = "boss-tile-group:evil-biome";
-    private const string BossTileGroupJungle = "boss-tile-group:jungle";
-    private const string BossTileGroupHardmodeOre = "boss-tile-group:hardmode-ore";
-    private const string BossTileGroupUnderworldOre = "boss-tile-group:underworld-ore";
-    private const string BossTileGroupLunarOre = "boss-tile-group:lunar-ore";
-    private const string BossTileGroupSnow = "boss-tile-group:snow";
-    private const string BossTileGroupGem = "boss-tile-group:gem";
-    private const string BossTileGroupCrystal = "boss-tile-group:crystal";
-    private const string BossTileGroupChlorophyte = "boss-tile-group:chlorophyte";
-    private const string BossTileGroupHardmodeProgression = "boss-tile-group:hardmode-progression";
-    private const string BossTileTemplateKeyPrefix = "boss-tile-template:";
+    private static readonly IReadOnlyList<DefaultTileTemplate> DefaultTileTemplates =
+    [
+        new("Grass", [TileID.Grass], Rgb(0, 30, 0)),
+        new("Plants", [TileID.Plants, TileID.Plants2], Rgb(0, 30, 0)),
+        new("Containers", [TileID.LargePiles, TileID.LargePiles2, TileID.Containers, TileID.Containers2], Rgb(7, 7, 7)),
+        new("Pots", [TileID.Pots], Rgb(7, 7, 7)),
+        new("Cactus", [TileID.Cactus], Rgb(20, 40, 0)),
+        new("Hallowed Flora", TileLightGroups.HallowedFloraTiles, Rgb(30, 16, 40)),
+        new("Mushroom Flora", TileLightGroups.MushroomFloraTiles, Rgb(0, 18, 32)),
+        new("Herb Flora", TileLightGroups.HerbFloraTiles, Rgb(18, 30, 8)),
+        new("Aquatic Flora", TileLightGroups.AquaticFloraTiles, Rgb(0, 24, 22)),
+        new("Sunflower Flora", [TileID.Sunflower], Rgb(34, 30, 10)),
+        new("Ash Flora", TileLightGroups.AshFloraTiles, Rgb(18, 12, 8)),
+        new("Bamboo Flora", TileLightGroups.BambooFloraTiles, Rgb(5, 22, 8)),
+        new("Exotic Moss", TileLightGroups.ExoticMossTiles, Rgb(12, 12, 20)),
+        new("Jungle Biome", [..TileLightGroups.JungleTiles, ..TileLightGroups.JungleRareFloraTiles], Rgb(0, 20, 0)),
+        new("Snow Biome", [TileID.IceBlock], Rgb(0, 0, 20)),
+        new("Desert Biome", [TileID.FossilOre], Rgb(20, 20, 0)),
+        new("Corruption Biome", [TileID.CorruptGrass, ..TileLightGroups.CorruptionFloraTiles], Rgb(40, 0, 40)),
+        new("Crimson Biome", [TileID.CrimsonGrass, TileID.CrimsonJungleGrass, TileID.CrimsonPlants, TileID.CrimsonThorns, TileID.CrimsonVines], Rgb(40, 0, 0)),
+        new("Life Crystal", [TileID.Heart], Rgb(255, 0, 0)),
+        new("Mana Crystal", [TileID.ManaCrystal], Rgb(0, 0, 255)),
+        new("Life Fruit", [TileID.LifeFruit], Rgb(0, 255, 0)),
+        new("Red Moss", [TileID.RedMoss], Rgb(10, 0, 0)),
+        new("Purple Moss", [TileID.PurpleMoss], Rgb(10, 0, 10)),
+        new("Long Moss", [TileID.LongMoss], Rgb(10, 10, 10)),
+        new("Lava Moss", [TileID.LavaMoss], Rgb(10, 0, 0)),
+        new("Green Moss", [TileID.GreenMoss], Rgb(0, 10, 0)),
+        new("Brown Moss", [TileID.BrownMoss], Rgb(10, 10, 10)),
+        new("Blue Moss", [TileID.BlueMoss], Rgb(0, 0, 10)),
+        new("Lunar Ore", [TileID.LunarOre], Rgb(3, 3, 3)),
+        new("Titanium", [TileID.Titanium], Rgb(3, 3, 3)),
+        new("Adamantite", [TileID.Adamantite], Rgb(3, 3, 3)),
+        new("Orichalcum", [TileID.Orichalcum], Rgb(3, 3, 3)),
+        new("Mythril", [TileID.Mythril], Rgb(3, 3, 3)),
+        new("Palladium", [TileID.Palladium], Rgb(3, 3, 3)),
+        new("Cobalt", [TileID.Cobalt], Rgb(3, 3, 3)),
+        new("Hellstone", [TileID.Hellstone], Rgb(50, 0, 0)),
+        new("Chlorophyte", [TileID.Chlorophyte], Rgb(0, 3, 0)),
+        new("Meteorite", [TileID.Meteorite], Rgb(255, 0, 0)),
+        new("Iron", [TileID.Iron], Rgb(3, 3, 3)),
+        new("Lead", [TileID.Lead], Rgb(3, 3, 3)),
+        new("Copper", [TileID.Copper], Rgb(3, 3, 3)),
+        new("Tin", [TileID.Tin], Rgb(3, 3, 3)),
+        new("Silver", [TileID.Silver], Rgb(3, 3, 3)),
+        new("Gold", [TileID.Gold], Rgb(3, 3, 3)),
+        new("Platinum", [TileID.Platinum], Rgb(3, 3, 3)),
+        new("Tungsten", [TileID.Tungsten], Rgb(3, 3, 3)),
+        new("Amethyst", [TileID.Amethyst], Rgb(3, 3, 3)),
+        new("Topaz", [TileID.Topaz], Rgb(3, 3, 3)),
+        new("Emerald", [TileID.Emerald], Rgb(3, 3, 3)),
+        new("Amber Gemspark", [TileID.AmberGemspark], Rgb(3, 3, 3)),
+        new("Diamond", [TileID.Diamond], Rgb(3, 3, 3)),
+        new("Ruby", [TileID.Ruby], Rgb(3, 3, 3)),
+        new("Sapphire", [TileID.Sapphire], Rgb(3, 3, 3)),
+    ];
 
     private static readonly IReadOnlyList<LightingEventCatalogItem> EventCatalogItems =
     [
@@ -101,35 +125,6 @@ internal static class LightingDynamicCatalogs
         new(LightingBossId.StardustPillar, "Stardust Pillar", 1.4f),
     ];
 
-    private static readonly IReadOnlyDictionary<LightingEventId, LightingEventCatalogItem> EventById = EventCatalogItems.ToDictionary(item => item.EventId);
-    private static readonly IReadOnlyDictionary<LightingBossId, LightingBossCatalogItem> BossById = BossCatalogItems.ToDictionary(item => item.BossId);
-    private static readonly IReadOnlyList<BossTargetTileGroupDefinition> BossTargetTileGroupDefinitions =
-    [
-        new(BossTileGroupSurfaceGrowth, "Surface Growth", TileLightGroups.SurfaceGrowthTiles),
-        new(BossTileGroupCorruptionFlora, "Corruption Flora", TileLightGroups.CorruptionFloraTiles),
-        new(BossTileGroupHallowedFlora, "Hallowed Flora", TileLightGroups.HallowedFloraTiles),
-        new(BossTileGroupMushroomFlora, "Mushroom Flora", TileLightGroups.MushroomFloraTiles),
-        new(BossTileGroupHerbFlora, "Herb Flora", TileLightGroups.HerbFloraTiles),
-        new(BossTileGroupAquaticFlora, "Aquatic Flora", TileLightGroups.AquaticFloraTiles),
-        new(BossTileGroupAshFlora, "Ash Flora", TileLightGroups.AshFloraTiles),
-        new(BossTileGroupBambooFlora, "Bamboo Flora", TileLightGroups.BambooFloraTiles),
-        new(BossTileGroupExoticMoss, "Exotic Moss", TileLightGroups.ExoticMossTiles),
-        new(BossTileGroupJungleRareFlora, "Jungle Rare Flora", TileLightGroups.JungleRareFloraTiles),
-        new(BossTileGroupEvilBiome, "Evil Biome", TileLightGroups.EvilBiomeTiles),
-        new(BossTileGroupJungle, "Jungle", TileLightGroups.JungleTiles),
-        new(BossTileGroupHardmodeOre, "Hardmode Ore", TileLightGroups.HardmodeOreTiles),
-        new(BossTileGroupUnderworldOre, "Underworld Ore", TileLightGroups.UnderworldOreTiles),
-        new(BossTileGroupLunarOre, "Lunar Ore", TileLightGroups.LunarOreTiles),
-        new(BossTileGroupSnow, "Snow", TileLightGroups.SnowTiles),
-        new(BossTileGroupGem, "Gem", TileLightGroups.GemTiles),
-        new(BossTileGroupCrystal, "Crystal", TileLightGroups.CrystalTiles),
-        new(BossTileGroupChlorophyte, "Chlorophyte", TileLightGroups.ChlorophyteTiles),
-        new(BossTileGroupHardmodeProgression, "Hardmode Progression", TileLightGroups.HardmodeProgressionTiles),
-    ];
-    private static readonly IReadOnlyDictionary<string, BossTargetTileGroupDefinition> BossTargetTileGroupByKey = BossTargetTileGroupDefinitions.ToDictionary(item => item.Key, StringComparer.Ordinal);
-    private static readonly IReadOnlyList<LightingBossTargetTileGroupCatalogItem> BossTargetTileGroupCatalogItems =
-        [..BossTargetTileGroupDefinitions.Select(static item => new LightingBossTargetTileGroupCatalogItem(item.Key, item.DisplayName))];
-    private static IReadOnlyList<LightingBossTargetTileGroupCatalogItem> _bossTargetTileGroupCatalogItemsWithTemplates;
     private static readonly IReadOnlyDictionary<LightingBossId, string[]> BossDefaultTargetTileGroupKeysById = new Dictionary<LightingBossId, string[]>
     {
         [LightingBossId.KingSlime] = [BossTileGroupSurfaceGrowth],
@@ -167,65 +162,61 @@ internal static class LightingDynamicCatalogs
         [LightingBossId.VortexPillar] = [BossTileGroupLunarOre],
         [LightingBossId.StardustPillar] = [BossTileGroupLunarOre],
     };
+
+    private static readonly IReadOnlyList<BossTargetTileGroupDefinition> BossTargetTileGroupDefinitions =
+    [
+        new(BossTileGroupSurfaceGrowth, "Surface Growth", TileLightGroups.SurfaceGrowthTiles),
+        new(BossTileGroupCorruptionFlora, "Corruption Flora", TileLightGroups.CorruptionFloraTiles),
+        new(BossTileGroupHallowedFlora, "Hallowed Flora", TileLightGroups.HallowedFloraTiles),
+        new(BossTileGroupMushroomFlora, "Mushroom Flora", TileLightGroups.MushroomFloraTiles),
+        new(BossTileGroupHerbFlora, "Herb Flora", TileLightGroups.HerbFloraTiles),
+        new(BossTileGroupAquaticFlora, "Aquatic Flora", TileLightGroups.AquaticFloraTiles),
+        new(BossTileGroupAshFlora, "Ash Flora", TileLightGroups.AshFloraTiles),
+        new(BossTileGroupBambooFlora, "Bamboo Flora", TileLightGroups.BambooFloraTiles),
+        new(BossTileGroupExoticMoss, "Exotic Moss", TileLightGroups.ExoticMossTiles),
+        new(BossTileGroupJungleRareFlora, "Jungle Rare Flora", TileLightGroups.JungleRareFloraTiles),
+        new(BossTileGroupEvilBiome, "Evil Biome", TileLightGroups.EvilBiomeTiles),
+        new(BossTileGroupJungle, "Jungle", TileLightGroups.JungleTiles),
+        new(BossTileGroupHardmodeOre, "Hardmode Ore", TileLightGroups.HardmodeOreTiles),
+        new(BossTileGroupUnderworldOre, "Underworld Ore", TileLightGroups.UnderworldOreTiles),
+        new(BossTileGroupLunarOre, "Lunar Ore", TileLightGroups.LunarOreTiles),
+        new(BossTileGroupSnow, "Snow", TileLightGroups.SnowTiles),
+        new(BossTileGroupGem, "Gem", TileLightGroups.GemTiles),
+        new(BossTileGroupCrystal, "Crystal", TileLightGroups.CrystalTiles),
+        new(BossTileGroupChlorophyte, "Chlorophyte", TileLightGroups.ChlorophyteTiles),
+        new(BossTileGroupHardmodeProgression, "Hardmode Progression", TileLightGroups.HardmodeProgressionTiles),
+    ];
+
+    private const string BossTileGroupSurfaceGrowth = "boss-tile-group:surface-growth";
+    private const string BossTileGroupCorruptionFlora = "boss-tile-group:corruption-flora";
+    private const string BossTileGroupHallowedFlora = "boss-tile-group:hallowed-flora";
+    private const string BossTileGroupMushroomFlora = "boss-tile-group:mushroom-flora";
+    private const string BossTileGroupHerbFlora = "boss-tile-group:herb-flora";
+    private const string BossTileGroupAquaticFlora = "boss-tile-group:aquatic-flora";
+    private const string BossTileGroupAshFlora = "boss-tile-group:ash-flora";
+    private const string BossTileGroupBambooFlora = "boss-tile-group:bamboo-flora";
+    private const string BossTileGroupExoticMoss = "boss-tile-group:exotic-moss";
+    private const string BossTileGroupJungleRareFlora = "boss-tile-group:jungle-rare-flora";
+    private const string BossTileGroupEvilBiome = "boss-tile-group:evil-biome";
+    private const string BossTileGroupJungle = "boss-tile-group:jungle";
+    private const string BossTileGroupHardmodeOre = "boss-tile-group:hardmode-ore";
+    private const string BossTileGroupUnderworldOre = "boss-tile-group:underworld-ore";
+    private const string BossTileGroupLunarOre = "boss-tile-group:lunar-ore";
+    private const string BossTileGroupSnow = "boss-tile-group:snow";
+    private const string BossTileGroupGem = "boss-tile-group:gem";
+    private const string BossTileGroupCrystal = "boss-tile-group:crystal";
+    private const string BossTileGroupChlorophyte = "boss-tile-group:chlorophyte";
+    private const string BossTileGroupHardmodeProgression = "boss-tile-group:hardmode-progression";
+    private const string BossTileTemplateKeyPrefix = "boss-tile-template:";
+
+    private static readonly IReadOnlyDictionary<LightingEventId, LightingEventCatalogItem> EventById = EventCatalogItems.ToDictionary(item => item.EventId);
+    private static readonly IReadOnlyDictionary<LightingBossId, LightingBossCatalogItem> BossById = BossCatalogItems.ToDictionary(item => item.BossId);
+    private static readonly IReadOnlyDictionary<string, BossTargetTileGroupDefinition> BossTargetTileGroupByKey = BossTargetTileGroupDefinitions.ToDictionary(item => item.Key, StringComparer.Ordinal);
+    private static readonly IReadOnlyList<LightingBossTargetTileGroupCatalogItem> BossTargetTileGroupCatalogItems =
+        [..BossTargetTileGroupDefinitions.Select(static item => new LightingBossTargetTileGroupCatalogItem(item.Key, item.DisplayName))];
+    private static IReadOnlyList<LightingBossTargetTileGroupCatalogItem> _bossTargetTileGroupCatalogItemsWithTemplates;
     private static readonly IReadOnlyList<LightingEntityCatalogItem> EntityCatalogItems = BuildEntityCatalogItems();
     private static readonly IReadOnlyDictionary<string, LightingEntityCatalogItem> EntityByKey = EntityCatalogItems.ToDictionary(item => item.Key, StringComparer.Ordinal);
-
-    private static readonly IReadOnlyList<DefaultTileTemplate> DefaultTileTemplates =
-    [
-        new("Grass", [TileID.Grass], Rgb(0, 30, 0)),
-        new("Plants", [TileID.Plants, TileID.Plants2], Rgb(0, 30, 0)),
-        new("Containers", [TileID.LargePiles, TileID.LargePiles2, TileID.Containers, TileID.Containers2], Rgb(7, 7, 7)),
-        new("Pots", [TileID.Pots], Rgb(7, 7, 7)),
-        new("Cactus", [TileID.Cactus], Rgb(20, 40, 0)),
-        new("Hallowed Flora", TileLightGroups.HallowedFloraTiles, Rgb(30, 16, 40)),
-        new("Mushroom Flora", TileLightGroups.MushroomFloraTiles, Rgb(0, 18, 32)),
-        new("Herb Flora", TileLightGroups.HerbFloraTiles, Rgb(18, 30, 8)),
-        new("Aquatic Flora", TileLightGroups.AquaticFloraTiles, Rgb(0, 24, 22)),
-        new("Sunflower Flora", [TileID.Sunflower], Rgb(34, 30, 10)),
-        new("Ash Flora", TileLightGroups.AshFloraTiles, Rgb(18, 12, 8)),
-        new("Bamboo Flora", TileLightGroups.BambooFloraTiles, Rgb(5, 22, 8)),
-        new("Exotic Moss", TileLightGroups.ExoticMossTiles, Rgb(12, 12, 20)),
-        new("Jungle Biome", [..TileLightGroups.JungleTiles, ..TileLightGroups.JungleRareFloraTiles], Rgb(0, 20, 0)),
-        new("Snow Biome", [TileID.IceBlock], Rgb(0, 0, 20)),
-        new("Desert Biome", [TileID.FossilOre], Rgb(20, 20, 0)),
-        new("Corruption Biome", [TileID.CorruptGrass, ..TileLightGroups.CorruptionFloraTiles], Rgb(40, 0, 40)),
-        new("Crimson Biome", [TileID.CrimsonGrass, TileID.CrimsonJungleGrass, TileID.CrimsonPlants, TileID.CrimsonThorns, TileID.CrimsonVines], Rgb(40, 0, 0)),
-        new("Life Crystal", [TileID.Heart], Rgb(255, 0, 0)),
-        new("Mana Crystal", [TileID.ManaCrystal], Rgb(0, 0, 255)),
-        new("Life Fruit", [TileID.LifeFruit], Rgb(0, 255, 0)),
-        new("Red Moss", [TileID.RedMoss], Rgb(10, 0, 0)),
-        new("Purple Moss", [TileID.PurpleMoss], Rgb(10, 0, 10)),
-        new("Long Moss", [TileID.LongMoss], Rgb(10, 10, 10)),
-        new("Lava Moss", [TileID.LavaMoss], Rgb(10, 0, 0)),
-        new("Green Moss", [TileID.GreenMoss], Rgb(0, 10, 0)),
-        new("Brown Moss", [TileID.BrownMoss], Rgb(10, 10, 10)),
-        new("Blue Moss", [TileID.BlueMoss], Rgb(0, 0, 10)),
-        new("Lunar Ore", [TileID.LunarOre], Rgb(3, 3, 3)),
-        new("Titanium", [TileID.Titanium], Rgb(3, 3, 3)),
-        new("Adamantite", [TileID.Adamantite], Rgb(3, 3, 3)),
-        new("Orichalcum", [TileID.Orichalcum], Rgb(3, 3, 3)),
-        new("Mythril", [TileID.Mythril], Rgb(3, 3, 3)),
-        new("Palladium", [TileID.Palladium], Rgb(3, 3, 3)),
-        new("Cobalt", [TileID.Cobalt], Rgb(3, 3, 3)),
-        new("Hellstone", [TileID.Hellstone], Rgb(50, 0, 0)),
-        new("Chlorophyte", [TileID.Chlorophyte], Rgb(0, 3, 0)),
-        new("Meteorite", [TileID.Meteorite], Rgb(255, 0, 0)),
-        new("Iron", [TileID.Iron], Rgb(3, 3, 3)),
-        new("Lead", [TileID.Lead], Rgb(3, 3, 3)),
-        new("Copper", [TileID.Copper], Rgb(3, 3, 3)),
-        new("Tin", [TileID.Tin], Rgb(3, 3, 3)),
-        new("Silver", [TileID.Silver], Rgb(3, 3, 3)),
-        new("Gold", [TileID.Gold], Rgb(3, 3, 3)),
-        new("Platinum", [TileID.Platinum], Rgb(3, 3, 3)),
-        new("Tungsten", [TileID.Tungsten], Rgb(3, 3, 3)),
-        new("Amethyst", [TileID.Amethyst], Rgb(3, 3, 3)),
-        new("Topaz", [TileID.Topaz], Rgb(3, 3, 3)),
-        new("Emerald", [TileID.Emerald], Rgb(3, 3, 3)),
-        new("Amber Gemspark", [TileID.AmberGemspark], Rgb(3, 3, 3)),
-        new("Diamond", [TileID.Diamond], Rgb(3, 3, 3)),
-        new("Ruby", [TileID.Ruby], Rgb(3, 3, 3)),
-        new("Sapphire", [TileID.Sapphire], Rgb(3, 3, 3)),
-    ];
 
     private static readonly IReadOnlyList<LightingTileCatalogItem> TileCatalogItems = BuildTileCatalogItems();
     private static readonly IReadOnlyDictionary<int, LightingTileCatalogItem> TileCatalogById = TileCatalogItems.ToDictionary(item => item.TileId);
@@ -790,3 +781,12 @@ internal static class LightingDynamicCatalogs
         return new Color(r, g, b);
     }
 }
+
+internal readonly record struct LightingTileCatalogItem(int TileId, string DisplayName);
+internal readonly record struct LightingEventCatalogItem(LightingEventId EventId, string DisplayName, Color DefaultColor);
+internal readonly record struct LightingBossCatalogItem(LightingBossId BossId, string DisplayName, float DefaultMultiplier, bool UsesProgressiveMultiplier = false);
+internal readonly record struct LightingEntityCatalogItem(string Key, string DisplayName, Color SuggestedColor);
+internal readonly record struct LightingBossTargetTileGroupCatalogItem(string Key, string DisplayName);
+
+internal sealed record DefaultTileTemplate(string Name, int[] TileIds, Color Color);
+internal sealed record BossTargetTileGroupDefinition(string Key, string DisplayName, int[] TileIds);
