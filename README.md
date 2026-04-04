@@ -1,24 +1,22 @@
-Note that some colors have been made more vibrant in the screenshots 
-above just to show what the mod can do (the defaults are much lower)
+Configure the "Lighting Settings Panel" keybind to open up the custom config window.
 
-Featuring
-+ Prehardmode ores are very dimmly lit making it very hard (but possible) to tell what type of ore you're looking for
-+ Hardmode ores glow vibrantly based on their tile colors
-+ Life crystals and life fruit glow a vibrant red
-+ Enemies glow a faint red
-+ The jungle glows a dim green (defeating plantera makes the jungle glow even greener)
-+
- The crimson and corruption glow their respective colors and defeating 
-the bosses of these biomes will make the biomes glow even brighter
-+ Walking over plants temporary gives more light to those areas
-+ Pots glow based on the biome you are in
-+ Meteorite and hellstone glow vibrant red
-+ Containers glow a dim white
-+ Swinging tools / weapons emits a faint white light
-+ Player has a very dim light
-+ When enemies are hit they glow red based on how much life was taken from them
-+ EoC now has 100 red lights that follow it (experimental and disabled by default)
+Default Settings
+- Pre-hardmode ores are very dimly lit
+- Hardmode ores glow vibrantly based on their tile colors
+- Life crystals and life fruit glow a vibrant red
+- The jungle glows a dim green
+- Meteorite and hellstone glow vibrant red
+- Containers glow a dim white
+- Player has a very dim light
+- Killing bosses have different effects on lighting in world
+- Projectiles and enemies can have colored lighting (disabled by default)
+- Certain events like blood moon can drastically change lighting of your world temporarily
 
-You can configure EVERYTHING now (If there is something that is not in the config that you want added please tell me)
+If you want to help make the default settings better, here's what you can do.
 
-Please post all suggestions, bugs, and screenshots in the discussions
+1. Modify the mod to your liking
+2. Click on the "Config" tab
+3. Click "Copy Modified" to copy modified settings to clipboard
+4. Paste this in the discord and explain why this should be part of the new defaults with screenshots showing the before and after changes.
+
+Discord: https://discord.gg/j8HQZZ76r8
