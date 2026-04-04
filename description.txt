@@ -1,6 +1,6 @@
-Note that some colors have been made more vibrant in the screenshots above just to show what the mod can do (the defaults are much lower)
+Configure the "Lighting Settings Panel" keybind to open up the custom config window.
 
-Featuring
+Default Settings
 - Pre-hardmode ores are very dimly lit
 - Hardmode ores glow vibrantly based on their tile colors
 - Life crystals and life fruit glow a vibrant red
@@ -8,11 +8,16 @@ Featuring
 - Meteorite and hellstone glow vibrant red
 - Containers glow a dim white
 - Player has a very dim light
-- Killing bosses have different effects on lighting in world (see config)
-- Projectiles can have colored lighting (disabled by default)
+- Killing bosses have different effects on lighting in world
+- Projectiles and enemies can have colored lighting (disabled by default)
 - Certain events like blood moon can drastically change lighting of your world temporarily
 
-Configure the "Lighting Settings Panel" keybind to open up the custom config window.
+If you want to help make the default settings better, here's what you can do.
 
-Discord for suggestions and support: https://discord.gg/j8HQZZ76r8
+1. Modify the mod to your liking
+2. Click on the "Config" tab
+3. Click "Copy Modified" to copy modified settings to clipboard
+4. Paste this in the discord and explain why this should be part of the new defaults with screenshots showing the before and after changes.
+
+Discord: https://discord.gg/j8HQZZ76r8
 Source code: https://github.com/Valks-Terraria-Mods/LightingEssentials
