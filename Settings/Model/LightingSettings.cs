@@ -684,7 +684,8 @@ public class LightingSettings : ModConfig
                 : entry.Name.Trim();
 
             float multiplier = Math.Clamp(entry.Multiplier, 1f, 2f);
-            sanitized.Add(new LightingBossEffectEntry(name, bossIds, entry.Enabled, multiplier));
+            List<string> targetTileGroupKeys = LightingDynamicCatalogs.ResolveBossTargetTileGroupKeys(bossIds, entry.TargetTileGroupKeys);
+            sanitized.Add(new LightingBossEffectEntry(name, bossIds, entry.Enabled, multiplier, targetTileGroupKeys));
         }
 
         return sanitized;

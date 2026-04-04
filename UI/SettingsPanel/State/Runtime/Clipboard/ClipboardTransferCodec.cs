@@ -297,6 +297,7 @@ internal static class LightingSettingsPanelClipboardTransferCodec
             {
                 Name = entry.Name ?? string.Empty,
                 BossIds = bossIdValues,
+                TargetTileGroupKeys = LightingSettingsPanelClipboardFormatting.GetBossTargetTileGroupKeys(entry),
                 Enabled = entry.Enabled,
                 Multiplier = entry.Multiplier,
             });
@@ -368,7 +369,11 @@ internal static class LightingSettingsPanelClipboardTransferCodec
             if (bossIds.Count == 0)
                 bossIds.Add(LightingBossId.KingSlime);
 
-            entries.Add(new LightingBossEffectEntry(payloadEntry.Name ?? string.Empty, bossIds, payloadEntry.Enabled, payloadEntry.Multiplier));
+            List<string> targetTileGroupKeys = payloadEntry.TargetTileGroupKeys is null
+                ? []
+                : [..payloadEntry.TargetTileGroupKeys];
+
+            entries.Add(new LightingBossEffectEntry(payloadEntry.Name ?? string.Empty, bossIds, payloadEntry.Enabled, payloadEntry.Multiplier, targetTileGroupKeys));
         }
 
         return entries;
@@ -594,6 +599,8 @@ internal sealed class LightingSettingsPanelTransferBossEntry
     public string Name { get; set; } = string.Empty;
 
     public List<int> BossIds { get; set; } = [];
+
+    public List<string> TargetTileGroupKeys { get; set; } = [];
 
     public bool Enabled { get; set; } = true;
 

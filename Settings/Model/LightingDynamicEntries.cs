@@ -145,6 +145,7 @@ public sealed class LightingBossEffectEntry
     public LightingBossId BossId;
     public string Name;
     public List<LightingBossId> BossIds;
+    public List<string> TargetTileGroupKeys;
     public bool Enabled;
     public float Multiplier;
 
@@ -153,15 +154,17 @@ public sealed class LightingBossEffectEntry
         BossId = LightingBossId.KingSlime;
         Name = string.Empty;
         BossIds = [LightingBossId.KingSlime];
+        TargetTileGroupKeys = [];
         Enabled = true;
         Multiplier = 1.4f;
     }
 
-    public LightingBossEffectEntry(string name, IEnumerable<LightingBossId> bossIds, bool enabled, float multiplier)
+    public LightingBossEffectEntry(string name, IEnumerable<LightingBossId> bossIds, bool enabled, float multiplier, IEnumerable<string> targetTileGroupKeys = null)
     {
         Name = name;
         BossIds = [..bossIds];
         BossId = BossIds.Count > 0 ? BossIds[0] : LightingBossId.KingSlime;
+        TargetTileGroupKeys = targetTileGroupKeys is null ? [] : [..targetTileGroupKeys];
         Enabled = enabled;
         Multiplier = multiplier;
     }
@@ -174,7 +177,7 @@ public sealed class LightingBossEffectEntry
 
     public LightingBossEffectEntry Clone()
     {
-        return new LightingBossEffectEntry(Name, BossIds, Enabled, Multiplier)
+        return new LightingBossEffectEntry(Name, BossIds, Enabled, Multiplier, TargetTileGroupKeys)
         {
             BossId = BossId,
         };

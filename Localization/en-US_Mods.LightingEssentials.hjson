@@ -1166,6 +1166,11 @@ Configs: {
 			Label: Boss Ids
 			Tooltip: ""
 		}
+
+		TargetTileGroupKeys: {
+			Tooltip: ""
+			Label: Target Tile Group Keys
+		}
 	}
 
 	LightingBossId: {

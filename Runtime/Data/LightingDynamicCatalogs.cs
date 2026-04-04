@@ -11,11 +11,35 @@ internal readonly record struct LightingTileCatalogItem(int TileId, string Displ
 internal readonly record struct LightingEventCatalogItem(LightingEventId EventId, string DisplayName, Color DefaultColor);
 internal readonly record struct LightingBossCatalogItem(LightingBossId BossId, string DisplayName, float DefaultMultiplier, bool UsesProgressiveMultiplier = false);
 internal readonly record struct LightingEntityCatalogItem(string Key, string DisplayName, Color SuggestedColor);
+internal readonly record struct LightingBossTargetTileGroupCatalogItem(string Key, string DisplayName);
 
 internal sealed record DefaultTileTemplate(string Name, int[] TileIds, Color Color);
+internal sealed record BossTargetTileGroupDefinition(string Key, string DisplayName, int[] TileIds);
 
 internal static class LightingDynamicCatalogs
 {
+    private const string BossTileGroupSurfaceGrowth = "boss-tile-group:surface-growth";
+    private const string BossTileGroupCorruptionFlora = "boss-tile-group:corruption-flora";
+    private const string BossTileGroupHallowedFlora = "boss-tile-group:hallowed-flora";
+    private const string BossTileGroupMushroomFlora = "boss-tile-group:mushroom-flora";
+    private const string BossTileGroupHerbFlora = "boss-tile-group:herb-flora";
+    private const string BossTileGroupAquaticFlora = "boss-tile-group:aquatic-flora";
+    private const string BossTileGroupAshFlora = "boss-tile-group:ash-flora";
+    private const string BossTileGroupBambooFlora = "boss-tile-group:bamboo-flora";
+    private const string BossTileGroupExoticMoss = "boss-tile-group:exotic-moss";
+    private const string BossTileGroupJungleRareFlora = "boss-tile-group:jungle-rare-flora";
+    private const string BossTileGroupEvilBiome = "boss-tile-group:evil-biome";
+    private const string BossTileGroupJungle = "boss-tile-group:jungle";
+    private const string BossTileGroupHardmodeOre = "boss-tile-group:hardmode-ore";
+    private const string BossTileGroupUnderworldOre = "boss-tile-group:underworld-ore";
+    private const string BossTileGroupLunarOre = "boss-tile-group:lunar-ore";
+    private const string BossTileGroupSnow = "boss-tile-group:snow";
+    private const string BossTileGroupGem = "boss-tile-group:gem";
+    private const string BossTileGroupCrystal = "boss-tile-group:crystal";
+    private const string BossTileGroupChlorophyte = "boss-tile-group:chlorophyte";
+    private const string BossTileGroupHardmodeProgression = "boss-tile-group:hardmode-progression";
+    private const string BossTileTemplateKeyPrefix = "boss-tile-template:";
+
     private static readonly IReadOnlyList<LightingEventCatalogItem> EventCatalogItems =
     [
         new(LightingEventId.Party, "Party", Rgb(255, 188, 90)),
@@ -79,6 +103,70 @@ internal static class LightingDynamicCatalogs
 
     private static readonly IReadOnlyDictionary<LightingEventId, LightingEventCatalogItem> EventById = EventCatalogItems.ToDictionary(item => item.EventId);
     private static readonly IReadOnlyDictionary<LightingBossId, LightingBossCatalogItem> BossById = BossCatalogItems.ToDictionary(item => item.BossId);
+    private static readonly IReadOnlyList<BossTargetTileGroupDefinition> BossTargetTileGroupDefinitions =
+    [
+        new(BossTileGroupSurfaceGrowth, "Surface Growth", TileLightGroups.SurfaceGrowthTiles),
+        new(BossTileGroupCorruptionFlora, "Corruption Flora", TileLightGroups.CorruptionFloraTiles),
+        new(BossTileGroupHallowedFlora, "Hallowed Flora", TileLightGroups.HallowedFloraTiles),
+        new(BossTileGroupMushroomFlora, "Mushroom Flora", TileLightGroups.MushroomFloraTiles),
+        new(BossTileGroupHerbFlora, "Herb Flora", TileLightGroups.HerbFloraTiles),
+        new(BossTileGroupAquaticFlora, "Aquatic Flora", TileLightGroups.AquaticFloraTiles),
+        new(BossTileGroupAshFlora, "Ash Flora", TileLightGroups.AshFloraTiles),
+        new(BossTileGroupBambooFlora, "Bamboo Flora", TileLightGroups.BambooFloraTiles),
+        new(BossTileGroupExoticMoss, "Exotic Moss", TileLightGroups.ExoticMossTiles),
+        new(BossTileGroupJungleRareFlora, "Jungle Rare Flora", TileLightGroups.JungleRareFloraTiles),
+        new(BossTileGroupEvilBiome, "Evil Biome", TileLightGroups.EvilBiomeTiles),
+        new(BossTileGroupJungle, "Jungle", TileLightGroups.JungleTiles),
+        new(BossTileGroupHardmodeOre, "Hardmode Ore", TileLightGroups.HardmodeOreTiles),
+        new(BossTileGroupUnderworldOre, "Underworld Ore", TileLightGroups.UnderworldOreTiles),
+        new(BossTileGroupLunarOre, "Lunar Ore", TileLightGroups.LunarOreTiles),
+        new(BossTileGroupSnow, "Snow", TileLightGroups.SnowTiles),
+        new(BossTileGroupGem, "Gem", TileLightGroups.GemTiles),
+        new(BossTileGroupCrystal, "Crystal", TileLightGroups.CrystalTiles),
+        new(BossTileGroupChlorophyte, "Chlorophyte", TileLightGroups.ChlorophyteTiles),
+        new(BossTileGroupHardmodeProgression, "Hardmode Progression", TileLightGroups.HardmodeProgressionTiles),
+    ];
+    private static readonly IReadOnlyDictionary<string, BossTargetTileGroupDefinition> BossTargetTileGroupByKey = BossTargetTileGroupDefinitions.ToDictionary(item => item.Key, StringComparer.Ordinal);
+    private static readonly IReadOnlyList<LightingBossTargetTileGroupCatalogItem> BossTargetTileGroupCatalogItems =
+        [..BossTargetTileGroupDefinitions.Select(static item => new LightingBossTargetTileGroupCatalogItem(item.Key, item.DisplayName))];
+    private static IReadOnlyList<LightingBossTargetTileGroupCatalogItem> _bossTargetTileGroupCatalogItemsWithTemplates;
+    private static readonly IReadOnlyDictionary<LightingBossId, string[]> BossDefaultTargetTileGroupKeysById = new Dictionary<LightingBossId, string[]>
+    {
+        [LightingBossId.KingSlime] = [BossTileGroupSurfaceGrowth],
+        [LightingBossId.EyeOfCthulhu] = [BossTileGroupSurfaceGrowth, BossTileGroupHerbFlora],
+        [LightingBossId.EaterOfWorlds] = [BossTileGroupEvilBiome, BossTileGroupCorruptionFlora],
+        [LightingBossId.BrainOfCthulhu] = [BossTileGroupEvilBiome, BossTileGroupCorruptionFlora],
+        [LightingBossId.EvilBiomeBoss] = [BossTileGroupEvilBiome, BossTileGroupCorruptionFlora],
+        [LightingBossId.QueenBee] = [BossTileGroupJungle, BossTileGroupJungleRareFlora],
+        [LightingBossId.Skeletron] = [BossTileGroupUnderworldOre],
+        [LightingBossId.Deerclops] = [BossTileGroupSnow],
+        [LightingBossId.WallOfFlesh] = [BossTileGroupUnderworldOre, BossTileGroupAshFlora],
+        [LightingBossId.QueenSlime] = [BossTileGroupHardmodeProgression, BossTileGroupHallowedFlora, BossTileGroupMushroomFlora],
+        [LightingBossId.MechBosses] = [BossTileGroupHardmodeOre],
+        [LightingBossId.Twins] = [BossTileGroupHardmodeOre],
+        [LightingBossId.Destroyer] = [BossTileGroupHardmodeOre],
+        [LightingBossId.SkeletronPrime] = [BossTileGroupHardmodeOre],
+        [LightingBossId.Plantera] = [BossTileGroupJungle, BossTileGroupJungleRareFlora, BossTileGroupHerbFlora],
+        [LightingBossId.Golem] = [BossTileGroupChlorophyte],
+        [LightingBossId.DukeFishron] = [BossTileGroupGem, BossTileGroupAquaticFlora],
+        [LightingBossId.EmpressOfLight] = [BossTileGroupCrystal, BossTileGroupHallowedFlora],
+        [LightingBossId.LunaticCultist] = [BossTileGroupLunarOre],
+        [LightingBossId.MoonLord] = [BossTileGroupLunarOre, BossTileGroupExoticMoss],
+        [LightingBossId.DarkMage] = [BossTileGroupSurfaceGrowth],
+        [LightingBossId.Ogre] = [BossTileGroupHardmodeOre],
+        [LightingBossId.Betsy] = [BossTileGroupHardmodeProgression, BossTileGroupChlorophyte],
+        [LightingBossId.FlyingDutchman] = [BossTileGroupAquaticFlora, BossTileGroupGem],
+        [LightingBossId.MourningWood] = [BossTileGroupAshFlora, BossTileGroupHerbFlora],
+        [LightingBossId.Pumpking] = [BossTileGroupAshFlora, BossTileGroupCrystal],
+        [LightingBossId.Everscream] = [BossTileGroupSnow],
+        [LightingBossId.SantaNk1] = [BossTileGroupSnow, BossTileGroupHardmodeOre],
+        [LightingBossId.IceQueen] = [BossTileGroupSnow, BossTileGroupCrystal],
+        [LightingBossId.MartianSaucer] = [BossTileGroupLunarOre, BossTileGroupGem],
+        [LightingBossId.SolarPillar] = [BossTileGroupLunarOre],
+        [LightingBossId.NebulaPillar] = [BossTileGroupLunarOre],
+        [LightingBossId.VortexPillar] = [BossTileGroupLunarOre],
+        [LightingBossId.StardustPillar] = [BossTileGroupLunarOre],
+    };
     private static readonly IReadOnlyList<LightingEntityCatalogItem> EntityCatalogItems = BuildEntityCatalogItems();
     private static readonly IReadOnlyDictionary<string, LightingEntityCatalogItem> EntityByKey = EntityCatalogItems.ToDictionary(item => item.Key, StringComparer.Ordinal);
 
@@ -179,6 +267,118 @@ internal static class LightingDynamicCatalogs
     public static bool TryGetBossCatalogItem(LightingBossId bossId, out LightingBossCatalogItem item)
     {
         return BossById.TryGetValue(bossId, out item);
+    }
+
+    public static IReadOnlyList<LightingBossTargetTileGroupCatalogItem> GetBossTargetTileGroupCatalogItems()
+    {
+        if (_bossTargetTileGroupCatalogItemsWithTemplates is not null)
+            return _bossTargetTileGroupCatalogItemsWithTemplates;
+
+        List<LightingBossTargetTileGroupCatalogItem> combined = [..BossTargetTileGroupCatalogItems];
+        HashSet<string> existingLabels = new(StringComparer.OrdinalIgnoreCase);
+
+        for (int i = 0; i < combined.Count; i++)
+            existingLabels.Add(combined[i].DisplayName);
+
+        for (int i = 0; i < DefaultTileTemplates.Count; i++)
+        {
+            DefaultTileTemplate template = DefaultTileTemplates[i];
+            if (!existingLabels.Add(template.Name))
+                continue;
+
+            combined.Add(new LightingBossTargetTileGroupCatalogItem(BuildBossTemplateKey(template.Name), template.Name));
+        }
+
+        combined.Sort(static (a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+        _bossTargetTileGroupCatalogItemsWithTemplates = combined;
+        return _bossTargetTileGroupCatalogItemsWithTemplates;
+    }
+
+    public static bool TryGetBossTargetTileGroupCatalogItem(string key, out LightingBossTargetTileGroupCatalogItem item)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            item = default;
+            return false;
+        }
+
+        if (BossTargetTileGroupByKey.TryGetValue(key, out BossTargetTileGroupDefinition definition))
+        {
+            item = new LightingBossTargetTileGroupCatalogItem(definition.Key, definition.DisplayName);
+            return true;
+        }
+
+        if (TryGetDefaultTileTemplateFromBossTargetKey(key, out DefaultTileTemplate template))
+        {
+            item = new LightingBossTargetTileGroupCatalogItem(key, template.Name);
+            return true;
+        }
+
+        item = default;
+        return false;
+    }
+
+    public static bool TryGetBossTargetTileIds(string key, out int[] tileIds)
+    {
+        if (!string.IsNullOrWhiteSpace(key) && BossTargetTileGroupByKey.TryGetValue(key, out BossTargetTileGroupDefinition definition))
+        {
+            tileIds = definition.TileIds;
+            return true;
+        }
+
+        if (TryGetDefaultTileTemplateFromBossTargetKey(key, out DefaultTileTemplate template))
+        {
+            tileIds = template.TileIds;
+            return true;
+        }
+
+        tileIds = null;
+        return false;
+    }
+
+    public static List<string> GetDefaultBossTargetTileGroupKeys(LightingBossId bossId)
+    {
+        if (!BossDefaultTargetTileGroupKeysById.TryGetValue(bossId, out string[] groupKeys))
+            return [];
+
+        return [..groupKeys];
+    }
+
+    public static List<string> ResolveBossTargetTileGroupKeys(IReadOnlyList<LightingBossId> bossIds, IReadOnlyList<string> configuredKeys)
+    {
+        HashSet<string> seen = new(StringComparer.Ordinal);
+        List<string> resolved = [];
+
+        if (configuredKeys is not null)
+        {
+            for (int i = 0; i < configuredKeys.Count; i++)
+            {
+                string key = configuredKeys[i];
+                if (!IsBossTargetTileGroupKeyValid(key) || !seen.Add(key))
+                    continue;
+
+                resolved.Add(key);
+            }
+        }
+
+        if (resolved.Count > 0 || bossIds is null || bossIds.Count == 0)
+            return resolved;
+
+        for (int i = 0; i < bossIds.Count; i++)
+        {
+            LightingBossId bossId = bossIds[i];
+            if (!BossDefaultTargetTileGroupKeysById.TryGetValue(bossId, out string[] defaultKeys))
+                continue;
+
+            for (int j = 0; j < defaultKeys.Length; j++)
+            {
+                string key = defaultKeys[j];
+                if (seen.Add(key))
+                    resolved.Add(key);
+            }
+        }
+
+        return resolved;
     }
 
     public static IReadOnlyList<LightingEntityCatalogItem> GetEntityCatalogItems()
@@ -296,7 +496,7 @@ internal static class LightingDynamicCatalogs
     public static LightingBossEffectEntry CreateDefaultBossEntry(LightingBossId bossId)
     {
         LightingBossCatalogItem item = BossById[bossId];
-        return new LightingBossEffectEntry(item.DisplayName, [item.BossId], true, item.DefaultMultiplier);
+        return new LightingBossEffectEntry(item.DisplayName, [item.BossId], true, item.DefaultMultiplier, GetDefaultBossTargetTileGroupKeys(item.BossId));
     }
 
     public static WorldLightingFlags GetEventFlag(LightingEventId eventId)
@@ -370,49 +570,97 @@ internal static class LightingDynamicCatalogs
 
     public static int[][] GetBossTargetTileGroups(LightingBossId bossId)
     {
-        return bossId switch
-        {
-            LightingBossId.KingSlime => [TileLightGroups.SurfaceGrowthTiles],
-            LightingBossId.EyeOfCthulhu => [TileLightGroups.SurfaceGrowthTiles, TileLightGroups.HerbFloraTiles],
-            LightingBossId.EaterOfWorlds => [TileLightGroups.EvilBiomeTiles, TileLightGroups.CorruptionFloraTiles],
-            LightingBossId.BrainOfCthulhu => [TileLightGroups.EvilBiomeTiles, TileLightGroups.CorruptionFloraTiles],
-            LightingBossId.EvilBiomeBoss => [TileLightGroups.EvilBiomeTiles, TileLightGroups.CorruptionFloraTiles],
-            LightingBossId.QueenBee => [TileLightGroups.JungleTiles, TileLightGroups.JungleRareFloraTiles],
-            LightingBossId.Skeletron => [TileLightGroups.UnderworldOreTiles],
-            LightingBossId.Deerclops => [TileLightGroups.SnowTiles],
-            LightingBossId.WallOfFlesh => [TileLightGroups.UnderworldOreTiles, TileLightGroups.AshFloraTiles],
-            LightingBossId.QueenSlime => [TileLightGroups.HardmodeProgressionTiles, TileLightGroups.HallowedFloraTiles, TileLightGroups.MushroomFloraTiles],
-            LightingBossId.MechBosses => [TileLightGroups.HardmodeOreTiles],
-            LightingBossId.Twins => [TileLightGroups.HardmodeOreTiles],
-            LightingBossId.Destroyer => [TileLightGroups.HardmodeOreTiles],
-            LightingBossId.SkeletronPrime => [TileLightGroups.HardmodeOreTiles],
-            LightingBossId.Plantera => [TileLightGroups.JungleTiles, TileLightGroups.JungleRareFloraTiles, TileLightGroups.HerbFloraTiles],
-            LightingBossId.Golem => [TileLightGroups.ChlorophyteTiles],
-            LightingBossId.DukeFishron => [TileLightGroups.GemTiles, TileLightGroups.AquaticFloraTiles],
-            LightingBossId.EmpressOfLight => [TileLightGroups.CrystalTiles, TileLightGroups.HallowedFloraTiles],
-            LightingBossId.LunaticCultist => [TileLightGroups.LunarOreTiles],
-            LightingBossId.MoonLord => [TileLightGroups.LunarOreTiles, TileLightGroups.ExoticMossTiles],
-            LightingBossId.DarkMage => [TileLightGroups.SurfaceGrowthTiles],
-            LightingBossId.Ogre => [TileLightGroups.HardmodeOreTiles],
-            LightingBossId.Betsy => [TileLightGroups.HardmodeProgressionTiles, TileLightGroups.ChlorophyteTiles],
-            LightingBossId.FlyingDutchman => [TileLightGroups.AquaticFloraTiles, TileLightGroups.GemTiles],
-            LightingBossId.MourningWood => [TileLightGroups.AshFloraTiles, TileLightGroups.HerbFloraTiles],
-            LightingBossId.Pumpking => [TileLightGroups.AshFloraTiles, TileLightGroups.CrystalTiles],
-            LightingBossId.Everscream => [TileLightGroups.SnowTiles],
-            LightingBossId.SantaNk1 => [TileLightGroups.SnowTiles, TileLightGroups.HardmodeOreTiles],
-            LightingBossId.IceQueen => [TileLightGroups.SnowTiles, TileLightGroups.CrystalTiles],
-            LightingBossId.MartianSaucer => [TileLightGroups.LunarOreTiles, TileLightGroups.GemTiles],
-            LightingBossId.SolarPillar => [TileLightGroups.LunarOreTiles],
-            LightingBossId.NebulaPillar => [TileLightGroups.LunarOreTiles],
-            LightingBossId.VortexPillar => [TileLightGroups.LunarOreTiles],
-            LightingBossId.StardustPillar => [TileLightGroups.LunarOreTiles],
-            _ => [],
-        };
+        if (!BossDefaultTargetTileGroupKeysById.TryGetValue(bossId, out string[] defaultGroupKeys))
+            return [];
+
+        return BuildBossTargetTileGroups(defaultGroupKeys);
     }
 
     public static bool UsesProgressiveMultiplier(LightingBossId bossId)
     {
         return bossId == LightingBossId.MechBosses;
+    }
+
+    private static int[][] BuildBossTargetTileGroups(IReadOnlyList<string> groupKeys)
+    {
+        if (groupKeys is null || groupKeys.Count == 0)
+            return [];
+
+        List<int[]> groups = [];
+        for (int i = 0; i < groupKeys.Count; i++)
+        {
+            if (TryGetBossTargetTileIds(groupKeys[i], out int[] tileIds))
+                groups.Add(tileIds);
+        }
+
+        return [..groups];
+    }
+
+    private static bool IsBossTargetTileGroupKeyValid(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            return false;
+
+        return BossTargetTileGroupByKey.ContainsKey(key)
+            || TryGetDefaultTileTemplateFromBossTargetKey(key, out _);
+    }
+
+    private static bool TryGetDefaultTileTemplateFromBossTargetKey(string key, out DefaultTileTemplate template)
+    {
+        template = null;
+
+        if (string.IsNullOrWhiteSpace(key) || !key.StartsWith(BossTileTemplateKeyPrefix, StringComparison.Ordinal))
+            return false;
+
+        string normalized = key[BossTileTemplateKeyPrefix.Length..];
+        for (int i = 0; i < DefaultTileTemplates.Count; i++)
+        {
+            DefaultTileTemplate candidate = DefaultTileTemplates[i];
+            if (!string.Equals(NormalizeBossTargetKeyToken(candidate.Name), normalized, StringComparison.Ordinal))
+                continue;
+
+            template = candidate;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static string BuildBossTemplateKey(string templateName)
+    {
+        return BossTileTemplateKeyPrefix + NormalizeBossTargetKeyToken(templateName);
+    }
+
+    private static string NormalizeBossTargetKeyToken(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        StringBuilder builder = new(value.Length);
+        bool previousWasSeparator = false;
+
+        string trimmed = value.Trim();
+        for (int i = 0; i < trimmed.Length; i++)
+        {
+            char character = char.ToLowerInvariant(trimmed[i]);
+            if (char.IsLetterOrDigit(character))
+            {
+                builder.Append(character);
+                previousWasSeparator = false;
+                continue;
+            }
+
+            if (builder.Length == 0 || previousWasSeparator)
+                continue;
+
+            builder.Append('-');
+            previousWasSeparator = true;
+        }
+
+        if (builder.Length > 0 && builder[^1] == '-')
+            builder.Length--;
+
+        return builder.ToString();
     }
 
     private static IReadOnlyList<LightingTileCatalogItem> BuildTileCatalogItems()

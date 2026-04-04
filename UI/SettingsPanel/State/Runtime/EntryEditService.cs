@@ -9,17 +9,20 @@ internal sealed class LightingSettingsPanelEntryEditService
 {
     private readonly LightingSettingsPanelEntryCatalogService _catalogService;
     private readonly Action<string, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, string, string> _openCatalogPicker;
+    private readonly Action<string, IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, IReadOnlyCollection<string>, string, string> _openBossGroupPicker;
     private readonly Action<LightingSettings> _applySettingsChange;
     private readonly Action _rebuildRows;
 
     public LightingSettingsPanelEntryEditService(
         LightingSettingsPanelEntryCatalogService catalogService,
         Action<string, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, string, string> openCatalogPicker,
+        Action<string, IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string>, IReadOnlyCollection<string>, IReadOnlyCollection<string>, string, string> openBossGroupPicker,
         Action<LightingSettings> applySettingsChange,
         Action rebuildRows)
     {
         _catalogService = catalogService;
         _openCatalogPicker = openCatalogPicker;
+        _openBossGroupPicker = openBossGroupPicker;
         _applySettingsChange = applySettingsChange;
         _rebuildRows = rebuildRows;
     }
@@ -122,22 +125,25 @@ internal sealed class LightingSettingsPanelEntryEditService
         if (entry is null)
             return;
 
-        List<CatalogPickerOption> options = _catalogService.BuildCatalogOptionsForTab(LightingSettingsTab.BossEffects, settings, index);
-        List<string> selectedKeys = [];
+        List<CatalogPickerOption> bossOptions = _catalogService.BuildCatalogOptionsForTab(LightingSettingsTab.BossEffects, settings, index);
+        List<CatalogPickerOption> targetTileGroupOptions = _catalogService.BuildBossTargetTileGroupOptions();
+        List<LightingBossId> currentBossIds = entry.BossIds is { Count: > 0 } ? [..entry.BossIds] : [entry.BossId];
 
-        if (entry.BossIds is null || entry.BossIds.Count == 0)
-            selectedKeys.Add($"boss:{(int)entry.BossId}");
-        else
-            for (int i = 0; i < entry.BossIds.Count; i++)
-                selectedKeys.Add($"boss:{(int)entry.BossIds[i]}");
+        List<string> selectedBossKeys = [];
+        for (int i = 0; i < currentBossIds.Count; i++)
+            selectedBossKeys.Add($"boss:{(int)currentBossIds[i]}");
 
-        _openCatalogPicker(
+        List<string> selectedTargetTileGroupKeys = LightingDynamicCatalogs.ResolveBossTargetTileGroupKeys(currentBossIds, entry.TargetTileGroupKeys);
+
+        _openBossGroupPicker(
             "Edit Boss Group",
-            options,
-            (selectedOptions, groupName) =>
+            bossOptions,
+            targetTileGroupOptions,
+            (selectedBossOptions, selectedTargetTileGroupOptions, groupName) =>
             {
-                List<LightingBossId> bossIds = LightingSettingsPanelEntrySelectionParser.ParseSelectedBossIds(selectedOptions);
-                if (bossIds.Count == 0 || index < 0 || index >= settings.BossEffectEntries.Count)
+                List<LightingBossId> bossIds = LightingSettingsPanelEntrySelectionParser.ParseSelectedBossIds(selectedBossOptions);
+                List<string> targetTileGroupKeys = LightingSettingsPanelEntrySelectionParser.ParseSelectedBossTargetTileGroupKeys(selectedTargetTileGroupOptions);
+                if (bossIds.Count == 0 || targetTileGroupKeys.Count == 0 || index < 0 || index >= settings.BossEffectEntries.Count)
                     return;
 
                 LightingBossEffectEntry currentEntry = settings.BossEffectEntries[index];
@@ -145,12 +151,13 @@ internal sealed class LightingSettingsPanelEntryEditService
                     return;
 
                 string fallback = string.IsNullOrWhiteSpace(currentEntry.Name) ? "Boss Group" : currentEntry.Name;
-                string resolved = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedOptions, fallback);
-                settings.BossEffectEntries[index] = new LightingBossEffectEntry(resolved, bossIds, currentEntry.Enabled, currentEntry.Multiplier);
+                string resolved = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedBossOptions, fallback);
+                settings.BossEffectEntries[index] = new LightingBossEffectEntry(resolved, bossIds, currentEntry.Enabled, currentEntry.Multiplier, targetTileGroupKeys);
                 _applySettingsChange(settings);
                 _rebuildRows();
             },
-            selectedKeys,
+            selectedBossKeys,
+            selectedTargetTileGroupKeys,
             entry.Name,
             "Save Group");
     }

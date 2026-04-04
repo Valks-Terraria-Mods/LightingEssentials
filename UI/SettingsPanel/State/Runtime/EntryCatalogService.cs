@@ -38,9 +38,29 @@ internal sealed class LightingSettingsPanelEntryCatalogService
         return options;
     }
 
+    public List<CatalogPickerOption> BuildBossTargetTileGroupOptions()
+    {
+        IReadOnlyList<LightingBossTargetTileGroupCatalogItem> groups = LightingDynamicCatalogs.GetBossTargetTileGroupCatalogItems();
+        List<CatalogPickerOption> options = new(groups.Count);
+
+        for (int i = 0; i < groups.Count; i++)
+        {
+            LightingBossTargetTileGroupCatalogItem group = groups[i];
+            options.Add(new CatalogPickerOption(group.Key, group.DisplayName));
+        }
+
+        options.Sort(static (a, b) => string.Compare(a.Label, b.Label, StringComparison.OrdinalIgnoreCase));
+        return options;
+    }
+
     public bool TryAddSelectedGroup(LightingSettingsTab tab, LightingSettings settings, IReadOnlyList<CatalogPickerOption> selectedOptions, string groupName)
     {
         return _groupAddService.TryAddSelectedGroup(tab, settings, selectedOptions, groupName);
+    }
+
+    public bool TryAddBossGroup(LightingSettings settings, IReadOnlyList<CatalogPickerOption> selectedBossOptions, IReadOnlyList<string> targetTileGroupKeys, string groupName)
+    {
+        return _groupAddService.TryAddBossGroup(settings, selectedBossOptions, targetTileGroupKeys, groupName);
     }
 
     public static bool TryParseOptionKey(string key, string expectedPrefix, out int value)

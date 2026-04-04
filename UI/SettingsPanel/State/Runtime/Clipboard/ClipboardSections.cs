@@ -217,6 +217,11 @@ internal static class LightingSettingsPanelClipboardSections
         if (!SequenceEquals(currentIds, defaultIds))
             differences.Add(BuildDifference("Members", JoinBossMembers(currentIds), JoinBossMembers(defaultIds)));
 
+        List<string> currentTargetGroups = LightingSettingsPanelClipboardFormatting.GetBossTargetTileGroupKeys(currentEntry);
+        List<string> defaultTargetGroups = LightingSettingsPanelClipboardFormatting.GetBossTargetTileGroupKeys(defaultEntry);
+        if (!SequenceEquals(currentTargetGroups, defaultTargetGroups))
+            differences.Add(BuildDifference("Target Tile Groups", JoinBossTargetTileGroups(currentTargetGroups), JoinBossTargetTileGroups(defaultTargetGroups)));
+
         return BuildModifiedBlock(currentName, differences);
     }
 
@@ -272,7 +277,10 @@ internal static class LightingSettingsPanelClipboardSections
         string members = JoinBossMembers(LightingSettingsPanelClipboardFormatting.GetBossIds(entry));
         string membersLine = string.IsNullOrWhiteSpace(members) ? null : $"Members: {members}";
 
-        return BuildSingleValueBlock(name, status, primaryLine, membersLine);
+        string targetGroups = JoinBossTargetTileGroups(LightingSettingsPanelClipboardFormatting.GetBossTargetTileGroupKeys(entry));
+        string targetGroupsLine = string.IsNullOrWhiteSpace(targetGroups) ? null : $"Target Tile Groups: {targetGroups}";
+
+        return BuildSingleValueBlock(name, status, primaryLine, JoinLines(membersLine, targetGroupsLine));
     }
 
     private static string BuildEntitySingleValueBlock(string status, LightingEntityEffectEntry entry)
@@ -345,6 +353,14 @@ internal static class LightingSettingsPanelClipboardSections
         return LightingSettingsPanelClipboardFormatting.JoinFormattedMembers(bossIds, static bossId => LightingSettingsPanelClipboardFormatting.FormatBossMember(bossId));
     }
 
+    private static string JoinBossTargetTileGroups(IReadOnlyList<string> groupKeys)
+    {
+        if (groupKeys is null || groupKeys.Count == 0)
+            return string.Empty;
+
+        return LightingSettingsPanelClipboardFormatting.JoinFormattedMembers(groupKeys, static key => LightingSettingsPanelClipboardFormatting.FormatBossTargetTileGroupMember(key));
+    }
+
     private static string JoinEntityMembers(IReadOnlyList<string> memberKeys)
     {
         if (memberKeys is null || memberKeys.Count == 0)
@@ -356,6 +372,17 @@ internal static class LightingSettingsPanelClipboardSections
     private static string GetGroupName(string name, string fallback)
     {
         return string.IsNullOrWhiteSpace(name) ? fallback : name.Trim();
+    }
+
+    private static string JoinLines(string first, string second)
+    {
+        if (string.IsNullOrWhiteSpace(first))
+            return second;
+
+        if (string.IsNullOrWhiteSpace(second))
+            return first;
+
+        return $"{first}\n    {second}";
     }
 
     private static bool SequenceEquals<T>(IReadOnlyList<T> left, IReadOnlyList<T> right)

@@ -46,7 +46,10 @@ internal static class LightingSettingsPanelClipboardFormatting
         if (left.Enabled != right.Enabled || MathF.Abs(left.Multiplier - right.Multiplier) > 0.0001f)
             return false;
 
-        return SequenceEquals(GetBossIds(left), GetBossIds(right));
+        if (!SequenceEquals(GetBossIds(left), GetBossIds(right)))
+            return false;
+
+        return SequenceEquals(GetBossTargetTileGroupKeys(left), GetBossTargetTileGroupKeys(right));
     }
 
     public static bool AreEntityEntryEquivalent(LightingEntityEffectEntry left, LightingEntityEffectEntry right)
@@ -85,6 +88,15 @@ internal static class LightingSettingsPanelClipboardFormatting
         return entry.BossIds is { Count: > 0 }
             ? entry.BossIds
             : [entry.BossId];
+    }
+
+    public static List<string> GetBossTargetTileGroupKeys(LightingBossEffectEntry entry)
+    {
+        if (entry is null)
+            return [];
+
+        List<LightingBossId> bossIds = GetBossIds(entry);
+        return LightingDynamicCatalogs.ResolveBossTargetTileGroupKeys(bossIds, entry.TargetTileGroupKeys);
     }
 
     public static string JoinFormattedMembers<T>(IReadOnlyList<T> values, Func<T, string> formatter)
@@ -160,6 +172,13 @@ internal static class LightingSettingsPanelClipboardFormatting
         return LightingDynamicCatalogs.TryGetBossCatalogItem(bossId, out LightingBossCatalogItem item)
             ? item.DisplayName
             : bossId.ToString();
+    }
+
+    public static string FormatBossTargetTileGroupMember(string groupKey)
+    {
+        return LightingDynamicCatalogs.TryGetBossTargetTileGroupCatalogItem(groupKey, out LightingBossTargetTileGroupCatalogItem item)
+            ? item.DisplayName
+            : groupKey;
     }
 
     public static List<string> GetEntityMemberKeys(LightingEntityEffectEntry entry)

@@ -10,12 +10,14 @@ internal sealed class LightingSettingsPanelPopupManager
 {
     private ColorPickerPopup _colorPickerPopup;
     private CatalogPickerPopup _catalogPickerPopup;
+    private BossGroupPickerPopup _bossGroupPickerPopup;
     private ImportSettingsPopup _importSettingsPopup;
 
     public void CloseAll()
     {
         CloseColorPicker();
         CloseCatalogPicker();
+        CloseBossGroupPicker();
         CloseImportSettings();
     }
 
@@ -69,6 +71,36 @@ internal sealed class LightingSettingsPanelPopupManager
         host.Append(_catalogPickerPopup);
     }
 
+    public void OpenBossGroupPicker(
+        UIState host,
+        LightingSettingsPanelRuntimeState state,
+        string title,
+        IReadOnlyList<CatalogPickerOption> bossOptions,
+        IReadOnlyList<CatalogPickerOption> targetTileGroupOptions,
+        Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string> onConfirm,
+        IReadOnlyCollection<string> initiallySelectedBossKeys = null,
+        IReadOnlyCollection<string> initiallySelectedTargetGroupKeys = null,
+        string initialGroupName = "",
+        string confirmButtonText = "Save Group")
+    {
+        CloseAll();
+
+        _bossGroupPickerPopup = new BossGroupPickerPopup(
+            title,
+            bossOptions,
+            targetTileGroupOptions,
+            onConfirm,
+            CloseBossGroupPicker,
+            state.UiScale,
+            initiallySelectedBossKeys,
+            initiallySelectedTargetGroupKeys,
+            initialGroupName,
+            confirmButtonText);
+
+        PositionPopupToPanelLeft(state, _bossGroupPickerPopup, state.Scale(740f), state.Scale(560f));
+        host.Append(_bossGroupPickerPopup);
+    }
+
     public void OpenImportSettings(UIState host, LightingSettingsPanelRuntimeState state, Func<string, bool> onImportRequested)
     {
         CloseAll();
@@ -96,6 +128,16 @@ internal sealed class LightingSettingsPanelPopupManager
         _catalogPickerPopup.EndSearchInput();
         _catalogPickerPopup.Remove();
         _catalogPickerPopup = null;
+    }
+
+    public void CloseBossGroupPicker()
+    {
+        if (_bossGroupPickerPopup is null)
+            return;
+
+        _bossGroupPickerPopup.EndInput();
+        _bossGroupPickerPopup.Remove();
+        _bossGroupPickerPopup = null;
     }
 
     public void CloseImportSettings()

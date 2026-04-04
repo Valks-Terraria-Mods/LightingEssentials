@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using LightingEssentials.UI.SettingsPanel.Components.Popups;
 using LightingEssentials.UI.SettingsPanel.Models;
@@ -79,6 +80,26 @@ internal static class LightingSettingsPanelEntrySelectionParser
         }
 
         return bossIds;
+    }
+
+    public static List<string> ParseSelectedBossTargetTileGroupKeys(IReadOnlyList<CatalogPickerOption> selectedOptions)
+    {
+        List<string> groupKeys = [];
+        HashSet<string> seen = new(StringComparer.Ordinal);
+
+        for (int i = 0; i < selectedOptions.Count; i++)
+        {
+            string key = selectedOptions[i].Key;
+            if (string.IsNullOrWhiteSpace(key) || !seen.Add(key))
+                continue;
+
+            if (!LightingDynamicCatalogs.TryGetBossTargetTileGroupCatalogItem(key, out _))
+                continue;
+
+            groupKeys.Add(key);
+        }
+
+        return groupKeys;
     }
 
     public static EntitySelection ParseSelectedEntitySelection(IReadOnlyList<CatalogPickerOption> selectedOptions)

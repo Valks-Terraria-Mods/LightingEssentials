@@ -17,9 +17,70 @@ internal sealed class LightingSettingsPanelGroupAddService
             LightingSettingsTab.TileEffects => TryAddTileGroup(settings, selectedOptions, groupName),
             LightingSettingsTab.Events => TryAddEventGroup(settings, selectedOptions, groupName),
             LightingSettingsTab.EntityLights => TryAddEntityGroup(settings, selectedOptions, groupName),
-            LightingSettingsTab.BossEffects => TryAddBossGroup(settings, selectedOptions, groupName),
+            LightingSettingsTab.BossEffects => TryAddBossGroup(settings, selectedOptions, null, groupName),
             _ => false,
         };
+    }
+
+    public bool TryAddBossGroup(
+        LightingSettings settings,
+        IReadOnlyList<CatalogPickerOption> selectedBossOptions,
+        IReadOnlyList<string> targetTileGroupKeys,
+        string groupName)
+    {
+        if (selectedBossOptions is null || selectedBossOptions.Count == 0)
+            return false;
+
+        HashSet<LightingBossId> used = [];
+        for (int i = 0; i < settings.BossEffectEntries.Count; i++)
+        {
+            LightingBossEffectEntry entry = settings.BossEffectEntries[i];
+            if (entry is null)
+                continue;
+
+            if (entry.BossIds is null || entry.BossIds.Count == 0)
+            {
+                used.Add(entry.BossId);
+                continue;
+            }
+
+            for (int j = 0; j < entry.BossIds.Count; j++)
+                used.Add(entry.BossIds[j]);
+        }
+
+        List<LightingBossId> bossIds = [];
+        float defaultMultiplier = 1.4f;
+        for (int i = 0; i < selectedBossOptions.Count; i++)
+        {
+            CatalogPickerOption option = selectedBossOptions[i];
+            if (!LightingSettingsPanelEntryCatalogService.TryParseOptionKey(option.Key, "boss", out int bossIdRaw))
+                continue;
+
+            LightingBossId bossId = (LightingBossId)bossIdRaw;
+            if (!LightingDynamicCatalogs.TryGetBossCatalogItem(bossId, out LightingBossCatalogItem item) || !used.Add(bossId))
+                continue;
+
+            if (bossIds.Count == 0)
+                defaultMultiplier = item.DefaultMultiplier;
+
+            bossIds.Add(bossId);
+        }
+
+        if (bossIds.Count == 0)
+            return false;
+
+        string resolvedName = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedBossOptions, "Boss Group");
+        List<string> resolvedTargetTileGroups = LightingDynamicCatalogs.ResolveBossTargetTileGroupKeys(bossIds, targetTileGroupKeys);
+
+        settings.BossEffectEntries.Add(
+            new LightingBossEffectEntry(
+                resolvedName,
+                bossIds,
+                true,
+                Math.Clamp(defaultMultiplier, 1f, 2f),
+                resolvedTargetTileGroups));
+
+        return true;
     }
 
     private static bool TryAddTileGroup(LightingSettings settings, IReadOnlyList<CatalogPickerOption> selectedOptions, string groupName)
@@ -95,51 +156,6 @@ internal sealed class LightingSettingsPanelGroupAddService
 
         string resolvedName = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedOptions, "Event Group");
         settings.EventEffectEntries.Add(new LightingEventEffectEntry(resolvedName, eventIds, true, defaultColor));
-        return true;
-    }
-
-    private static bool TryAddBossGroup(LightingSettings settings, IReadOnlyList<CatalogPickerOption> selectedOptions, string groupName)
-    {
-        HashSet<LightingBossId> used = [];
-        for (int i = 0; i < settings.BossEffectEntries.Count; i++)
-        {
-            LightingBossEffectEntry entry = settings.BossEffectEntries[i];
-            if (entry is null)
-                continue;
-
-            if (entry.BossIds is null || entry.BossIds.Count == 0)
-            {
-                used.Add(entry.BossId);
-                continue;
-            }
-
-            for (int j = 0; j < entry.BossIds.Count; j++)
-                used.Add(entry.BossIds[j]);
-        }
-
-        List<LightingBossId> bossIds = [];
-        float defaultMultiplier = 1.4f;
-        for (int i = 0; i < selectedOptions.Count; i++)
-        {
-            CatalogPickerOption option = selectedOptions[i];
-            if (!LightingSettingsPanelEntryCatalogService.TryParseOptionKey(option.Key, "boss", out int bossIdRaw))
-                continue;
-
-            LightingBossId bossId = (LightingBossId)bossIdRaw;
-            if (!LightingDynamicCatalogs.TryGetBossCatalogItem(bossId, out LightingBossCatalogItem item) || !used.Add(bossId))
-                continue;
-
-            if (bossIds.Count == 0)
-                defaultMultiplier = item.DefaultMultiplier;
-
-            bossIds.Add(bossId);
-        }
-
-        if (bossIds.Count == 0)
-            return false;
-
-        string resolvedName = LightingSettingsPanelEntryCatalogService.ResolveGroupName(groupName, selectedOptions, "Boss Group");
-        settings.BossEffectEntries.Add(new LightingBossEffectEntry(resolvedName, bossIds, true, Math.Clamp(defaultMultiplier, 1f, 2f)));
         return true;
     }
 

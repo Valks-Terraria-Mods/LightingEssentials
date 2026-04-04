@@ -74,7 +74,7 @@ internal sealed class LightingSettingsPanelState : UIState
 
     private void EnsureEntryEditService()
     {
-        _entryEditService ??= new LightingSettingsPanelEntryEditService(_entryCatalogService, OpenCatalogPicker, ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab));
+        _entryEditService ??= new LightingSettingsPanelEntryEditService(_entryCatalogService, OpenCatalogPicker, OpenBossGroupPicker, ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab));
     }
 
     private void BuildScaledLayout()
@@ -176,6 +176,24 @@ internal sealed class LightingSettingsPanelState : UIState
         LightingSettings settings = ModContent.GetInstance<LightingSettings>();
         settings.EnsureDynamicEntries();
 
+        if (_runtime.ActiveTab == LightingSettingsTab.BossEffects)
+        {
+            List<CatalogPickerOption> bossOptions = _entryCatalogService.BuildCatalogOptionsForTab(_runtime.ActiveTab, settings);
+            List<CatalogPickerOption> targetTileGroupOptions = _entryCatalogService.BuildBossTargetTileGroupOptions();
+
+            OpenBossGroupPicker(
+                "Add Boss Group",
+                bossOptions,
+                targetTileGroupOptions,
+                OnBossGroupSelectionConfirmed,
+                null,
+                null,
+                string.Empty,
+                "Add Group");
+
+            return;
+        }
+
         List<CatalogPickerOption> options = _entryCatalogService.BuildCatalogOptionsForTab(_runtime.ActiveTab, settings);
         OpenCatalogPicker($"Select {LightingSettingsCatalog.GetTabTitle(_runtime.ActiveTab)} Entry", options, OnCatalogSelectionConfirmed, null, string.Empty, "Add Selected");
     }
@@ -191,9 +209,48 @@ internal sealed class LightingSettingsPanelState : UIState
         _popupManager.OpenCatalogPicker(this, _runtime, title, options, onConfirm, initiallySelectedKeys, initialGroupName, confirmButtonText);
     }
 
+    private void OpenBossGroupPicker(
+        string title,
+        IReadOnlyList<CatalogPickerOption> bossOptions,
+        IReadOnlyList<CatalogPickerOption> targetTileGroupOptions,
+        Action<IReadOnlyList<CatalogPickerOption>, IReadOnlyList<CatalogPickerOption>, string> onConfirm,
+        IReadOnlyCollection<string> initiallySelectedBossKeys,
+        IReadOnlyCollection<string> initiallySelectedTargetTileGroupKeys,
+        string initialGroupName,
+        string confirmButtonText)
+    {
+        _popupManager.OpenBossGroupPicker(
+            this,
+            _runtime,
+            title,
+            bossOptions,
+            targetTileGroupOptions,
+            onConfirm,
+            initiallySelectedBossKeys,
+            initiallySelectedTargetTileGroupKeys,
+            initialGroupName,
+            confirmButtonText);
+    }
+
     private void OnCatalogSelectionConfirmed(IReadOnlyList<CatalogPickerOption> selectedOptions, string groupName)
     {
         LightingSettingsPanelSettingsActions.TryApplyCatalogSelection(_entryCatalogService, _runtime.ActiveTab, selectedOptions, groupName, ApplySettingsChange, () => BuildRowsForTab(_runtime.ActiveTab));
+    }
+
+    private void OnBossGroupSelectionConfirmed(
+        IReadOnlyList<CatalogPickerOption> selectedBossOptions,
+        IReadOnlyList<CatalogPickerOption> selectedTargetTileGroupOptions,
+        string groupName)
+    {
+        LightingSettings settings = ModContent.GetInstance<LightingSettings>();
+        settings.EnsureDynamicEntries();
+
+        List<string> targetTileGroupKeys = LightingSettingsPanelEntrySelectionParser.ParseSelectedBossTargetTileGroupKeys(selectedTargetTileGroupOptions);
+        if (!_entryCatalogService.TryAddBossGroup(settings, selectedBossOptions, targetTileGroupKeys, groupName))
+            return;
+
+        ApplySettingsChange(settings);
+        BuildRowsForTab(_runtime.ActiveTab);
     }
 
     private bool ImportSettingsFromPopupText(string importText)

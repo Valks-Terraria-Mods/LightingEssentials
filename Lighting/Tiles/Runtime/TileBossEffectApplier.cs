@@ -19,18 +19,18 @@ internal static class TileBossEffectApplier
 
             if (entry.BossIds is null || entry.BossIds.Count == 0)
             {
-                TryApplyBossEffect(entry.BossId, entry.Multiplier, state);
+                TryApplyBossEffect(entry, entry.BossId, entry.Multiplier, state);
                 continue;
             }
 
             for (int j = 0; j < entry.BossIds.Count; j++)
             {
-                TryApplyBossEffect(entry.BossIds[j], entry.Multiplier, state);
+                TryApplyBossEffect(entry, entry.BossIds[j], entry.Multiplier, state);
             }
         }
     }
 
-    private static void TryApplyBossEffect(LightingBossId bossId, float configuredMultiplier, in WorldLightingState state)
+    private static void TryApplyBossEffect(LightingBossEffectEntry entry, LightingBossId bossId, float configuredMultiplier, in WorldLightingState state)
     {
         if (!LightingDynamicCatalogs.TryGetBossCatalogItem(bossId, out _))
             return;
@@ -38,8 +38,11 @@ internal static class TileBossEffectApplier
         if (!LightingDynamicCatalogs.IsBossTriggered(bossId, state))
             return;
 
-        int[][] targetTileGroups = LightingDynamicCatalogs.GetBossTargetTileGroups(bossId);
-        if (targetTileGroups.Length == 0)
+        IReadOnlyList<string> targetTileGroupKeys = entry.TargetTileGroupKeys;
+        if (targetTileGroupKeys is null || targetTileGroupKeys.Count == 0)
+            targetTileGroupKeys = LightingDynamicCatalogs.GetDefaultBossTargetTileGroupKeys(bossId);
+
+        if (targetTileGroupKeys.Count == 0)
             return;
 
         if (LightingDynamicCatalogs.UsesProgressiveMultiplier(bossId))
@@ -47,18 +50,21 @@ internal static class TileBossEffectApplier
             float mechMaxMultiplier = ClampBossMultiplier(configuredMultiplier);
             float mechProgress = state.MechBossesDowned / 3f;
             float mechMultiplier = 1f + ((mechMaxMultiplier - 1f) * mechProgress);
-            BrightenGroups(targetTileGroups, mechMultiplier);
+            BrightenGroups(targetTileGroupKeys, mechMultiplier);
             return;
         }
 
-        BrightenGroups(targetTileGroups, ClampBossMultiplier(configuredMultiplier));
+        BrightenGroups(targetTileGroupKeys, ClampBossMultiplier(configuredMultiplier));
     }
 
-    private static void BrightenGroups(int[][] targetTileGroups, float multiplier)
+    private static void BrightenGroups(IReadOnlyList<string> targetTileGroupKeys, float multiplier)
     {
-        for (int i = 0; i < targetTileGroups.Length; i++)
+        for (int i = 0; i < targetTileGroupKeys.Count; i++)
         {
-            TileLightStore.Brighten(targetTileGroups[i], multiplier);
+            if (!LightingDynamicCatalogs.TryGetBossTargetTileIds(targetTileGroupKeys[i], out int[] tileIds))
+                continue;
+
+            TileLightStore.Brighten(tileIds, multiplier);
         }
     }
 
