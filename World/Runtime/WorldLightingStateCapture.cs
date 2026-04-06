@@ -41,7 +41,7 @@ internal static class WorldLightingStateCapture
         if (DD2Event.Ongoing)
             flags |= WorldLightingFlags.OldOnesArmyActive;
 
-        if (Main.netMode != NetmodeID.Server && Main.LocalPlayer?.HasBuff(BuffID.Blackout) == true)
+        if (Main.netMode != NetmodeID.Server && HasBuffSafe(Main.LocalPlayer, BuffID.Blackout))
             flags |= WorldLightingFlags.TorchGodActive;
 
         if (Main.invasionType == InvasionID.SnowLegion)
@@ -80,6 +80,24 @@ internal static class WorldLightingStateCapture
 
         WorldLightingFlags flags = CaptureProgressionFlags() | CaptureEventFlags();
         return new WorldLightingState(flags, mechBossesDowned);
+    }
+
+    private static bool HasBuffSafe(Player player, int buffType)
+    {
+        if (player is null || buffType <= 0)
+            return false;
+
+        int[] activeBuffs = player.buffType;
+        if (activeBuffs is null)
+            return false;
+
+        for (int i = 0; i < activeBuffs.Length; i++)
+        {
+            if (activeBuffs[i] == buffType)
+                return true;
+        }
+
+        return false;
     }
 
     private static WorldLightingFlags CaptureProgressionFlags()
